@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Star, Clock, Truck, Zap, Globe, ChevronRight, Menu, X, Play, TrendingUp, Users, Award, Sparkles, ArrowRight, Heart, MessageCircle, DollarSign } from 'lucide-react';
+import Link from 'next/link';
 
 export default function FoodTruckLanding() {
   const [scrolled, setScrolled] = useState(false);
@@ -248,6 +249,9 @@ export default function FoodTruckLanding() {
                 {item}
               </a>
             ))}
+            <Link href='/dashboard'>
+            
+            
             <button style={{
               padding: '12px 28px',
               borderRadius: '12px',
@@ -272,6 +276,7 @@ export default function FoodTruckLanding() {
             }}>
               Launch App
             </button>
+            </Link>
           </div>
 
           <button
@@ -386,6 +391,7 @@ export default function FoodTruckLanding() {
       marginBottom: '70px',
       animation: 'slideUp 1.2s ease-out',
     }} className="hero-buttons">
+      <Link href='/dashboard'>
       <button style={{
         padding: '22px 44px',
         borderRadius: '18px',
@@ -414,6 +420,7 @@ export default function FoodTruckLanding() {
         <Zap style={{ width: '22px', height: '22px' }} />
         Find Trucks Near Me
       </button>
+      </Link>
 
       <button style={{
         padding: '22px 44px',
