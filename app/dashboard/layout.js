@@ -27,7 +27,6 @@ export default function DashboardLayout({ children }) {
   const [createError, setCreateError] = useState('')
   const [showNewGroup, setShowNewGroup] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
 
   const fetchGroups = useCallback(async () => {
     setLoadingGroups(true)
@@ -44,7 +43,6 @@ export default function DashboardLayout({ children }) {
     }
   }, [])
 
-  // ✅ Only runs once on mount — no auto-refresh
   useEffect(() => {
     if (!isLoaded || !user) return
     fetchGroups().then(list => {
@@ -58,22 +56,7 @@ export default function DashboardLayout({ children }) {
         setShowNewGroup(true)
       }
     })
-  }, [isLoaded, user]) // ← intentionally not including fetchGroups to avoid re-trigger
-
-  // ✅ Manual refresh handler for the button
-  const handleRefresh = async () => {
-    if (refreshing) return
-    setRefreshing(true)
-    try {
-      const list = await fetchGroups()
-      if (selectedGroup) {
-        const updated = list.find(g => g.id === selectedGroup.id)
-        if (updated) setSelectedGroup(updated)
-      }
-    } finally {
-      setRefreshing(false)
-    }
-  }
+  }, [isLoaded, user])
 
   async function handleCreateGroup(e) {
     e.preventDefault()
@@ -157,10 +140,6 @@ export default function DashboardLayout({ children }) {
         .new-ws-btn:hover:not(:disabled) { background: rgba(255,215,0,0.2) !important; }
         .collapse-btn { transition: all 0.15s; }
         .collapse-btn:hover { background: rgba(255,255,255,0.06) !important; color: rgba(240,237,232,0.6) !important; }
-        .refresh-btn { transition: all 0.18s ease; }
-        .refresh-btn:hover:not(:disabled) { background: rgba(255,215,0,0.12) !important; border-color: rgba(255,215,0,0.25) !important; color: #FFD700 !important; }
-        .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        @keyframes spin-refresh { to { transform: rotate(360deg); } }
       `}</style>
 
       <div style={{ display: 'flex', minHeight: '100vh', background: '#080810', fontFamily: "'Inter', system-ui, sans-serif", color: '#E8E4DF' }}>
@@ -348,6 +327,7 @@ export default function DashboardLayout({ children }) {
             borderBottom: '1px solid rgba(255,255,255,0.04)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
+            {/* Left: workspace breadcrumb */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', fontWeight: 500 }}>Workspace</span>
               <span style={{ color: 'rgba(255,255,255,0.12)', fontSize: 14 }}>›</span>
@@ -360,30 +340,29 @@ export default function DashboardLayout({ children }) {
               )}
             </div>
 
-            {/* ✅ Manual Refresh Button — replaces the old profile count badge */}
-            <button
-              className="refresh-btn"
-              onClick={handleRefresh}
-              disabled={refreshing || loadingGroups}
-              title="Refresh workspaces"
-              style={{
-                display: 'flex', alignItems: 'center', gap: 7,
+            {/* Right: total workspaces badge */}
+            {!loadingGroups && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
                 padding: '6px 14px', borderRadius: 100,
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px solid rgba(255,255,255,0.08)',
-                color: 'rgba(240,237,232,0.4)',
-                fontSize: 12, fontWeight: 500, fontFamily: 'inherit',
-                cursor: 'pointer', letterSpacing: '0.02em',
-              }}
-            >
-              <span style={{
-                display: 'inline-block',
-                fontSize: 13,
-                animation: refreshing ? 'spin-refresh 0.7s linear infinite' : 'none',
-                transformOrigin: 'center',
-              }}>↻</span>
-              <span>Refresh</span>
-            </button>
+              }}>
+                <div style={{
+                  width: 18, height: 18, borderRadius: 6,
+                  background: 'linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,140,66,0.2))',
+                  border: '1px solid rgba(255,215,0,0.25)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 10, fontWeight: 800, color: '#FFD700',
+                }}>◈</div>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(240,237,232,0.5)', letterSpacing: '0.02em' }}>
+                  {groups.length} workspace{groups.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+            )}
+            {loadingGroups && (
+              <div className="skeleton" style={{ width: 110, height: 32, borderRadius: 100 }} />
+            )}
           </header>
 
           <main style={{ flex: 1, padding: '32px', overflowY: 'auto', animation: 'fadeIn 0.25s ease' }}>

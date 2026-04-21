@@ -67,7 +67,6 @@ function PostStatCard({ post, statsData }) {
       borderRadius: 16, overflow: 'hidden',
       transition: 'border-color 0.18s', cursor: 'pointer',
     }} onClick={() => setOpen(v => !v)}>
-      {/* Header row */}
       <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: 14 }}>
         <div style={{
           width: 3, minHeight: 44, borderRadius: 3, flexShrink: 0, alignSelf: 'stretch',
@@ -99,7 +98,6 @@ function PostStatCard({ post, statsData }) {
         }}>▾</span>
       </div>
 
-      {/* Expanded platform breakdown */}
       {open && platforms.length > 0 && (
         <div style={{
           borderTop: '1px solid rgba(255,255,255,0.05)',
@@ -115,7 +113,6 @@ function PostStatCard({ post, statsData }) {
 
             return (
               <div key={i}>
-                {/* Platform label */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: 8,
@@ -141,7 +138,6 @@ function PostStatCard({ post, statsData }) {
                   <p style={{ fontSize: 12, color: 'rgba(240,237,232,0.25)', padding: '8px 0' }}>No stats available yet</p>
                 )}
 
-                {/* Trend sparkline (if multiple records) */}
                 {pl.records?.length > 1 && (
                   <div style={{ marginTop: 12 }}>
                     <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(240,237,232,0.2)', letterSpacing: '0.1em', marginBottom: 8 }}>IMPRESSIONS OVER TIME</div>
@@ -215,7 +211,6 @@ export default function StatsPage() {
     const res = await fetch(`/api/posts?groupId=${groupId}&per_page=50`)
     const data = await res.json()
     const allPosts = data?.data || []
-    // Only published/processed posts have stats
     const publishedPosts = allPosts.filter(p => p.status === 'published' || p.status === 'processed')
     setPosts(publishedPosts)
     setLoadingPosts(false)
@@ -230,6 +225,7 @@ export default function StatsPage() {
     setLoadingStats(false)
   }, [])
 
+  // Only fetch on group change (initial load), not on interval
   useEffect(() => {
     if (!selectedGroup) return
     setPosts([])
@@ -239,7 +235,6 @@ export default function StatsPage() {
 
   if (!selectedGroup) return null
 
-  // Aggregate totals across all posts & platforms
   const totals = { impressions: 0, likes: 0, comments: 0, shares: 0 }
   Object.values(statsMap).forEach(postStats => {
     postStats?.platforms?.forEach(pl => {
@@ -251,7 +246,6 @@ export default function StatsPage() {
     })
   })
 
-  // Platforms present in stats
   const platformsInStats = [...new Set(
     Object.values(statsMap).flatMap(ps => ps?.platforms?.map(p => p.platform) || [])
   )]
@@ -290,12 +284,16 @@ export default function StatsPage() {
             Performance for <span style={{ color: 'rgba(255,215,0,0.5)', fontWeight: 500 }}>{selectedGroup.name}</span>
           </p>
         </div>
-        <button className="refresh-btn" onClick={() => fetchPostsAndStats(selectedGroup.id)} style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 10, padding: '9px 16px', fontSize: 13,
-          color: 'rgba(240,237,232,0.4)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
-        }}>
+        <button
+          className="refresh-btn"
+          onClick={() => fetchPostsAndStats(selectedGroup.id)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 10, padding: '9px 16px', fontSize: 13,
+            color: 'rgba(240,237,232,0.4)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500,
+          }}
+        >
           <span style={{ fontSize: 14 }}>↻</span> Refresh
         </button>
       </div>

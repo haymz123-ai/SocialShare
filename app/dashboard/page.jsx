@@ -73,6 +73,7 @@ export default function OverviewPage() {
   const [posts, setPosts] = useState([])
   const [loadingProfiles, setLoadingProfiles] = useState(false)
   const [loadingPosts, setLoadingPosts] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   const fetchProfiles = useCallback(async (groupId) => {
     setLoadingProfiles(true)
@@ -90,13 +91,22 @@ export default function OverviewPage() {
     setLoadingPosts(false)
   }, [])
 
+  // Only fetch once when group first selected, not on every render
   useEffect(() => {
     if (!selectedGroup) return
     setProfiles([])
     setPosts([])
+    setHasLoaded(false)
     fetchProfiles(selectedGroup.id)
     fetchPosts(selectedGroup.id)
+    setHasLoaded(true)
   }, [selectedGroup?.id])
+
+  const handleRefresh = () => {
+    if (!selectedGroup) return
+    fetchProfiles(selectedGroup.id)
+    fetchPosts(selectedGroup.id)
+  }
 
   if (!selectedGroup) return null
 
@@ -129,6 +139,7 @@ export default function OverviewPage() {
         .ov-post { transition: background 0.15s; }
         .ov-skeleton { background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.03) 75%); background-size:400% 100%; animation:shimmer 2s ease infinite; border-radius:12px; }
         .ov-dot-pulse { animation:pulse 2s ease infinite; }
+        .ov-refresh:hover { border-color:rgba(167,139,250,0.3) !important; color:rgba(167,139,250,0.8) !important; background:rgba(167,139,250,0.06) !important; }
       `}</style>
 
       {/* Header greeting */}
@@ -142,7 +153,8 @@ export default function OverviewPage() {
           </p>
         </div>
         <button
-          onClick={() => { fetchProfiles(selectedGroup.id); fetchPosts(selectedGroup.id) }}
+          className="ov-refresh"
+          onClick={handleRefresh}
           style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 16px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:12, cursor:'pointer', fontFamily:'inherit', fontWeight:500, transition:'all 0.15s' }}
         >
           <span style={{ fontSize:14 }}>↻</span> Refresh

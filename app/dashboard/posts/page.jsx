@@ -40,7 +40,6 @@ const PLATFORM_FORMATS = {
   pinterest: [{ value:'pin',  label:'Pin',    icon:'📌' }],
 }
 
-// Default platform params — ensures required fields are always sent
 const PLATFORM_DEFAULTS = {
   youtube: { privacy_status: 'public' },
   tiktok:  { privacy_status: 'PUBLIC_TO_EVERYONE' },
@@ -57,19 +56,16 @@ const STATUS_CONFIG = {
   published:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
   processed:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
   scheduled:  { bg:'rgba(96,165,250,0.1)',   color:'#60a5fa', border:'rgba(96,165,250,0.2)',   dot:'#60a5fa',  calColor:'#2563eb' },
-  // pending = draft not yet processed — treat visually as draft
   pending:    { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
   draft:      { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
   failed:     { bg:'rgba(248,113,113,0.1)',  color:'#f87171', border:'rgba(248,113,113,0.2)',  dot:'#f87171',  calColor:'#dc2626' },
   processing: { bg:'rgba(167,139,250,0.12)', color:'#a78bfa', border:'rgba(167,139,250,0.2)',  dot:'#a78bfa',  calColor:'#7c3aed' },
 }
 
-// A post is editable if it's a draft (by flag OR by status name) or scheduled
 function isPostEditable(post) {
   return post.draft === true || post.status === 'draft' || post.status === 'pending' || post.status === 'scheduled'
 }
 
-// Normalize display status: pending+draft => "draft"
 function displayStatus(post) {
   if ((post.status === 'pending' || post.status === 'processing') && post.draft) return 'draft'
   return post.status
@@ -92,8 +88,6 @@ function isDayInPast(year, month, day) {
   const d = new Date(year, month, day)
   return d < today
 }
-
-// ─── Delete Confirm Modal ──────────────────────────────────────────────────────
 
 function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
   const [deleting, setDeleting] = useState(false)
@@ -154,10 +148,7 @@ function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
   )
 }
 
-// ─── sub-components ───────────────────────────────────────────────────────────
-
 function StatusBadge({ status, isDraft }) {
-  // Normalize: pending+draft => show as draft
   const effectiveStatus = (status === 'pending' && isDraft) ? 'draft' : status
   const st = STATUS_CONFIG[effectiveStatus] || STATUS_CONFIG.processing
   const label = effectiveStatus === 'pending' && !isDraft ? 'pending' : effectiveStatus
@@ -445,18 +436,15 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
   )
 }
 
-// KEY FIX: when toggling a profile ON, seed platform defaults so required params are always present
 function toggleProfileWithDefaults(profileId, profiles, setSelectedProfileIds, setPlacements, setLoadedPlacements, setPlatformParams) {
   const profile = profiles.find(p => p.id === profileId)
   setSelectedProfileIds(prev => {
     if (prev.includes(profileId)) {
-      // removing — clean up
       setPlacements(p => { const n={...p}; delete n[profileId]; return n })
       setLoadedPlacements(p => { const n={...p}; delete n[profileId]; return n })
       setPlatformParams(p => { const n={...p}; delete n[profileId]; return n })
       return prev.filter(id => id !== profileId)
     }
-    // adding — seed defaults
     if (profile && PLATFORM_DEFAULTS[profile.platform]) {
       setPlatformParams(p => ({
         ...p,
@@ -466,8 +454,6 @@ function toggleProfileWithDefaults(profileId, profiles, setSelectedProfileIds, s
     return [...prev, profileId]
   })
 }
-
-// ─── Schedule Modal ────────────────────────────────────────────────────────────
 
 function ScheduleModal({ date, groupId, onClose, onSaved }) {
   const [body, setBody]                     = useState('')
@@ -660,8 +646,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
     </div>
   )
 }
-
-// ─── Edit Modal ────────────────────────────────────────────────────────────────
 
 function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
   const [body, setBody]                     = useState(post.body||'')
@@ -898,8 +882,6 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
   )
 }
 
-// ─── Day Panel ─────────────────────────────────────────────────────────────────
-
 function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }) {
   const label = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
   return (
@@ -973,8 +955,6 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }
     </div>
   )
 }
-
-// ─── Calendar View ─────────────────────────────────────────────────────────────
 
 function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
   const today = new Date()
@@ -1102,13 +1082,10 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
   )
 }
 
-// ─── List View ─────────────────────────────────────────────────────────────────
-
 function ListView({ posts, onEdit, onDelete }) {
   const [filter, setFilter]     = useState('all')
   const [expanded, setExpanded] = useState(null)
 
-  // Normalize pending+draft to "draft" for filtering purposes
   const normalizedPosts = posts.map(p => ({ ...p, _displayStatus: displayStatus(p) }))
   const statuses = ['all', ...new Set(normalizedPosts.map(p => p._displayStatus))]
   const filtered = filter==='all' ? normalizedPosts : normalizedPosts.filter(p => p._displayStatus === filter)
@@ -1206,8 +1183,6 @@ function ListView({ posts, onEdit, onDelete }) {
   )
 }
 
-// ─── Posts Page ────────────────────────────────────────────────────────────────
-
 export default function PostsPage() {
   const { selectedGroup } = useContext(DashboardContext)
   const [posts, setPosts]               = useState([])
@@ -1225,6 +1200,7 @@ export default function PostsPage() {
     setLoading(false)
   }, [])
 
+  // Only fetch on group change (initial load per group), not on interval
   useEffect(() => {
     if (!selectedGroup) return
     setPosts([])
@@ -1256,6 +1232,7 @@ export default function PostsPage() {
         .cal-day-past:hover { background:rgba(255,255,255,0.02) !important; }
         .vtab { transition:all 0.15s ease; }
         .vtab:hover { color:rgba(167,139,250,0.8) !important; }
+        .refresh-btn-posts:hover { border-color:rgba(167,139,250,0.25) !important; color:rgba(167,139,250,0.7) !important; background:rgba(167,139,250,0.05) !important; }
       `}</style>
 
       {editPost && (
@@ -1300,7 +1277,11 @@ export default function PostsPage() {
               <button key={v.id} className="vtab" onClick={()=>setView(v.id)} style={{ padding:'7px 15px', borderRadius:8, fontSize:12, fontWeight:600, background:view===v.id?'rgba(167,139,250,0.12)':'transparent', border:view===v.id?'1px solid rgba(167,139,250,0.22)':'1px solid transparent', color:view===v.id?'#a78bfa':'rgba(240,237,232,0.32)', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}><span>{v.icon}</span> {v.label}</button>
             ))}
           </div>
-          <button onClick={()=>fetchPosts(selectedGroup.id)} style={{ display:'flex', alignItems:'center', gap:5, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, padding:'9px 15px', fontSize:12, color:'rgba(240,237,232,0.38)', cursor:'pointer', fontFamily:'inherit', fontWeight:500 }}>
+          <button
+            className="refresh-btn-posts"
+            onClick={()=>fetchPosts(selectedGroup.id)}
+            style={{ display:'flex', alignItems:'center', gap:5, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, padding:'9px 15px', fontSize:12, color:'rgba(240,237,232,0.38)', cursor:'pointer', fontFamily:'inherit', fontWeight:500, transition:'all 0.15s' }}
+          >
             <span style={{ fontSize:13 }}>↻</span> Refresh
           </button>
         </div>

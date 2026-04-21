@@ -49,12 +49,15 @@ const TIKTOK_PRIVACY = [
   { value: 'SELF_ONLY',             label: 'Only Me' },
 ]
 
-function SectionCard({ title, hint, children }) {
+function SectionCard({ title, hint, children, headerRight }) {
   return (
     <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:16, overflow:'hidden' }}>
       <div style={{ padding:'14px 20px', borderBottom:'1px solid rgba(255,255,255,0.04)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <span style={{ fontSize:11, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.3)' }}>{title}</span>
-        {hint && <span style={{ fontSize:11, color:'rgba(255,255,255,0.2)' }}>{hint}</span>}
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <span style={{ fontSize:11, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.3)' }}>{title}</span>
+          {hint && <span style={{ fontSize:11, color:'rgba(255,255,255,0.2)' }}>{hint}</span>}
+        </div>
+        {headerRight}
       </div>
       <div style={{ padding:'18px 20px' }}>{children}</div>
     </div>
@@ -246,7 +249,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
   const isReel = format === 'reel'
   const charCount = postBody.length
 
-  // No profiles selected — idle state
   if (!profiles.length) {
     return (
       <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100%', minHeight:400, gap:16, padding:32 }}>
@@ -283,7 +285,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
 
       {activeProfile && (
         <div style={{ flex:1, display:'flex', flexDirection:'column', gap:12 }}>
-          {/* Format badge */}
           <div style={{ display:'flex', alignItems:'center', gap:8 }}>
             <div style={{ height:2, flex:1, background:`linear-gradient(90deg, ${info.color}60, transparent)`, borderRadius:2 }} />
             <span style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color: info.color, opacity:0.7 }}>
@@ -292,9 +293,7 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
             <div style={{ height:2, flex:1, background:`linear-gradient(270deg, ${info.color}60, transparent)`, borderRadius:2 }} />
           </div>
 
-          {/* Mock device frame */}
           <div style={{ maxWidth:320, margin:'0 auto', width:'100%' }}>
-            {/* Instagram / Facebook / Threads */}
             {(['instagram','facebook','threads'].includes(platform)) && (
               <div style={{ background:'#16162a', borderRadius: isStory ? 20 : 14, border:`1px solid ${info.color}20`, overflow:'hidden', boxShadow:`0 0 40px ${info.color}12` }}>
                 <div style={{ padding:'10px 14px', display:'flex', alignItems:'center', gap:10, borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
@@ -307,7 +306,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                   </div>
                   <span style={{ fontSize:18, color:'rgba(255,255,255,0.25)', letterSpacing:1 }}>···</span>
                 </div>
-
                 {hasMedia ? (
                   <div style={{ position:'relative', width:'100%', paddingTop: isStory ? '160%' : '100%', background:'#0a0a18', overflow:'hidden' }}>
                     {isVideo ? (
@@ -341,7 +339,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                     </div>
                   )
                 )}
-
                 {!isStory && (
                   <div style={{ padding:'10px 14px 14px' }}>
                     {hasMedia && (
@@ -371,7 +368,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* Twitter */}
             {platform === 'twitter' && (
               <div style={{ background:'#15202b', borderRadius:14, border:'1px solid rgba(255,255,255,0.08)', padding:'16px', boxShadow:'0 0 40px rgba(29,161,242,0.08)' }}>
                 <div style={{ display:'flex', gap:10 }}>
@@ -415,7 +411,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* LinkedIn */}
             {platform === 'linkedin' && (
               <div style={{ background:'#1d2226', borderRadius:14, border:'1px solid rgba(255,255,255,0.08)', overflow:'hidden', boxShadow:'0 0 40px rgba(10,102,194,0.1)' }}>
                 <div style={{ padding:'14px 16px', display:'flex', gap:10, borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
@@ -452,7 +447,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* TikTok */}
             {platform === 'tiktok' && (
               <div style={{ background:'#000', borderRadius:20, border:`1px solid ${info.color}20`, overflow:'hidden', boxShadow:`0 0 40px ${info.color}12` }}>
                 <div style={{ position:'relative', paddingTop:'160%', background:'#111' }}>
@@ -466,7 +460,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                       </div>
                     </div>
                   )}
-                  {/* TikTok UI chrome */}
                   <div style={{ position:'absolute', top:10, right:10 }}>
                     <div style={{ width:30, height:30, borderRadius:'50%', background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff' }}>✕</div>
                   </div>
@@ -495,7 +488,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* YouTube */}
             {platform === 'youtube' && (
               <div style={{ background:'#0f0f0f', borderRadius:14, border:'1px solid rgba(255,255,255,0.06)', overflow:'hidden', boxShadow:'0 0 40px rgba(255,0,0,0.08)' }}>
                 <div style={{ position:'relative', paddingTop:'56.25%', background:'#1a1a1a' }}>
@@ -536,7 +528,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* Pinterest */}
             {platform === 'pinterest' && (
               <div style={{ background:'#111', borderRadius:16, border:`1px solid ${info.color}20`, overflow:'hidden', boxShadow:`0 0 40px ${info.color}10` }}>
                 <div style={{ position:'relative' }}>
@@ -681,6 +672,7 @@ export default function ComposePage() {
   const { selectedGroup } = useContext(DashboardContext)
   const [profiles, setProfiles] = useState([])
   const [loadingProfiles, setLoadingProfiles] = useState(false)
+  const [refreshingProfiles, setRefreshingProfiles] = useState(false)
   const [postBody, setPostBody] = useState('')
   const [selectedProfileIds, setSelectedProfileIds] = useState([])
   const [placements, setPlacements] = useState({})
@@ -695,18 +687,40 @@ export default function ComposePage() {
   const [expandedParams, setExpandedParams] = useState({})
 
   const fetchProfiles = useCallback(async (groupId) => {
-    setLoadingProfiles(true)
     const res = await fetch(`/api/profiles?groupId=${groupId}`)
     const data = await res.json()
-    setProfiles(Array.isArray(data) ? data : [])
-    setLoadingProfiles(false)
+    return Array.isArray(data) ? data : []
   }, [])
 
+  // Only fires when selectedGroup changes — no polling
   useEffect(() => {
     if (!selectedGroup) return
-    setProfiles([]); setSelectedProfileIds([]); setPlacements({}); setLoadedPlacements({}); setPlatformParams({}); setExpandedParams({}); setPostMsg({ type:'', text:'' })
+    setProfiles([])
+    setSelectedProfileIds([])
+    setPlacements({})
+    setLoadedPlacements({})
+    setPlatformParams({})
+    setExpandedParams({})
+    setPostMsg({ type:'', text:'' })
+    setLoadingProfiles(true)
     fetchProfiles(selectedGroup.id)
+      .then(data => setProfiles(data))
+      .finally(() => setLoadingProfiles(false))
   }, [selectedGroup?.id])
+
+  // Manual refresh — only triggered by button click
+  async function handleRefreshProfiles() {
+    if (!selectedGroup || refreshingProfiles) return
+    setRefreshingProfiles(true)
+    try {
+      const data = await fetchProfiles(selectedGroup.id)
+      setProfiles(data)
+      // Clear selections that no longer exist
+      setSelectedProfileIds(prev => prev.filter(id => data.find(p => p.id === id)))
+    } finally {
+      setRefreshingProfiles(false)
+    }
+  }
 
   function toggleProfile(profileId) {
     setSelectedProfileIds(prev => {
@@ -799,6 +813,33 @@ export default function ComposePage() {
 
   const selectedProfileObjects = selectedProfileIds.map(pid => profiles.find(p => p.id === pid)).filter(Boolean)
 
+  // Refresh button shown in the POST TO section header
+  const refreshProfilesBtn = (
+    <button
+      type="button"
+      onClick={handleRefreshProfiles}
+      disabled={refreshingProfiles || loadingProfiles}
+      style={{
+        display:'flex', alignItems:'center', gap:5,
+        padding:'4px 10px', borderRadius:8,
+        background:'rgba(255,255,255,0.04)',
+        border:'1px solid rgba(255,255,255,0.08)',
+        color: refreshingProfiles ? 'rgba(255,215,0,0.6)' : 'rgba(240,237,232,0.3)',
+        fontSize:11, fontWeight:600, fontFamily:'inherit',
+        cursor: refreshingProfiles || loadingProfiles ? 'not-allowed' : 'pointer',
+        opacity: refreshingProfiles || loadingProfiles ? 0.6 : 1,
+        transition:'all 0.15s',
+      }}
+    >
+      <span style={{
+        display:'inline-block', fontSize:12,
+        animation: refreshingProfiles ? 'spin 0.7s linear infinite' : 'none',
+        transformOrigin:'center',
+      }}>↻</span>
+      {refreshingProfiles ? 'Refreshing…' : 'Refresh'}
+    </button>
+  )
+
   return (
     <div style={{ animation:'fadeIn 0.25s ease' }}>
       <style>{`
@@ -850,7 +891,11 @@ export default function ComposePage() {
             <MediaUploader files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} />
           </SectionCard>
 
-          <SectionCard title="POST TO" hint={selectedProfileIds.length > 0 ? `${selectedProfileIds.length} selected` : undefined}>
+          <SectionCard
+            title="POST TO"
+            hint={selectedProfileIds.length > 0 ? `${selectedProfileIds.length} selected` : undefined}
+            headerRight={refreshProfilesBtn}
+          >
             {loadingProfiles ? (
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>{[1,2,3].map(i => <div key={i} className="sk" style={{ height:54, borderRadius:10 }} />)}</div>
             ) : profiles.length === 0 ? (

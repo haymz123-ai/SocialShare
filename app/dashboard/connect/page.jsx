@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect, useContext, useCallback } from 'react'
@@ -32,6 +31,7 @@ export default function ConnectPage() {
     setLoadingProfiles(false)
   }, [])
 
+  // Only fetch once on group change, no polling
   useEffect(() => {
     if (!selectedGroup) return
     setProfiles([])
@@ -97,6 +97,8 @@ export default function ConnectPage() {
         .prow:hover .disc-btn { opacity: 1; }
         .conn-btn { transition: all 0.2s ease; }
         .conn-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .refresh-btn-connect { transition: all 0.15s ease; }
+        .refresh-btn-connect:hover { border-color: rgba(255,215,0,0.2) !important; color: rgba(255,215,0,0.6) !important; background: rgba(255,215,0,0.04) !important; }
       `}</style>
 
       <div style={{ marginBottom: 28 }}>
@@ -179,7 +181,13 @@ export default function ConnectPage() {
               <h2 style={{ fontSize: 15, fontWeight: 700, color: '#F0EDE8', margin: '0 0 3px', fontFamily: "'Syne', sans-serif" }}>Connected Accounts</h2>
               <p style={{ fontSize: 12, color: 'rgba(240,237,232,0.25)', margin: 0 }}>{profiles.length} account{profiles.length !== 1 ? 's' : ''} linked</p>
             </div>
-            <button onClick={() => fetchProfiles(selectedGroup.id)} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, padding: '7px 12px', fontSize: 12, color: 'rgba(240,237,232,0.35)', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}>↻ Refresh</button>
+            <button
+              className="refresh-btn-connect"
+              onClick={() => fetchProfiles(selectedGroup.id)}
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8, padding: '7px 12px', fontSize: 12, color: 'rgba(240,237,232,0.35)', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6 }}
+            >
+              ↻ Refresh
+            </button>
           </div>
 
           {loadingProfiles ? (
