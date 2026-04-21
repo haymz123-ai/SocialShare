@@ -1,6 +1,25 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { Syne, Playfair_Display } from "next/font/google";
+
+// Configure fonts with Next.js font system
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  preload: true,
+  variable: "--font-syne",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  preload: true,
+  variable: "--font-playfair",
+});
 
 const NAV_LINKS = ["Features", "How It Works", "Pricing", "Testimonials"];
 
@@ -58,7 +77,6 @@ const TESTIMONIALS = [
 ];
 
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   ::-webkit-scrollbar { width: 4px; }
@@ -67,9 +85,9 @@ const CSS = `
   .glow-text { background: linear-gradient(135deg, #FFD700 0%, #FF6B6B 50%, #4ECDC4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .card-hover { transition: transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease; }
   .card-hover:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 24px 60px rgba(255,215,0,0.12); }
-  .btn-primary { background: linear-gradient(135deg, #FFD700, #FF8C42); color: #05050A; font-weight: 700; font-family: 'Syne', sans-serif; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.02em; }
+  .btn-primary { background: linear-gradient(135deg, #FFD700, #FF8C42); color: #05050A; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.02em; }
   .btn-primary:hover { transform: scale(1.04); box-shadow: 0 12px 40px rgba(255,215,0,0.4); }
-  .btn-ghost { background: transparent; color: #F0EDE8; font-weight: 600; font-family: 'Syne', sans-serif; border: 1.5px solid rgba(240,237,232,0.25); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .btn-ghost { background: transparent; color: #F0EDE8; font-weight: 600; border: 1.5px solid rgba(240,237,232,0.25); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
   .btn-ghost:hover { border-color: #FFD700; background: rgba(255,215,0,0.06); }
   .platform-pill { transition: transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, filter 0.25s; }
   .platform-pill:hover { transform: scale(1.1) translateY(-3px); filter: brightness(1.2); }
@@ -106,10 +124,22 @@ export default function LandingPage() {
   const [selectedPlatforms, setSelectedPlatforms] = useState([0,1,2,3,4,5]);
   const [postText, setPostText] = useState("🚀 Excited to share our latest update! We've been working hard on something special...");
   const [scheduleTime, setScheduleTime] = useState("Today, 3:00 PM");
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setWindowWidth(window.innerWidth);
+    
+    // Ensure fonts are loaded before removing loading state
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        setFontsLoaded(true);
+      });
+    } else {
+      // Fallback for browsers that don't support document.fonts
+      setTimeout(() => setFontsLoaded(true), 100);
+    }
+    
     const handleScroll = () => setScrollY(window.scrollY);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("scroll", handleScroll);
@@ -148,8 +178,30 @@ export default function LandingPage() {
   };
 
   return (
-    <div style={{ background: "#05050A", color: "#F0EDE8", fontFamily: "'Syne', sans-serif", overflowX: "hidden" }}>
+    <div className={`${syne.variable} ${playfair.variable}`} style={{ 
+      background: "#05050A", 
+      color: "#F0EDE8", 
+      fontFamily: fontsLoaded ? "var(--font-syne), 'Syne', sans-serif" : "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      overflowX: "hidden" 
+    }}>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      
+      {/* Additional font style overrides to ensure proper application */}
+      <style jsx global>{`
+        h1, h2, h3, h4, .playfair-text {
+          font-family: var(--font-playfair), 'Playfair Display', Georgia, serif !important;
+        }
+        
+        body, button, p, div:not([class*="playfair"]) {
+          font-family: var(--font-syne), 'Syne', sans-serif;
+        }
+        
+        /* Smooth font loading transition */
+        .fonts-loaded * {
+          transition: font-family 0.1s ease;
+        }
+      `}</style>
+      
       <div className="noise-overlay" />
 
       {/* NAV */}
@@ -164,8 +216,12 @@ export default function LandingPage() {
           ))}
         </div>
         <div className="hide-mobile" style={{ display: "flex", gap: 12 }}>
+          <Link href='/dashboard'>
           <button className="btn-ghost" style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14 }}>Log In</button>
+          </Link>
+          <Link href='/dashboard'>
           <button className="btn-primary" style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14 }}>Start Free →</button>
+          </Link>
         </div>
       </nav>
 
@@ -180,20 +236,20 @@ export default function LandingPage() {
           NOW SUPPORTING 8+ PLATFORMS
         </div>
 
-        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(44px, 7.5vw, 92px)", lineHeight: 0.95, letterSpacing: "-0.03em", textAlign: "center", maxWidth: 960, marginBottom: 26, animation: "fadeSlideUp 0.7s ease 0.1s both forwards" }}>
+        <h1 style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(44px, 7.5vw, 92px)", lineHeight: 0.95, letterSpacing: "-0.03em", textAlign: "center", maxWidth: 960, marginBottom: 26, animation: "fadeSlideUp 0.7s ease 0.1s both forwards" }}>
           All Your Social.<br />
-          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+          <span style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
             <span className="glow-text">One Click</span>
           </span>
-          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700 }}> Away.</span>
+          <span style={{ fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif", fontWeight: 700 }}> Away.</span>
         </h1>
 
-        <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(16px, 2vw, 20px)", color: "rgba(240,237,232,0.5)", maxWidth: 520, textAlign: "center", lineHeight: 1.65, marginBottom: 44, animation: "fadeSlideUp 0.7s ease 0.2s both forwards" }}>
+        <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(16px, 2vw, 20px)", color: "rgba(240,237,232,0.5)", maxWidth: 520, textAlign: "center", lineHeight: 1.65, marginBottom: 44, animation: "fadeSlideUp 0.7s ease 0.2s both forwards" }}>
           Connect every social account, create once, and schedule everywhere — in the time it takes to make coffee.
         </p>
 
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", animation: "fadeSlideUp 0.7s ease 0.3s both forwards" }}>
-          <Link href="/connection">
+          <Link href="/dashboard">
             <button className="btn-primary" style={{ padding: "16px 36px", borderRadius: 14, fontSize: 16 }}>Start Posting Free — No Card Needed</button>
           </Link>
           <button className="btn-ghost" style={{ padding: "16px 28px", borderRadius: 14, fontSize: 16 }}>▶ Watch Demo</button>
@@ -325,9 +381,9 @@ export default function LandingPage() {
         <div style={{ position: "absolute", top: "30%", right: 0, width: 300, height: 600, background: "radial-gradient(circle, rgba(255,107,107,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <div style={{ display: "inline-block", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#4ECDC4", marginBottom: 16 }}>WHAT MAKES US DIFFERENT</div>
-          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "var(--font-playfair), 'Playfair Display', serif" }}>
             Built for creators who<br />
-            <span className="glow-text" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>mean business</span>
+            <span className="glow-text" style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>mean business</span>
           </h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, maxWidth: 1100, margin: "0 auto" }}>
@@ -349,8 +405,8 @@ export default function LandingPage() {
 
         <div style={{ textAlign: "center", marginBottom: 80, position: "relative" }}>
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#FFD700", marginBottom: 12 }}>THE PROCESS</div>
-          <h2 style={{ fontSize: "clamp(32px, 5vw, 64px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.0, fontFamily: "'Playfair Display', serif", marginBottom: 16 }}>From zero to everywhere</h2>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(18px, 2.5vw, 24px)", color: "rgba(240,237,232,0.35)" }}>in three effortless moves</p>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 64px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.0, fontFamily: "var(--font-playfair), 'Playfair Display', serif", marginBottom: 16 }}>From zero to everywhere</h2>
+          <p style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(18px, 2.5vw, 24px)", color: "rgba(240,237,232,0.35)" }}>in three effortless moves</p>
         </div>
 
         <div style={{ maxWidth: 1100, margin: "0 auto 80px", position: "relative" }}>
@@ -584,9 +640,9 @@ export default function LandingPage() {
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, background: "radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none" }} />
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#FF6B6B", marginBottom: 16 }}>PRICING PLANS</div>
-          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "var(--font-playfair), 'Playfair Display', serif" }}>
             Simple, honest pricing.<br />
-            <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>No hidden surprises.</span>
+            <span style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>No hidden surprises.</span>
           </h2>
         </div>
         <div style={{ display: "flex", gap: 24, maxWidth: 1000, margin: "0 auto", alignItems: "stretch", flexWrap: "wrap", justifyContent: "center" }}>
@@ -615,16 +671,16 @@ export default function LandingPage() {
       <section id="testimonials" style={{ padding: "120px 5%", background: "rgba(255,255,255,0.015)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#4ECDC4", marginBottom: 16 }}>LOVED BY CREATORS</div>
-          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "var(--font-playfair), 'Playfair Display', serif" }}>
             Don't take our word for it.<br />
-            <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>Take theirs.</span>
+            <span style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>Take theirs.</span>
           </h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, maxWidth: 1000, margin: "0 auto" }}>
           {TESTIMONIALS.map(t => (
             <div key={t.name} className="card-hover" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: 32, position: "relative" }}>
-              <div style={{ fontSize: 52, lineHeight: 1, color: t.color, opacity: 0.25, fontFamily: "Georgia, serif", marginBottom: 8 }}>"</div>
-              <p style={{ fontSize: 16, fontFamily: "'Playfair Display', serif", fontStyle: "italic", color: "rgba(240,237,232,0.75)", lineHeight: 1.65, marginBottom: 24 }}>{t.quote}</p>
+              <div style={{ fontSize: 52, lineHeight: 1, color: t.color, opacity: 0.25, fontFamily: "var(--font-playfair), Georgia, serif", marginBottom: 8 }}>"</div>
+              <p style={{ fontSize: 16, fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", color: "rgba(240,237,232,0.75)", lineHeight: 1.65, marginBottom: 24 }}>{t.quote}</p>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 14, background: t.color + "33", border: `1.5px solid ${t.color}60`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, color: t.color }}>{t.avatar}</div>
                 <div>
@@ -641,11 +697,11 @@ export default function LandingPage() {
       <section style={{ padding: "120px 5%", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "-30%", left: "-10%", width: "120%", height: "160%", background: "radial-gradient(ellipse at center, rgba(255,215,0,0.07) 0%, transparent 65%)", pointerEvents: "none" }} />
         <div style={{ position: "relative", maxWidth: 720, margin: "0 auto", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,215,0,0.14)", borderRadius: 32, padding: "72px 48px", backdropFilter: "blur(20px)" }}>
-          <div style={{ fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 24, fontFamily: "'Playfair Display', serif" }}>
+          <div style={{ fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 24, fontFamily: "var(--font-playfair), 'Playfair Display', serif" }}>
             Ready to post<br />
-            <span className="glow-text" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>like a pro?</span>
+            <span className="glow-text" style={{ fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>like a pro?</span>
           </div>
-          <p style={{ fontSize: 18, color: "rgba(240,237,232,0.5)", fontFamily: "'Playfair Display', serif", fontStyle: "italic", marginBottom: 40, lineHeight: 1.5 }}>
+          <p style={{ fontSize: 18, color: "rgba(240,237,232,0.5)", fontFamily: "var(--font-playfair), 'Playfair Display', serif", fontStyle: "italic", marginBottom: 40, lineHeight: 1.5 }}>
             Join 500,000+ creators who've already made the switch. Free forever, no credit card needed.
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>

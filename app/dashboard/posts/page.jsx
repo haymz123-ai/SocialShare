@@ -40,6 +40,12 @@ const PLATFORM_FORMATS = {
   pinterest: [{ value:'pin',  label:'Pin',    icon:'📌' }],
 }
 
+// Default platform params — ensures required fields are always sent
+const PLATFORM_DEFAULTS = {
+  youtube: { privacy_status: 'public' },
+  tiktok:  { privacy_status: 'PUBLIC_TO_EVERYONE' },
+}
+
 const TIKTOK_PRIVACY = [
   { value:'PUBLIC_TO_EVERYONE',    label:'Everyone' },
   { value:'MUTUAL_FOLLOW_FRIENDS', label:'Mutual Followers' },
@@ -51,12 +57,23 @@ const STATUS_CONFIG = {
   published:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
   processed:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
   scheduled:  { bg:'rgba(96,165,250,0.1)',   color:'#60a5fa', border:'rgba(96,165,250,0.2)',   dot:'#60a5fa',  calColor:'#2563eb' },
+  // pending = draft not yet processed — treat visually as draft
+  pending:    { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
   draft:      { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
   failed:     { bg:'rgba(248,113,113,0.1)',  color:'#f87171', border:'rgba(248,113,113,0.2)',  dot:'#f87171',  calColor:'#dc2626' },
   processing: { bg:'rgba(167,139,250,0.12)', color:'#a78bfa', border:'rgba(167,139,250,0.2)',  dot:'#a78bfa',  calColor:'#7c3aed' },
 }
 
-// ─── helpers ──────────────────────────────────────────────────────────────────
+// A post is editable if it's a draft (by flag OR by status name) or scheduled
+function isPostEditable(post) {
+  return post.draft === true || post.status === 'draft' || post.status === 'pending' || post.status === 'scheduled'
+}
+
+// Normalize display status: pending+draft => "draft"
+function displayStatus(post) {
+  if ((post.status === 'pending' || post.status === 'processing') && post.draft) return 'draft'
+  return post.status
+}
 
 function getNowLocalISO() {
   const now = new Date()
@@ -69,7 +86,6 @@ function isDateInPast(dateStr) {
   return new Date(dateStr) < new Date()
 }
 
-// Returns true if a calendar day (year, month 0-indexed, day) is strictly before today
 function isDayInPast(year, month, day) {
   const today = new Date()
   today.setHours(0,0,0,0)
@@ -77,19 +93,78 @@ function isDayInPast(year, month, day) {
   return d < today
 }
 
+// ─── Delete Confirm Modal ──────────────────────────────────────────────────────
+
+function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleDelete() {
+    setDeleting(true)
+    setError('')
+    try {
+      const res = await fetch(`/api/posts/${post.id}?groupId=${groupId}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || 'Delete failed'); return }
+      onDeleted()
+    } catch { setError('Network error') }
+    finally { setDeleting(false) }
+  }
+
+  const ds = displayStatus(post)
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:1100, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.15s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:420, background:'#0d0d1c', border:'1px solid rgba(248,113,113,0.22)', borderRadius:20, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
+        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:13, background:'linear-gradient(135deg,rgba(248,113,113,0.05),transparent)' }}>
+          <div style={{ width:38, height:38, borderRadius:12, background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17, flexShrink:0 }}>🗑</div>
+          <div>
+            <h2 style={{ fontSize:15, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>Delete {ds === 'draft' ? 'Draft' : ds === 'scheduled' ? 'Scheduled Post' : 'Post'}</h2>
+            <div style={{ fontSize:11, color:'rgba(248,113,113,0.55)', marginTop:2 }}>This action cannot be undone</div>
+          </div>
+        </div>
+        <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:14 }}>
+          <div style={{ padding:'13px 15px', borderRadius:12, background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)' }}>
+            <p style={{ fontSize:13, color:'rgba(240,237,232,0.65)', margin:'0 0 8px', lineHeight:1.55 }}>
+              {post.body ? <>"{post.body.slice(0, 80)}{post.body.length > 80 ? '…' : ''}"</> : <em style={{ color:'rgba(240,237,232,0.3)' }}>Media-only post</em>}
+            </p>
+            {post.scheduled_at && (
+              <div style={{ fontSize:11, color:'rgba(96,165,250,0.6)', display:'flex', alignItems:'center', gap:5 }}>
+                <span>⏰</span> Scheduled for {new Date(post.scheduled_at).toLocaleString()}
+              </div>
+            )}
+          </div>
+          <p style={{ fontSize:13, color:'rgba(240,237,232,0.45)', margin:0, lineHeight:1.6 }}>
+            This will permanently delete this post from Postproxy. It will not be published.
+          </p>
+          {error && (
+            <div style={{ padding:'10px 13px', borderRadius:10, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:7 }}>
+              <span>⚠</span> {error}
+            </div>
+          )}
+        </div>
+        <div style={{ padding:'14px 24px 20px', display:'flex', gap:9, justifyContent:'flex-end' }}>
+          <button onClick={onClose} style={{ padding:'9px 18px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+          <button onClick={handleDelete} disabled={deleting} style={{ padding:'9px 22px', borderRadius:10, background:'linear-gradient(135deg,rgba(248,113,113,0.2),rgba(220,38,38,0.15))', border:'1px solid rgba(248,113,113,0.35)', color:'#f87171', fontSize:13, fontWeight:700, cursor:deleting?'not-allowed':'pointer', fontFamily:'inherit', opacity:deleting?0.6:1, display:'flex', alignItems:'center', gap:7 }}>
+            {deleting ? <><span style={{ width:12, height:12, border:'2px solid rgba(248,113,113,0.2)', borderTop:'2px solid #f87171', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Deleting…</> : '🗑 Delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── sub-components ───────────────────────────────────────────────────────────
 
-function StatusBadge({ status }) {
-  const st = STATUS_CONFIG[status] || STATUS_CONFIG.processing
+function StatusBadge({ status, isDraft }) {
+  // Normalize: pending+draft => show as draft
+  const effectiveStatus = (status === 'pending' && isDraft) ? 'draft' : status
+  const st = STATUS_CONFIG[effectiveStatus] || STATUS_CONFIG.processing
+  const label = effectiveStatus === 'pending' && !isDraft ? 'pending' : effectiveStatus
   return (
-    <span style={{
-      display:'inline-flex', alignItems:'center', gap:5,
-      fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:100,
-      background:st.bg, color:st.color, border:`1px solid ${st.border}`,
-      letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap',
-    }}>
+    <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:100, background:st.bg, color:st.color, border:`1px solid ${st.border}`, letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
       <span style={{ width:4, height:4, borderRadius:'50%', background:st.dot, flexShrink:0 }} />
-      {status}
+      {label}
     </span>
   )
 }
@@ -107,12 +182,7 @@ function InputRow({ label, placeholder, value, onChange }) {
 function CheckRow({ label, checked, onChange }) {
   return (
     <label style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer' }}>
-      <div onClick={() => onChange(!checked)} style={{
-        width:16, height:16, borderRadius:5, flexShrink:0,
-        border:`2px solid ${checked ? '#a78bfa' : 'rgba(255,255,255,0.18)'}`,
-        background: checked ? 'rgba(167,139,250,0.2)' : 'transparent',
-        display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#a78bfa',
-      }}>{checked ? '✓' : ''}</div>
+      <div onClick={() => onChange(!checked)} style={{ width:16, height:16, borderRadius:5, flexShrink:0, border:`2px solid ${checked ? '#a78bfa' : 'rgba(255,255,255,0.18)'}`, background: checked ? 'rgba(167,139,250,0.2)' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#a78bfa' }}>{checked ? '✓' : ''}</div>
       <span style={{ fontSize:12, color:'rgba(240,237,232,0.45)' }}>{label}</span>
     </label>
   )
@@ -131,13 +201,7 @@ function PlatformParamsEditor({ platform, params, onChange }) {
           <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(255,255,255,0.22)', marginBottom:6 }}>FORMAT</div>
           <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
             {formats.map(f => (
-              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{
-                padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600,
-                background: currentFormat===f.value ? info.color+'18' : 'rgba(255,255,255,0.03)',
-                border:`1px solid ${currentFormat===f.value ? info.color+'50' : 'rgba(255,255,255,0.08)'}`,
-                color: currentFormat===f.value ? info.color : 'rgba(240,237,232,0.35)',
-                cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4,
-              }}>{f.icon} {f.label}</button>
+              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{ padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600, background: currentFormat===f.value ? info.color+'18' : 'rgba(255,255,255,0.03)', border:`1px solid ${currentFormat===f.value ? info.color+'50' : 'rgba(255,255,255,0.08)'}`, color: currentFormat===f.value ? info.color : 'rgba(240,237,232,0.35)', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>{f.icon} {f.label}</button>
             ))}
           </div>
         </div>
@@ -204,21 +268,11 @@ function MediaInput({ files, urls, onFilesChange, onUrlsChange, label='MEDIA' })
       <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:8 }}>{label}</label>
       <div style={{ display:'flex', gap:4, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:9, padding:3, marginBottom:10, width:'fit-content' }}>
         {[{id:'upload',label:'⬆ Files'},{id:'url',label:'🔗 URL'}].map(t => (
-          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{
-            padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600,
-            background: tab===t.id ? 'rgba(167,139,250,0.12)' : 'transparent',
-            border: tab===t.id ? '1px solid rgba(167,139,250,0.25)' : '1px solid transparent',
-            color: tab===t.id ? '#a78bfa' : 'rgba(240,237,232,0.3)',
-            cursor:'pointer', fontFamily:'inherit',
-          }}>{t.label}</button>
+          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600, background: tab===t.id ? 'rgba(167,139,250,0.12)' : 'transparent', border: tab===t.id ? '1px solid rgba(167,139,250,0.25)' : '1px solid transparent', color: tab===t.id ? '#a78bfa' : 'rgba(240,237,232,0.3)', cursor:'pointer', fontFamily:'inherit' }}>{t.label}</button>
         ))}
       </div>
       {tab==='upload' ? (<>
-        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{
-          border:`2px dashed ${dragging?'rgba(167,139,250,0.5)':'rgba(255,255,255,0.09)'}`,
-          borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer',
-          background:dragging?'rgba(167,139,250,0.06)':'rgba(255,255,255,0.015)', transition:'all 0.2s',
-        }}>
+        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{ border:`2px dashed ${dragging?'rgba(167,139,250,0.5)':'rgba(255,255,255,0.09)'}`, borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer', background:dragging?'rgba(167,139,250,0.06)':'rgba(255,255,255,0.015)', transition:'all 0.2s' }}>
           <input ref={inputRef} type="file" accept={ACCEPT} multiple onChange={handleFileInput} style={{ display:'none' }} />
           <div style={{ fontSize:22, marginBottom:7, opacity:0.35 }}>🖼</div>
           <div style={{ fontSize:12, color:'rgba(240,237,232,0.38)' }}>Drop files or click to browse</div>
@@ -344,11 +398,7 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
             const isExpanded = expandedParams[profile.id]
             const pp = (platformParams||{})[profile.id] || {}
             return (
-              <div key={profile.id} style={{
-                borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'45' : 'rgba(255,255,255,0.06)'}`,
-                background: isSelected ? info.color+'07' : 'rgba(255,255,255,0.02)',
-                overflow:'hidden', opacity:inactive?0.45:1, transition:'border-color 0.15s, background 0.15s',
-              }}>
+              <div key={profile.id} style={{ borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'45' : 'rgba(255,255,255,0.06)'}`, background: isSelected ? info.color+'07' : 'rgba(255,255,255,0.02)', overflow:'hidden', opacity:inactive?0.45:1, transition:'border-color 0.15s, background 0.15s' }}>
                 <div onClick={() => !inactive && onToggle(profile.id)} style={{ display:'flex', alignItems:'center', gap:11, padding:'11px 13px', cursor:inactive?'not-allowed':'pointer' }}>
                   <div style={{ width:19, height:19, borderRadius:6, flexShrink:0, border:`2px solid ${isSelected?info.color:'rgba(255,255,255,0.15)'}`, background:isSelected?info.color:'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#080810', fontWeight:900, transition:'all 0.15s' }}>{isSelected?'✓':''}</div>
                   <div style={{ width:33, height:33, borderRadius:10, flexShrink:0, background:info.color+'14', border:`1px solid ${info.color}28`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:800, color:info.color }}>{info.label.slice(0,2).toUpperCase()}</div>
@@ -395,6 +445,28 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
   )
 }
 
+// KEY FIX: when toggling a profile ON, seed platform defaults so required params are always present
+function toggleProfileWithDefaults(profileId, profiles, setSelectedProfileIds, setPlacements, setLoadedPlacements, setPlatformParams) {
+  const profile = profiles.find(p => p.id === profileId)
+  setSelectedProfileIds(prev => {
+    if (prev.includes(profileId)) {
+      // removing — clean up
+      setPlacements(p => { const n={...p}; delete n[profileId]; return n })
+      setLoadedPlacements(p => { const n={...p}; delete n[profileId]; return n })
+      setPlatformParams(p => { const n={...p}; delete n[profileId]; return n })
+      return prev.filter(id => id !== profileId)
+    }
+    // adding — seed defaults
+    if (profile && PLATFORM_DEFAULTS[profile.platform]) {
+      setPlatformParams(p => ({
+        ...p,
+        [profileId]: { ...PLATFORM_DEFAULTS[profile.platform], ...(p[profileId] || {}) }
+      }))
+    }
+    return [...prev, profileId]
+  })
+}
+
 // ─── Schedule Modal ────────────────────────────────────────────────────────────
 
 function ScheduleModal({ date, groupId, onClose, onSaved }) {
@@ -411,12 +483,10 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
   const [saving, setSaving]                 = useState(false)
   const [error, setError]                   = useState('')
 
-  // Default time: next hour of selected date — but if the day is today and that time is in the past, push forward
   const defaultDt = (() => {
     const d = new Date(date)
     const now = new Date()
     d.setHours(now.getHours() + 1, 0, 0, 0)
-    // If the computed time is in the past (edge: same day, late night), round up to now+5min
     if (d < now) {
       now.setMinutes(now.getMinutes() + 5, 0, 0)
       return now.toISOString().slice(0,16)
@@ -424,8 +494,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
     return d.toISOString().slice(0,16)
   })()
   const [scheduledAt, setScheduledAt] = useState(defaultDt)
-
-  // Minimum datetime string for the datetime-local input
   const minDateTime = getNowLocalISO()
 
   useEffect(() => {
@@ -437,15 +505,14 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
   }, [groupId])
 
   function toggleProfile(profileId, forceRemove=false) {
-    setSelectedProfileIds(prev => {
-      if (forceRemove || prev.includes(profileId)) {
-        setPlacements(p => { const n={...p}; delete n[profileId]; return n })
-        setLoadedPlacements(p => { const n={...p}; delete n[profileId]; return n })
-        setPlatformParams(p => { const n={...p}; delete n[profileId]; return n })
-        return prev.filter(id => id!==profileId)
-      }
-      return [...prev, profileId]
-    })
+    if (forceRemove) {
+      setPlacements(p => { const n={...p}; delete n[profileId]; return n })
+      setLoadedPlacements(p => { const n={...p}; delete n[profileId]; return n })
+      setPlatformParams(p => { const n={...p}; delete n[profileId]; return n })
+      setSelectedProfileIds(prev => prev.filter(id => id !== profileId))
+      return
+    }
+    toggleProfileWithDefaults(profileId, profiles, setSelectedProfileIds, setPlacements, setLoadedPlacements, setPlatformParams)
   }
 
   function resolvePlacementId(pid) {
@@ -456,7 +523,8 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
     const result = {}
     selectedProfileIds.forEach(pid => {
       const profile = profiles.find(p => p.id===pid); if (!profile) return
-      const pp = platformParams[pid] || {}
+      const defaults = PLATFORM_DEFAULTS[profile.platform] || {}
+      const pp = { ...defaults, ...(platformParams[pid] || {}) }
       const placementId = resolvePlacementId(pid)
       const entry = { ...pp }
       if (profile.platform==='facebook' && placementId) entry.page_id = placementId
@@ -488,7 +556,7 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
         urlList.forEach(u => fd.append('media[]', u))
         Object.entries(platformsPayload).forEach(([plat, pp]) => {
           Object.entries(pp).forEach(([k,v]) => {
-            if (v!==undefined && v!=='') fd.append(`platforms[${plat}][${k}]`, String(v))
+            if (v !== undefined && v !== '') fd.append(`platforms[${plat}][${k}]`, String(v))
           })
         })
         const res = await fetch('/api/posts', { method:'POST', body:fd })
@@ -512,7 +580,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
   return (
     <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div style={{ width:'100%', maxWidth:620, background:'#0d0d1c', border:'1px solid rgba(96,165,250,0.18)', borderRadius:24, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
-        {/* Header */}
         <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,rgba(96,165,250,0.05),transparent)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
             <div style={{ width:36, height:36, borderRadius:11, background:'rgba(96,165,250,0.12)', border:'1px solid rgba(96,165,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>⏰</div>
@@ -525,7 +592,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
         </div>
 
         <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
-          {/* Content */}
           <div>
             <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CONTENT</label>
             <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="What do you want to share?" rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, color:'#E8E4DF', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
@@ -543,7 +609,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
             onPlatformParamChange={(pid,pp)=>setPlatformParams(p=>({...p,[pid]:pp}))}
           />
 
-          {/* Date & Time with past-time guard */}
           <div>
             <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>DATE & TIME</label>
             <div style={{ position:'relative' }}>
@@ -553,12 +618,8 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
                 min={minDateTime}
                 onChange={e => {
                   const val = e.target.value
-                  if (val && isDateInPast(val)) {
-                    setError('You cannot schedule a post in the past.')
-                  } else {
-                    setError('')
-                    setScheduledAt(val)
-                  }
+                  if (val && isDateInPast(val)) { setError('You cannot schedule a post in the past.') }
+                  else { setError(''); setScheduledAt(val) }
                 }}
                 disabled={isDraft}
                 style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:isDraft?'rgba(255,255,255,0.01)':'rgba(255,255,255,0.03)', border:`1px solid ${scheduledAt && isDateInPast(scheduledAt) && !isDraft ? 'rgba(248,113,113,0.4)' : 'rgba(255,255,255,0.08)'}`, borderRadius:12, color:isDraft?'rgba(240,237,232,0.22)':'#E8E4DF', fontSize:13, fontFamily:'inherit', colorScheme:'dark', outline:'none', cursor:isDraft?'not-allowed':'text', transition:'all 0.2s' }}
@@ -566,15 +627,12 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
               {!isDraft && scheduledAt && !isDateInPast(scheduledAt) && (
                 <div style={{ marginTop:6, display:'flex', alignItems:'center', gap:5 }}>
                   <span style={{ width:5, height:5, borderRadius:'50%', background:'#4ade80' }} />
-                  <span style={{ fontSize:11, color:'rgba(74,222,128,0.7)' }}>
-                    Scheduled for {new Date(scheduledAt).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
-                  </span>
+                  <span style={{ fontSize:11, color:'rgba(74,222,128,0.7)' }}>Scheduled for {new Date(scheduledAt).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Draft toggle */}
           <div style={{ padding:'13px 16px', borderRadius:13, background:isDraft?'rgba(167,139,250,0.05)':'rgba(255,255,255,0.02)', border:`1px solid ${isDraft?'rgba(167,139,250,0.15)':'rgba(255,255,255,0.06)'}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, cursor:'pointer', transition:'all 0.2s' }} onClick={()=>setIsDraft(v=>!v)}>
             <div>
               <div style={{ fontSize:12, fontWeight:600, color:isDraft?'rgba(167,139,250,0.8)':'rgba(255,255,255,0.4)', marginBottom:2 }}>Save as Draft</div>
@@ -592,7 +650,6 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
           )}
         </div>
 
-        {/* Footer */}
         <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', gap:10, justifyContent:'flex-end', background:'rgba(0,0,0,0.25)' }}>
           <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
           <button onClick={handleSave} disabled={saving || (!isDraft && scheduledAt && isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: isDraft ? 'linear-gradient(135deg,rgba(167,139,250,0.2),rgba(139,92,246,0.12))' : scheduledAt ? 'linear-gradient(135deg,#4facfe,#00f2fe)' : 'linear-gradient(135deg,#4ade80,#16a34a)', border: isDraft ? '1px solid rgba(167,139,250,0.3)' : 'none', color: isDraft ? '#a78bfa' : '#08080F', fontSize:13, fontWeight:700, cursor:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s' }}>
@@ -606,7 +663,7 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
 
 // ─── Edit Modal ────────────────────────────────────────────────────────────────
 
-function EditModal({ post, groupId, onClose, onSaved }) {
+function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
   const [body, setBody]                     = useState(post.body||'')
   const [scheduledAt, setScheduledAt]       = useState(post.scheduled_at ? new Date(post.scheduled_at).toISOString().slice(0,16) : '')
   const [mediaFiles, setMediaFiles]         = useState([])
@@ -616,13 +673,14 @@ function EditModal({ post, groupId, onClose, onSaved }) {
   const [error, setError]                   = useState('')
   const [profiles, setProfiles]             = useState([])
   const [loadingProfiles, setLoadingProfiles] = useState(true)
-  const [selectedProfileIds, setSelectedProfileIds] = useState((post.platforms||[]).map(pl=>pl.profile_id).filter(Boolean))
+  const [selectedProfileIds, setSelectedProfileIds] = useState([])
   const [placements, setPlacements]         = useState({})
   const [loadedPlacements, setLoadedPlacements] = useState({})
   const [platformParams, setPlatformParams] = useState({})
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  const isDraft     = post.status==='draft'
-  const isScheduled = post.status==='scheduled'
+  const isDraft     = post.draft === true || post.status === 'draft' || post.status === 'pending'
+  const isScheduled = post.status === 'scheduled'
   const minDateTime = getNowLocalISO()
 
   useEffect(() => {
@@ -639,8 +697,9 @@ function EditModal({ post, groupId, onClose, onSaved }) {
           matchedIds.forEach(pid => {
             const profile = list.find(p=>p.id===pid)
             if (!profile) return
+            const defaults = PLATFORM_DEFAULTS[profile.platform] || {}
             const existingPl = post.platforms.find(pl=>pl.platform===profile.platform)
-            if (existingPl?.params) initParams[pid] = existingPl.params
+            initParams[pid] = { ...defaults, ...(existingPl?.params || {}) }
           })
           setPlatformParams(initParams)
         }
@@ -650,15 +709,14 @@ function EditModal({ post, groupId, onClose, onSaved }) {
   }, [groupId])
 
   function toggleProfile(profileId, forceRemove=false) {
-    setSelectedProfileIds(prev => {
-      if (forceRemove || prev.includes(profileId)) {
-        setPlacements(p=>{const n={...p};delete n[profileId];return n})
-        setLoadedPlacements(p=>{const n={...p};delete n[profileId];return n})
-        setPlatformParams(p=>{const n={...p};delete n[profileId];return n})
-        return prev.filter(id=>id!==profileId)
-      }
-      return [...prev, profileId]
-    })
+    if (forceRemove) {
+      setPlacements(p=>{const n={...p};delete n[profileId];return n})
+      setLoadedPlacements(p=>{const n={...p};delete n[profileId];return n})
+      setPlatformParams(p=>{const n={...p};delete n[profileId];return n})
+      setSelectedProfileIds(prev=>prev.filter(id=>id!==profileId))
+      return
+    }
+    toggleProfileWithDefaults(profileId, profiles, setSelectedProfileIds, setPlacements, setLoadedPlacements, setPlatformParams)
   }
 
   function resolvePlacementId(pid) {
@@ -669,7 +727,8 @@ function EditModal({ post, groupId, onClose, onSaved }) {
     const result = {}
     selectedProfileIds.forEach(pid => {
       const profile = profiles.find(p=>p.id===pid); if (!profile) return
-      const pp = platformParams[pid]||{}
+      const defaults = PLATFORM_DEFAULTS[profile.platform] || {}
+      const pp = { ...defaults, ...(platformParams[pid]||{}) }
       const placementId = resolvePlacementId(pid)
       const entry = { ...pp }
       if (profile.platform==='facebook' && placementId) entry.page_id = placementId
@@ -729,108 +788,119 @@ function EditModal({ post, groupId, onClose, onSaved }) {
     finally { setSaving(false) }
   }
 
+  const ds = displayStatus(post)
+
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:640, background:'#0d0d1c', border:'1px solid rgba(167,139,250,0.18)', borderRadius:24, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
-        <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,rgba(167,139,250,0.05),transparent)' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:36, height:36, borderRadius:11, background:'rgba(167,139,250,0.12)', border:'1px solid rgba(167,139,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
-            <div>
-              <h2 style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
-              <div style={{ marginTop:3 }}><StatusBadge status={post.status} /></div>
-            </div>
-          </div>
-          <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
-        </div>
-
-        <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
-          <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CONTENT</label>
-            <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, color:'#E8E4DF', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
-          </div>
-
-          <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} label="MEDIA — replaces existing" />
-
-          {post.media?.length > 0 && (
-            <div>
-              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
-              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                {post.media.map((m,i) => (
-                  <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', display:'flex', alignItems:'center', gap:6 }}>
-                    <span style={{ fontSize:12 }}>🖼</span>
-                    <span>{m.content_type||'media'}</span>
-                    <StatusBadge status={m.status} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <ProfileSelector
-            profiles={profiles} loadingProfiles={loadingProfiles}
-            selectedProfileIds={selectedProfileIds} onToggle={toggleProfile}
-            placements={placements} onPlacementChange={(pid,val)=>setPlacements(p=>({...p,[pid]:val}))}
-            loadedPlacements={loadedPlacements} onPlacementLoaded={(pid,list)=>setLoadedPlacements(p=>({...p,[pid]:list}))}
-            groupId={groupId} accentColor="#a78bfa"
-            platformParams={platformParams}
-            onPlatformParamChange={(pid,pp)=>setPlatformParams(p=>({...p,[pid]:pp}))}
-          />
-
-          <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>
-              SCHEDULE {isScheduled && <span style={{ fontWeight:400, color:'rgba(255,255,255,0.18)', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
-            </label>
-            <input
-              type="datetime-local"
-              value={scheduledAt}
-              min={minDateTime}
-              onChange={e => {
-                const val = e.target.value
-                if (val && isDateInPast(val)) {
-                  setError('You cannot schedule a post in the past.')
-                } else {
-                  setError(prev => prev.includes('past') ? '' : prev)
-                  setScheduledAt(val)
-                }
-              }}
-              disabled={publishNow}
-              style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'rgba(255,255,255,0.01)':'rgba(255,255,255,0.03)', border:`1px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'rgba(248,113,113,0.4)':'rgba(255,255,255,0.08)'}`, borderRadius:12, color:publishNow?'rgba(240,237,232,0.22)':'#E8E4DF', fontSize:13, fontFamily:'inherit', colorScheme:'dark', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
-            />
-          </div>
-
-          {isDraft && (
-            <div style={{ padding:'13px 16px', borderRadius:13, background:'rgba(74,222,128,0.04)', border:'1px solid rgba(74,222,128,0.12)', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+    <>
+      {showDeleteConfirm && (
+        <DeleteConfirmModal
+          post={post}
+          groupId={groupId}
+          onClose={() => setShowDeleteConfirm(false)}
+          onDeleted={() => { setShowDeleteConfirm(false); onDelete() }}
+        />
+      )}
+      <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+        <div style={{ width:'100%', maxWidth:640, background:'#0d0d1c', border:'1px solid rgba(167,139,250,0.18)', borderRadius:24, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
+          <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,rgba(167,139,250,0.05),transparent)' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:36, height:36, borderRadius:11, background:'rgba(167,139,250,0.12)', border:'1px solid rgba(167,139,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
               <div>
-                <div style={{ fontSize:12, fontWeight:600, color:'rgba(74,222,128,0.75)', marginBottom:2 }}>Publish after saving?</div>
-                <div style={{ fontSize:11, color:'rgba(255,255,255,0.22)' }}>Will publish immediately to all selected platforms</div>
-              </div>
-              <div onClick={()=>setPublishNow(v=>!v)} style={{ width:38, height:22, borderRadius:100, cursor:'pointer', background:publishNow?'rgba(74,222,128,0.3)':'rgba(255,255,255,0.08)', border:`1px solid ${publishNow?'rgba(74,222,128,0.5)':'rgba(255,255,255,0.12)'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
-                <div style={{ position:'absolute', top:3, left:publishNow?17:3, width:14, height:14, borderRadius:'50%', background:publishNow?'#4ade80':'rgba(255,255,255,0.3)', transition:'all 0.2s' }} />
+                <h2 style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
+                <div style={{ marginTop:3 }}><StatusBadge status={post.status} isDraft={post.draft} /></div>
               </div>
             </div>
-          )}
-
-          {error && (
-            <div style={{ padding:'11px 14px', borderRadius:11, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ fontSize:14 }}>⚠</span> {error}
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding:'6px 13px', borderRadius:9, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'rgba(248,113,113,0.7)', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>🗑 Delete</button>
+              <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', gap:10, justifyContent:'flex-end', background:'rgba(0,0,0,0.25)' }}>
-          <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-          <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#4facfe,#00f2fe)':'linear-gradient(135deg,#a78bfa,#7c3aed)', border:'none', color:'#08080F', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s' }}>
-            {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(0,0,0,0.2)', borderTop:'2px solid rgba(0,0,0,0.7)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : publishNow ? '⚡ Save & Publish' : scheduledAt ? '⏰ Save & Schedule' : '✓ Save Changes'}
-          </button>
+          <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
+            <div>
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CONTENT</label>
+              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, color:'#E8E4DF', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+            </div>
+
+            <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} label="MEDIA — replaces existing" />
+
+            {post.media?.length > 0 && (
+              <div>
+                <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
+                <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+                  {post.media.map((m,i) => (
+                    <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', display:'flex', alignItems:'center', gap:6 }}>
+                      <span style={{ fontSize:12 }}>🖼</span>
+                      <span>{m.content_type||'media'}</span>
+                      <StatusBadge status={m.status} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <ProfileSelector
+              profiles={profiles} loadingProfiles={loadingProfiles}
+              selectedProfileIds={selectedProfileIds} onToggle={toggleProfile}
+              placements={placements} onPlacementChange={(pid,val)=>setPlacements(p=>({...p,[pid]:val}))}
+              loadedPlacements={loadedPlacements} onPlacementLoaded={(pid,list)=>setLoadedPlacements(p=>({...p,[pid]:list}))}
+              groupId={groupId} accentColor="#a78bfa"
+              platformParams={platformParams}
+              onPlatformParamChange={(pid,pp)=>setPlatformParams(p=>({...p,[pid]:pp}))}
+            />
+
+            <div>
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>
+                SCHEDULE {isScheduled && post.scheduled_at && <span style={{ fontWeight:400, color:'rgba(255,255,255,0.18)', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
+              </label>
+              <input
+                type="datetime-local"
+                value={scheduledAt}
+                min={minDateTime}
+                onChange={e => {
+                  const val = e.target.value
+                  if (val && isDateInPast(val)) { setError('You cannot schedule a post in the past.') }
+                  else { setError(prev => prev.includes('past') ? '' : prev); setScheduledAt(val) }
+                }}
+                disabled={publishNow}
+                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'rgba(255,255,255,0.01)':'rgba(255,255,255,0.03)', border:`1px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'rgba(248,113,113,0.4)':'rgba(255,255,255,0.08)'}`, borderRadius:12, color:publishNow?'rgba(240,237,232,0.22)':'#E8E4DF', fontSize:13, fontFamily:'inherit', colorScheme:'dark', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
+              />
+            </div>
+
+            {isDraft && (
+              <div style={{ padding:'13px 16px', borderRadius:13, background:'rgba(74,222,128,0.04)', border:'1px solid rgba(74,222,128,0.12)', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+                <div>
+                  <div style={{ fontSize:12, fontWeight:600, color:'rgba(74,222,128,0.75)', marginBottom:2 }}>Publish after saving?</div>
+                  <div style={{ fontSize:11, color:'rgba(255,255,255,0.22)' }}>Will publish immediately to all selected platforms</div>
+                </div>
+                <div onClick={()=>setPublishNow(v=>!v)} style={{ width:38, height:22, borderRadius:100, cursor:'pointer', background:publishNow?'rgba(74,222,128,0.3)':'rgba(255,255,255,0.08)', border:`1px solid ${publishNow?'rgba(74,222,128,0.5)':'rgba(255,255,255,0.12)'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
+                  <div style={{ position:'absolute', top:3, left:publishNow?17:3, width:14, height:14, borderRadius:'50%', background:publishNow?'#4ade80':'rgba(255,255,255,0.3)', transition:'all 0.2s' }} />
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div style={{ padding:'11px 14px', borderRadius:11, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:8 }}>
+                <span style={{ fontSize:14 }}>⚠</span> {error}
+              </div>
+            )}
+          </div>
+
+          <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', gap:10, justifyContent:'flex-end', background:'rgba(0,0,0,0.25)' }}>
+            <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#4facfe,#00f2fe)':'linear-gradient(135deg,#a78bfa,#7c3aed)', border:'none', color:'#08080F', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s' }}>
+              {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(0,0,0,0.2)', borderTop:'2px solid rgba(0,0,0,0.7)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : publishNow ? '⚡ Save & Publish' : scheduledAt ? '⏰ Save & Schedule' : '✓ Save Changes'}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 // ─── Day Panel ─────────────────────────────────────────────────────────────────
 
-function DayPanel({ date, posts, onClose, onEdit, onSchedule, isPast }) {
+function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }) {
   const label = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
   return (
     <div style={{ position:'fixed', inset:0, zIndex:900, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end', justifyContent:'center' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -864,7 +934,7 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, isPast }) {
               }
             </div>
           ) : posts.map(post => {
-            const canEdit = post.status==='draft' || post.status==='scheduled'
+            const canEdit = isPostEditable(post)
             return (
               <div key={post.id} style={{ padding:'14px 16px', borderRadius:14, background:'rgba(255,255,255,0.025)', border:'1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:10 }}>
@@ -872,8 +942,13 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, isPast }) {
                     {post.body || <em style={{ color:'rgba(240,237,232,0.25)' }}>Media-only post</em>}
                   </p>
                   <div style={{ display:'flex', gap:7, alignItems:'center', flexShrink:0 }}>
-                    <StatusBadge status={post.status} />
-                    {canEdit && <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>}
+                    <StatusBadge status={post.status} isDraft={post.draft} />
+                    {canEdit && (
+                      <>
+                        <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={()=>onDelete(post)} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.18)', color:'rgba(248,113,113,0.7)', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
+                      </>
+                    )}
                   </div>
                 </div>
                 {post.platforms?.length>0 && (
@@ -901,7 +976,7 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, isPast }) {
 
 // ─── Calendar View ─────────────────────────────────────────────────────────────
 
-function CalendarView({ posts, onEdit, onSchedule }) {
+function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
   const today = new Date()
   const [calYear, setCalYear]   = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
@@ -927,7 +1002,6 @@ function CalendarView({ posts, onEdit, onSchedule }) {
   function prevMonth() { if (calMonth===0) { setCalYear(y=>y-1); setCalMonth(11) } else setCalMonth(m=>m-1) }
   function nextMonth() { if (calMonth===11) { setCalYear(y=>y+1); setCalMonth(0) } else setCalMonth(m=>m+1) }
 
-  // Prevent navigating to months fully in the past (before current month)
   const canGoPrev = !(calYear===today.getFullYear() && calMonth===today.getMonth())
 
   const cells = []
@@ -943,33 +1017,28 @@ function CalendarView({ posts, onEdit, onSchedule }) {
           onClose={()=>setDayPanel(null)}
           onEdit={onEdit}
           onSchedule={(date)=>{setDayPanel(null);onSchedule(date)}}
+          onDelete={(post)=>{setDayPanel(null);onDelete(post)}}
           isPast={isDayInPast(calYear, calMonth, dayPanel)}
         />
       )}
       <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, overflow:'hidden' }}>
-        {/* Calendar header */}
         <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(255,255,255,0.01)' }}>
           <button onClick={prevMonth} disabled={!canGoPrev} style={{ width:34, height:34, borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:canGoPrev?'rgba(240,237,232,0.5)':'rgba(255,255,255,0.15)', cursor:canGoPrev?'pointer':'not-allowed', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
           <div style={{ textAlign:'center' }}>
             <div style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', fontFamily:"'Syne',sans-serif" }}>{MONTH_NAMES[calMonth]} {calYear}</div>
             <div style={{ fontSize:10, color:'rgba(255,255,255,0.25)', marginTop:2 }}>
-              {posts.filter(p=>{
-                const d=p.scheduled_at?new Date(p.scheduled_at):null
-                return d && d.getMonth()===calMonth && d.getFullYear()===calYear
-              }).length} posts this month
+              {posts.filter(p=>{ const d=p.scheduled_at?new Date(p.scheduled_at):null; return d && d.getMonth()===calMonth && d.getFullYear()===calYear }).length} posts this month
             </div>
           </div>
           <button onClick={nextMonth} style={{ width:34, height:34, borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.5)', cursor:'pointer', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
         </div>
 
-        {/* Day names */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderBottom:'1px solid rgba(255,255,255,0.04)', background:'rgba(255,255,255,0.01)' }}>
           {DAY_NAMES.map(d => (
             <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:10, fontWeight:700, letterSpacing:'0.06em', color:'rgba(255,255,255,0.22)' }}>{d}</div>
           ))}
         </div>
 
-        {/* Day cells */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)' }}>
           {cells.map((day, idx) => {
             if (!day) return <div key={`e-${idx}`} style={{ minHeight:82, borderRight:'1px solid rgba(255,255,255,0.03)', borderBottom:'1px solid rgba(255,255,255,0.03)' }} />
@@ -983,36 +1052,20 @@ function CalendarView({ posts, onEdit, onSchedule }) {
                 key={day}
                 onClick={() => setDayPanel(day)}
                 className={past ? 'cal-day-past' : 'cal-day-hover'}
-                style={{
-                  minHeight:82, padding:'8px 6px',
-                  borderRight:'1px solid rgba(255,255,255,0.03)', borderBottom:'1px solid rgba(255,255,255,0.03)',
-                  cursor:'pointer',
-                  background: isToday ? 'rgba(96,165,250,0.06)' : past ? 'rgba(0,0,0,0.15)' : 'transparent',
-                  position:'relative', transition:'background 0.15s',
-                  opacity: past && dayPosts.length===0 ? 0.45 : 1,
-                }}
+                style={{ minHeight:82, padding:'8px 6px', borderRight:'1px solid rgba(255,255,255,0.03)', borderBottom:'1px solid rgba(255,255,255,0.03)', cursor:'pointer', background: isToday ? 'rgba(96,165,250,0.06)' : past ? 'rgba(0,0,0,0.15)' : 'transparent', position:'relative', transition:'background 0.15s', opacity: past && dayPosts.length===0 ? 0.45 : 1 }}
               >
-                <div style={{
-                  width:24, height:24, borderRadius:'50%', marginBottom:5,
-                  background: isToday ? 'rgba(96,165,250,0.22)' : 'transparent',
-                  border: isToday ? '1.5px solid rgba(96,165,250,0.45)' : '1.5px solid transparent',
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  fontSize:11, fontWeight:isToday?700:500,
-                  color: isToday ? '#60a5fa' : past ? 'rgba(240,237,232,0.22)' : 'rgba(240,237,232,0.5)',
-                }}>{day}</div>
+                <div style={{ width:24, height:24, borderRadius:'50%', marginBottom:5, background: isToday ? 'rgba(96,165,250,0.22)' : 'transparent', border: isToday ? '1.5px solid rgba(96,165,250,0.45)' : '1.5px solid transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:isToday?700:500, color: isToday ? '#60a5fa' : past ? 'rgba(240,237,232,0.22)' : 'rgba(240,237,232,0.5)' }}>{day}</div>
 
-                {/* Past indicator (no posts, no add hint) */}
                 {past && dayPosts.length===0 && (
                   <div style={{ position:'absolute', bottom:6, right:6, width:14, height:14, borderRadius:'50%', background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.15)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'rgba(248,113,113,0.4)' }}>✕</div>
                 )}
-
-                {/* Add hint for future empty days */}
                 {!past && dayPosts.length===0 && (
                   <div className="cal-add-hint" style={{ position:'absolute', bottom:6, right:6, width:16, height:16, borderRadius:'50%', background:'rgba(96,165,250,0.1)', border:'1px solid rgba(96,165,250,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:'rgba(96,165,250,0.5)', opacity:0, transition:'opacity 0.15s' }}>+</div>
                 )}
 
                 {dayPosts.slice(0,3).map((post,i) => {
-                  const cfg = STATUS_CONFIG[post.status] || STATUS_CONFIG.processing
+                  const ds = displayStatus(post)
+                  const cfg = STATUS_CONFIG[ds] || STATUS_CONFIG.processing
                   const short = (post.body||'Media').slice(0,16)
                   return (
                     <div key={i} style={{ marginBottom:2, padding:'2px 5px', borderRadius:4, background:cfg.calColor+'1a', borderLeft:`2px solid ${cfg.calColor}`, fontSize:9, color:cfg.color, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', lineHeight:1.5 }}>
@@ -1026,7 +1079,6 @@ function CalendarView({ posts, onEdit, onSchedule }) {
           })}
         </div>
 
-        {/* Legend */}
         <div style={{ padding:'12px 22px', borderTop:'1px solid rgba(255,255,255,0.04)', display:'flex', gap:16, flexWrap:'wrap', alignItems:'center', background:'rgba(255,255,255,0.01)' }}>
           {[
             { label:'Published', color:STATUS_CONFIG.published.calColor },
@@ -1052,18 +1104,21 @@ function CalendarView({ posts, onEdit, onSchedule }) {
 
 // ─── List View ─────────────────────────────────────────────────────────────────
 
-function ListView({ posts, onEdit }) {
+function ListView({ posts, onEdit, onDelete }) {
   const [filter, setFilter]     = useState('all')
   const [expanded, setExpanded] = useState(null)
-  const filtered = filter==='all' ? posts : posts.filter(p=>p.status===filter)
-  const statuses = ['all', ...new Set(posts.map(p=>p.status))]
+
+  // Normalize pending+draft to "draft" for filtering purposes
+  const normalizedPosts = posts.map(p => ({ ...p, _displayStatus: displayStatus(p) }))
+  const statuses = ['all', ...new Set(normalizedPosts.map(p => p._displayStatus))]
+  const filtered = filter==='all' ? normalizedPosts : normalizedPosts.filter(p => p._displayStatus === filter)
 
   return (
     <div>
       {statuses.length > 1 && (
         <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginBottom:16 }}>
           {statuses.map(s => {
-            const cnt = s==='all' ? posts.length : posts.filter(p=>p.status===s).length
+            const cnt = s==='all' ? normalizedPosts.length : normalizedPosts.filter(p=>p._displayStatus===s).length
             return (
               <button key={s} onClick={()=>setFilter(s)} style={{ padding:'5px 13px', borderRadius:100, background:filter===s?'rgba(167,139,250,0.1)':'rgba(255,255,255,0.03)', border:`1px solid ${filter===s?'rgba(167,139,250,0.28)':'rgba(255,255,255,0.07)'}`, color:filter===s?'#a78bfa':'rgba(240,237,232,0.38)', fontSize:11, fontWeight:600, cursor:'pointer', fontFamily:'inherit', textTransform:'capitalize', letterSpacing:'0.02em' }}>
                 {s==='all'?'All':s} <span style={{ opacity:0.6 }}>({cnt})</span>
@@ -1081,8 +1136,9 @@ function ListView({ posts, onEdit }) {
           </div>
         ) : filtered.map(post => {
           const isExp   = expanded===post.id
-          const canEdit = post.status==='draft' || post.status==='scheduled'
-          const cfg     = STATUS_CONFIG[post.status] || STATUS_CONFIG.processing
+          const canEdit = isPostEditable(post)
+          const ds      = post._displayStatus
+          const cfg     = STATUS_CONFIG[ds] || STATUS_CONFIG.processing
           return (
             <div key={post.id} style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s' }}>
               <div onClick={()=>setExpanded(isExp?null:post.id)} style={{ padding:'14px 18px', cursor:'pointer', display:'flex', flexDirection:'column', gap:10 }}>
@@ -1095,8 +1151,13 @@ function ListView({ posts, onEdit }) {
                     {post.media?.length>0 && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:5 }}><span style={{ fontSize:10, color:'rgba(255,255,255,0.28)' }}>🖼</span><span style={{ fontSize:10, color:'rgba(255,255,255,0.28)' }}>{post.media.length} media</span></div>}
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:7, flexShrink:0 }}>
-                    <StatusBadge status={post.status} />
-                    {canEdit && <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>}
+                    <StatusBadge status={post.status} isDraft={post.draft} />
+                    {canEdit && (
+                      <>
+                        <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={e=>{e.stopPropagation();onDelete(post)}} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.18)', color:'rgba(248,113,113,0.7)', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
+                      </>
+                    )}
                     <span style={{ fontSize:11, color:'rgba(240,237,232,0.2)', transform:isExp?'rotate(180deg)':'none', transition:'transform 0.2s', lineHeight:1 }}>▾</span>
                   </div>
                 </div>
@@ -1126,7 +1187,7 @@ function ListView({ posts, onEdit }) {
               {isExp && (
                 <div style={{ borderTop:'1px solid rgba(255,255,255,0.05)', padding:'12px 18px', background:'rgba(255,255,255,0.01)', display:'flex', gap:24, flexWrap:'wrap', animation:'fadeIn 0.15s ease' }}>
                   {[
-                    { label:'STATUS',    content:<StatusBadge status={post.status} /> },
+                    { label:'STATUS',    content:<StatusBadge status={post.status} isDraft={post.draft} /> },
                     post.scheduled_at && { label:'SCHEDULED', content:<span style={{ fontSize:12, color:'#60a5fa' }}>{new Date(post.scheduled_at).toLocaleString()}</span> },
                     post.created_at   && { label:'CREATED',   content:<span style={{ fontSize:12, color:'rgba(240,237,232,0.38)' }}>{new Date(post.created_at).toLocaleString()}</span> },
                   ].filter(Boolean).map((item,i) => (
@@ -1153,6 +1214,7 @@ export default function PostsPage() {
   const [loading, setLoading]           = useState(false)
   const [editPost, setEditPost]         = useState(null)
   const [scheduleDate, setScheduleDate] = useState(null)
+  const [deletePost, setDeletePost]     = useState(null)
   const [view, setView]                 = useState('calendar')
 
   const fetchPosts = useCallback(async (groupId) => {
@@ -1171,9 +1233,14 @@ export default function PostsPage() {
 
   if (!selectedGroup) return null
 
-  const draftCount     = posts.filter(p=>p.status==='draft').length
-  const scheduledCount = posts.filter(p=>p.status==='scheduled').length
-  const publishedCount = posts.filter(p=>p.status==='published'||p.status==='processed').length
+  const draftCount     = posts.filter(p => p.draft === true || p.status === 'draft' || p.status === 'pending').length
+  const scheduledCount = posts.filter(p => p.status === 'scheduled').length
+  const publishedCount = posts.filter(p => p.status === 'published' || p.status === 'processed').length
+
+  function handleDeletePost(post) {
+    setEditPost(null)
+    setDeletePost(post)
+  }
 
   return (
     <div style={{ animation:'fadeIn 0.25s ease' }}>
@@ -1191,10 +1258,32 @@ export default function PostsPage() {
         .vtab:hover { color:rgba(167,139,250,0.8) !important; }
       `}</style>
 
-      {editPost && <EditModal post={editPost} groupId={selectedGroup.id} onClose={()=>setEditPost(null)} onSaved={()=>{setEditPost(null);fetchPosts(selectedGroup.id)}} />}
-      {scheduleDate && <ScheduleModal date={scheduleDate} groupId={selectedGroup.id} onClose={()=>setScheduleDate(null)} onSaved={()=>{setScheduleDate(null);fetchPosts(selectedGroup.id)}} />}
+      {editPost && (
+        <EditModal
+          post={editPost}
+          groupId={selectedGroup.id}
+          onClose={()=>setEditPost(null)}
+          onSaved={()=>{setEditPost(null);fetchPosts(selectedGroup.id)}}
+          onDelete={handleDeletePost}
+        />
+      )}
+      {scheduleDate && (
+        <ScheduleModal
+          date={scheduleDate}
+          groupId={selectedGroup.id}
+          onClose={()=>setScheduleDate(null)}
+          onSaved={()=>{setScheduleDate(null);fetchPosts(selectedGroup.id)}}
+        />
+      )}
+      {deletePost && (
+        <DeleteConfirmModal
+          post={deletePost}
+          groupId={selectedGroup.id}
+          onClose={()=>setDeletePost(null)}
+          onDeleted={()=>{setDeletePost(null);fetchPosts(selectedGroup.id)}}
+        />
+      )}
 
-      {/* Page header */}
       <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:14 }}>
         <div>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:5 }}>
@@ -1217,7 +1306,6 @@ export default function PostsPage() {
         </div>
       </div>
 
-      {/* Stats row */}
       {!loading && posts.length>0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:22 }}>
           {[
@@ -1239,9 +1327,9 @@ export default function PostsPage() {
           <div className="sk" style={{ height:440, borderRadius:20 }} />
         </div>
       ) : view==='calendar' ? (
-        <CalendarView posts={posts} onEdit={setEditPost} onSchedule={(date)=>setScheduleDate(date)} />
+        <CalendarView posts={posts} onEdit={setEditPost} onSchedule={(date)=>setScheduleDate(date)} onDelete={handleDeletePost} />
       ) : (
-        <ListView posts={posts} onEdit={setEditPost} />
+        <ListView posts={posts} onEdit={setEditPost} onDelete={handleDeletePost} />
       )}
     </div>
   )

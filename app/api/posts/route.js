@@ -1,3 +1,4 @@
+// api/posts
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../lib/supabase'
@@ -138,3 +139,5 @@ export async function GET(req) {
   const ppData = await ppRes.json()
   return NextResponse.json(ppData)
 }
+
+

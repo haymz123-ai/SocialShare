@@ -1,4 +1,3 @@
-// api/profiles
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../lib/supabase'
@@ -22,14 +21,12 @@ export async function GET(req) {
 
   if (!group) return NextResponse.json({ error: 'Group not found' }, { status: 404 })
 
-  const ppRes = await fetch(
-    `${PP_BASE}/profiles?profile_group_id=${group.postproxy_group_id}`,
-    { headers: { Authorization: `Bearer ${PP_KEY}` } }
-  )
-
+  const ppRes = await fetch(`${PP_BASE}/profiles?profile_group_id=${group.postproxy_group_id}`, {
+    headers: { Authorization: `Bearer ${PP_KEY}` },
+  })
   const ppData = await ppRes.json()
-  if (!ppRes.ok) return NextResponse.json({ error: ppData.error || 'Postproxy error' }, { status: ppRes.status })
-  return NextResponse.json(Array.isArray(ppData) ? ppData : (ppData.data || []))
+  if (!ppRes.ok) return NextResponse.json({ error: ppData.error || 'Error' }, { status: ppRes.status })
+  return NextResponse.json(Array.isArray(ppData) ? ppData : ppData.data || [])
 }
 
 export async function DELETE(req) {
@@ -49,15 +46,15 @@ export async function DELETE(req) {
 
   if (!group) return NextResponse.json({ error: 'Group not found' }, { status: 404 })
 
-  const ppRes = await fetch(`${PP_BASE}/profiles/${profileId}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${PP_KEY}` },
-  })
+  const ppRes = await fetch(
+    `${PP_BASE}/profiles/${profileId}?profile_group_id=${group.postproxy_group_id}`,
+    {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${PP_KEY}` },
+    }
+  )
 
-  if (!ppRes.ok) {
-    const ppData = await ppRes.json().catch(() => ({}))
-    return NextResponse.json({ error: ppData.error || 'Delete failed' }, { status: ppRes.status })
-  }
-
-  return NextResponse.json({ success: true })
+  const ppData = await ppRes.json()
+  if (!ppRes.ok) return NextResponse.json({ error: ppData.error || 'Delete failed' }, { status: ppRes.status })
+  return NextResponse.json(ppData)
 }

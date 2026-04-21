@@ -1,3 +1,4 @@
+// api/posts/[id]
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../../lib/supabase'
@@ -155,3 +156,4 @@ export async function DELETE(req, { params }) {
   if (!ppRes.ok) return NextResponse.json({ error: ppData.error || 'Delete failed' }, { status: ppRes.status })
   return NextResponse.json(ppData)
 }
+

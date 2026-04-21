@@ -6,7 +6,7 @@ import React from 'react';
 
 
 const siteConfig = {
-  name: 'LexAI',
+  name: 'SyncPost - Schdule your post',
   description: 'AI-powered chat and analysis platform for seamless interaction and information processing',
   keywords: ['AI', 'chat', 'analysis', 'machine learning', 'artificial intelligence'],
   authors: [{ name: ' Team' }],
