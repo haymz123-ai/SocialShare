@@ -221,9 +221,13 @@ function CheckRow({ label, checked, onChange }) {
   )
 }
 
+
+
 // ── Live Preview Panel ────────────────────────────────────────────────────────
 function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformParams }) {
   const [activeId, setActiveId] = useState(null)
+  // Track object URLs so we can revoke them on cleanup
+  const objectUrlsRef = useRef([])
 
   useEffect(() => {
     if (profiles.length > 0 && (!activeId || !profiles.find(p => p.id === activeId))) {
@@ -231,6 +235,19 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
     }
     if (profiles.length === 0) setActiveId(null)
   }, [profiles.map(p => p.id).join(',')])
+
+  // Clean up object URLs on unmount
+  useEffect(() => {
+    return () => {
+      objectUrlsRef.current.forEach(url => URL.revokeObjectURL(url))
+    }
+  }, [])
+
+  function getObjectUrl(file) {
+    const url = URL.createObjectURL(file)
+    objectUrlsRef.current.push(url)
+    return url
+  }
 
   const urlList = mediaUrls.split('\n').map(s => s.trim()).filter(Boolean)
   const firstFile = mediaFiles[0] || null
@@ -259,6 +276,23 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
         </div>
       </div>
     )
+  }
+
+  // Shared video renderer used across platform previews
+  function renderVideoOrImage({ wrapperStyle, imgStyle, videoStyle }) {
+    if (!hasMedia) return null
+    if (isVideo) {
+      return (
+        <video
+          src={previewUrl}
+          controls
+          playsInline
+          preload="metadata"
+          style={{ display:'block', background:'#000', ...videoStyle }}
+        />
+      )
+    }
+    return <img src={previewUrl} alt="" style={{ display:'block', ...imgStyle }} />
   }
 
   return (
@@ -307,18 +341,27 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                   <span style={{ fontSize:18, color:'rgba(255,255,255,0.25)', letterSpacing:1 }}>···</span>
                 </div>
                 {hasMedia ? (
-                  <div style={{ position:'relative', width:'100%', paddingTop: isStory ? '160%' : '100%', background:'#0a0a18', overflow:'hidden' }}>
+                  <div style={{ position:'relative', width:'100%', background:'#0a0a18', overflow:'hidden' }}>
                     {isVideo ? (
-                      <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:8 }}>
-                        <div style={{ width:52, height:52, borderRadius:'50%', background:'rgba(255,255,255,0.1)', border:'2px solid rgba(255,255,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                          <span style={{ fontSize:18, marginLeft:3 }}>▶</span>
-                        </div>
-                        <span style={{ fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:'0.08em' }}>VIDEO</span>
-                      </div>
+                      <video
+                        src={previewUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{
+                          width:'100%',
+                          maxHeight: isStory ? 480 : 320,
+                          objectFit:'cover',
+                          display:'block',
+                          background:'#000',
+                        }}
+                      />
                     ) : (
-                      <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+                      <div style={{ position:'relative', paddingTop: isStory ? '160%' : '100%' }}>
+                        <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+                      </div>
                     )}
-                    {isReel && (
+                    {isReel && !isVideo && (
                       <div style={{ position:'absolute', bottom:10, right:10, display:'flex', flexDirection:'column', gap:16, alignItems:'center' }}>
                         {['♥','💬','↗','⋯'].map((ic,i) => (
                           <div key={i} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
@@ -328,7 +371,7 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                         ))}
                       </div>
                     )}
-                    {mediaCount > 1 && !isReel && (
+                    {mediaCount > 1 && !isReel && !isVideo && (
                       <div style={{ position:'absolute', top:10, right:10, background:'rgba(0,0,0,0.6)', borderRadius:12, padding:'3px 9px', fontSize:10, color:'#fff', fontWeight:700 }}>1/{mediaCount}</div>
                     )}
                   </div>
@@ -383,13 +426,17 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                     {hasMedia && (
                       <div style={{ borderRadius:12, overflow:'hidden', marginBottom:12, border:'1px solid rgba(255,255,255,0.1)' }}>
                         {isVideo ? (
-                          <div style={{ height:140, background:'#000', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                            <span style={{ fontSize:32, opacity:.5 }}>▶</span>
-                          </div>
+                          <video
+                            src={previewUrl}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            style={{ width:'100%', maxHeight:200, objectFit:'cover', display:'block', background:'#000' }}
+                          />
                         ) : (
                           <img src={previewUrl} alt="" style={{ width:'100%', maxHeight:200, objectFit:'cover', display:'block' }} />
                         )}
-                        {mediaCount > 1 && (
+                        {mediaCount > 1 && !isVideo && (
                           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:1, marginTop:1 }}>
                             {Array.from({length:Math.min(mediaCount - 1, 3)}).map((_,i) => (
                               <div key={i} style={{ height:60, background:'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'rgba(255,255,255,0.2)' }}>+{i+2}</div>
@@ -428,9 +475,13 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                 {hasMedia && (
                   <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)' }}>
                     {isVideo ? (
-                      <div style={{ height:160, background:'#000', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ fontSize:36, opacity:.5 }}>▶</span>
-                      </div>
+                      <video
+                        src={previewUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{ width:'100%', maxHeight:220, objectFit:'cover', display:'block', background:'#000' }}
+                      />
                     ) : (
                       <img src={previewUrl} alt="" style={{ width:'100%', maxHeight:220, objectFit:'cover', display:'block' }} />
                     )}
@@ -449,21 +500,32 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
 
             {platform === 'tiktok' && (
               <div style={{ background:'#000', borderRadius:20, border:`1px solid ${info.color}20`, overflow:'hidden', boxShadow:`0 0 40px ${info.color}12` }}>
-                <div style={{ position:'relative', paddingTop:'160%', background:'#111' }}>
-                  {hasMedia && !isVideo && previewUrl && (
-                    <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
-                  )}
-                  {(!hasMedia || isVideo) && (
-                    <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(to bottom, #1a0010, #000)' }}>
-                      <div style={{ width:60, height:60, borderRadius:'50%', border:`2px solid ${info.color}60`, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ fontSize:20, marginLeft:4 }}>▶</span>
+                <div style={{ position:'relative', background:'#111' }}>
+                  {hasMedia && isVideo ? (
+                    <video
+                      src={previewUrl}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      style={{ width:'100%', maxHeight:480, objectFit:'cover', display:'block', background:'#000' }}
+                    />
+                  ) : hasMedia && !isVideo && previewUrl ? (
+                    <div style={{ position:'relative', paddingTop:'160%' }}>
+                      <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+                    </div>
+                  ) : (
+                    <div style={{ paddingTop:'160%', position:'relative', background:'linear-gradient(to bottom, #1a0010, #000)' }}>
+                      <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <div style={{ width:60, height:60, borderRadius:'50%', border:`2px solid ${info.color}60`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                          <span style={{ fontSize:20, marginLeft:4 }}>▶</span>
+                        </div>
                       </div>
                     </div>
                   )}
-                  <div style={{ position:'absolute', top:10, right:10 }}>
+                  <div style={{ position:'absolute', top:10, right:10, zIndex:2 }}>
                     <div style={{ width:30, height:30, borderRadius:'50%', background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#fff' }}>✕</div>
                   </div>
-                  <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'16px 12px 18px', background:'linear-gradient(transparent,rgba(0,0,0,0.9))' }}>
+                  <div style={{ padding:'12px', background:'linear-gradient(transparent,rgba(0,0,0,0.85))', position: hasMedia && isVideo ? 'relative' : 'absolute', bottom:0, left:0, right:0 }}>
                     <div style={{ display:'flex', alignItems:'flex-end', gap:10 }}>
                       <div style={{ flex:1 }}>
                         <div style={{ fontSize:12, fontWeight:700, color:'#fff', marginBottom:4 }}>@yourusername</div>
@@ -490,20 +552,31 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
 
             {platform === 'youtube' && (
               <div style={{ background:'#0f0f0f', borderRadius:14, border:'1px solid rgba(255,255,255,0.06)', overflow:'hidden', boxShadow:'0 0 40px rgba(255,0,0,0.08)' }}>
-                <div style={{ position:'relative', paddingTop:'56.25%', background:'#1a1a1a' }}>
-                  {hasMedia && !isVideo && previewUrl ? (
-                    <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+                <div style={{ position:'relative', background:'#1a1a1a' }}>
+                  {hasMedia && isVideo ? (
+                    <video
+                      src={previewUrl}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      style={{ width:'100%', maxHeight:200, objectFit:'cover', display:'block', background:'#000' }}
+                    />
+                  ) : hasMedia && !isVideo && previewUrl ? (
+                    <div style={{ position:'relative', paddingTop:'56.25%' }}>
+                      <img src={previewUrl} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+                    </div>
                   ) : (
-                    <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg,#1a0000,#0f0f0f)' }}>
-                      <div style={{ width:56, height:56, borderRadius:14, background:'#FF0000', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ fontSize:22, marginLeft:4 }}>▶</span>
+                    <div style={{ position:'relative', paddingTop:'56.25%', background:'linear-gradient(135deg,#1a0000,#0f0f0f)' }}>
+                      <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <div style={{ width:56, height:56, borderRadius:14, background:'#FF0000', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                          <span style={{ fontSize:22, marginLeft:4 }}>▶</span>
+                        </div>
                       </div>
                     </div>
                   )}
-                  <div style={{ position:'absolute', bottom:6, right:8, background:'rgba(0,0,0,0.85)', borderRadius:5, padding:'2px 8px', fontSize:10, color:'#fff', fontWeight:700 }}>12:34</div>
-                  <div style={{ position:'absolute', bottom:0, left:0, right:0, height:3, background:'rgba(255,255,255,0.1)' }}>
-                    <div style={{ width:'35%', height:'100%', background:'#FF0000', borderRadius:2 }} />
-                  </div>
+                  {!isVideo && (
+                    <div style={{ position:'absolute', bottom:6, right:8, background:'rgba(0,0,0,0.85)', borderRadius:5, padding:'2px 8px', fontSize:10, color:'#fff', fontWeight:700 }}>12:34</div>
+                  )}
                 </div>
                 <div style={{ padding:'12px 14px 14px' }}>
                   <div style={{ fontSize:13, fontWeight:700, color:'#fff', lineHeight:1.4, marginBottom:6 }}>
@@ -533,9 +606,13 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
                 <div style={{ position:'relative' }}>
                   {hasMedia && previewUrl ? (
                     isVideo ? (
-                      <div style={{ height:220, background:'#1a0000', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <span style={{ fontSize:36, opacity:.5 }}>▶</span>
-                      </div>
+                      <video
+                        src={previewUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{ width:'100%', maxHeight:260, objectFit:'cover', display:'block', background:'#000' }}
+                      />
                     ) : (
                       <img src={previewUrl} alt="" style={{ width:'100%', maxHeight:260, objectFit:'cover', display:'block' }} />
                     )
@@ -634,15 +711,18 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
             <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginTop:12 }}>
               {files.map((file, i) => {
                 const isVid = file.type.startsWith('video/')
+                const thumbUrl = isVid ? null : URL.createObjectURL(file)
                 return (
                   <div key={i} style={{ position:'relative', borderRadius:10, overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)' }}>
                     {isVid ? (
-                      <div style={{ width:80, height:80, background:'rgba(255,255,255,0.05)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:4 }}>
-                        <span style={{ fontSize:22 }}>▶</span>
-                        <span style={{ fontSize:9, color:'rgba(255,255,255,0.4)' }}>VIDEO</span>
-                      </div>
+                      <video
+                        src={URL.createObjectURL(file)}
+                        style={{ width:80, height:80, objectFit:'cover', display:'block', background:'#111' }}
+                        preload="metadata"
+                        muted
+                      />
                     ) : (
-                      <img src={URL.createObjectURL(file)} alt="" style={{ width:80, height:80, objectFit:'cover', display:'block' }} />
+                      <img src={thumbUrl} alt="" style={{ width:80, height:80, objectFit:'cover', display:'block' }} />
                     )}
                     <button type="button" onClick={() => removeFile(i)} style={{ position:'absolute', top:3, right:3, width:18, height:18, borderRadius:'50%', background:'rgba(0,0,0,0.75)', border:'none', color:'#fff', fontSize:10, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
                     <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'3px 5px', background:'rgba(0,0,0,0.6)', fontSize:9, color:'rgba(255,255,255,0.6)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{file.name}</div>
@@ -685,6 +765,8 @@ export default function ComposePage() {
   const [postMsg, setPostMsg] = useState({ type:'', text:'' })
   const [platformParams, setPlatformParams] = useState({})
   const [expandedParams, setExpandedParams] = useState({})
+  // Track whether we've already loaded profiles for the current group
+  const loadedGroupRef = useRef(null)
 
   const fetchProfiles = useCallback(async (groupId) => {
     const res = await fetch(`/api/profiles?groupId=${groupId}`)
@@ -692,9 +774,13 @@ export default function ComposePage() {
     return Array.isArray(data) ? data : []
   }, [])
 
-  // Only fires when selectedGroup changes — no polling
+  // Only fires when selectedGroup changes — initial load only, no polling
   useEffect(() => {
     if (!selectedGroup) return
+    // Don't re-fetch if we already loaded this group
+    if (loadedGroupRef.current === selectedGroup.id) return
+    loadedGroupRef.current = selectedGroup.id
+
     setProfiles([])
     setSelectedProfileIds([])
     setPlacements({})
@@ -715,7 +801,6 @@ export default function ComposePage() {
     try {
       const data = await fetchProfiles(selectedGroup.id)
       setProfiles(data)
-      // Clear selections that no longer exist
       setSelectedProfileIds(prev => prev.filter(id => data.find(p => p.id === id)))
     } finally {
       setRefreshingProfiles(false)
@@ -813,7 +898,6 @@ export default function ComposePage() {
 
   const selectedProfileObjects = selectedProfileIds.map(pid => profiles.find(p => p.id === pid)).filter(Boolean)
 
-  // Refresh button shown in the POST TO section header
   const refreshProfilesBtn = (
     <button
       type="button"
@@ -857,6 +941,7 @@ export default function ComposePage() {
         .sbtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,215,0,0.22); }
         .pp-toggle:hover { background: rgba(255,255,255,0.04) !important; }
         .preview-panel { position: sticky; top: 24px; }
+        video { border-radius: 0; }
       `}</style>
 
       {/* Header */}
