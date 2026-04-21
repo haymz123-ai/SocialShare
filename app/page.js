@@ -1,1912 +1,697 @@
-'use client';
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
-import { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Star, Clock, Truck, Zap, Globe, ChevronRight, Menu, X, Play, TrendingUp, Users, Award, Sparkles, ArrowRight, Heart, MessageCircle, DollarSign } from 'lucide-react';
-import Link from 'next/link';
+const NAV_LINKS = ["Features", "How It Works", "Pricing", "Testimonials"];
 
-export default function FoodTruckLanding() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeFeature, setActiveFeature] = useState(0);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [hoveredCard, setHoveredCard] = useState(null);
-  const [animatedNumber, setAnimatedNumber] = useState(0);
-  const canvasRef = useRef(null);
+const SOCIAL_PLATFORMS = [
+  { name: "Instagram", color: "#E1306C", icon: "📸", followers: "2.4M" },
+  { name: "Twitter/X",  color: "#1DA1F2", icon: "𝕏",  followers: "890K" },
+  { name: "LinkedIn",  color: "#0A66C2", icon: "in", followers: "345K" },
+  { name: "TikTok",    color: "#FF0050", icon: "♪",  followers: "5.1M" },
+  { name: "Facebook",  color: "#1877F2", icon: "f",  followers: "1.2M" },
+  { name: "YouTube",   color: "#FF0000", icon: "▶",  followers: "780K" },
+  { name: "Pinterest", color: "#E60023", icon: "P",  followers: "220K" },
+  { name: "Threads",   color: "#aaaaaa", icon: "@",  followers: "410K" },
+];
+
+const FEATURES = [
+  { icon: "⚡", title: "One-Click Scheduling", desc: "Publish to all platforms simultaneously with a single click. No more tab-switching madness.", accent: "#FFD700" },
+  { icon: "🧠", title: "AI Content Brain", desc: "Let AI rewrite your caption for each platform's unique tone, character limit, and audience.", accent: "#FF6B6B" },
+  { icon: "📊", title: "Unified Analytics", desc: "See every like, share, click, and follower gain across all channels in one gorgeous dashboard.", accent: "#4ECDC4" },
+  { icon: "🗓️", title: "Visual Calendar", desc: "Drag-and-drop your content queue on a beautiful calendar. Reschedule in seconds.", accent: "#A8FF78" },
+  { icon: "🔔", title: "Smart Alerts", desc: "Get notified when posts go viral so you can ride the wave with instant engagement.", accent: "#FFC3A0" },
+  { icon: "🔒", title: "Bank-Level Security", desc: "OAuth-secured connections, zero password storage, and end-to-end encrypted scheduling.", accent: "#C9FFBF" },
+];
+
+const STEPS = [
+  {
+    num: "01", emoji: "🔗", title: "Connect Your World",
+    desc: "Link all your social accounts in under 2 minutes. We handle every API handshake securely.",
+    accent: "#4ECDC4",
+    detail: "Instagram · TikTok · LinkedIn · X · Facebook · YouTube · Pinterest · Threads",
+  },
+  {
+    num: "02", emoji: "✍️", title: "Create Once",
+    desc: "Write your post, upload your media, and let AI optimize it for every platform automatically.",
+    accent: "#FFD700",
+    detail: "Text · Images · Videos · Reels · Stories · Shorts",
+  },
+  {
+    num: "03", emoji: "🚀", title: "Schedule & Forget",
+    desc: "Pick your time, hit publish, and watch SyncPost deliver everywhere — perfectly.",
+    accent: "#FF6B6B",
+    detail: "Instant · Scheduled · Queue · Draft · Auto-optimize times",
+  },
+];
+
+const PLANS = [
+  { name: "Starter", price: "$0", period: "forever", features: ["3 Social Accounts", "30 Scheduled Posts/mo", "Basic Analytics", "1 User"], cta: "Start Free", highlight: false },
+  { name: "Creator", price: "$19", period: "per month", features: ["10 Social Accounts", "Unlimited Scheduling", "Advanced Analytics", "AI Captions", "3 Users"], cta: "Go Creator", highlight: true },
+  { name: "Agency", price: "$69", period: "per month", features: ["Unlimited Accounts", "Unlimited Scheduling", "White-Label Reports", "AI Captions", "25 Users", "Priority Support"], cta: "Scale Up", highlight: false },
+];
+
+const TESTIMONIALS = [
+  { name: "Priya Sharma", role: "Lifestyle Creator · 1.8M followers", quote: "SyncPost cut my content workflow from 3 hours to 15 minutes. I post more, stress less.", avatar: "PS", color: "#FF6B6B" },
+  { name: "Marcus Wei", role: "Social Media Manager · Agency Owner", quote: "Managing 22 client accounts used to be chaos. Now it's basically a one-person job.", avatar: "MW", color: "#4ECDC4" },
+  { name: "Aisha Nkosi", role: "Brand Strategist · Fortune 500", quote: "The analytics dashboard alone is worth 10x the price. Absolute game-changer for our team.", avatar: "AN", color: "#FFD700" },
+];
+
+const CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #05050A; }
+  ::-webkit-scrollbar-thumb { background: #FFD700; border-radius: 2px; }
+  .glow-text { background: linear-gradient(135deg, #FFD700 0%, #FF6B6B 50%, #4ECDC4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .card-hover { transition: transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease; }
+  .card-hover:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 24px 60px rgba(255,215,0,0.12); }
+  .btn-primary { background: linear-gradient(135deg, #FFD700, #FF8C42); color: #05050A; font-weight: 700; font-family: 'Syne', sans-serif; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.02em; }
+  .btn-primary:hover { transform: scale(1.04); box-shadow: 0 12px 40px rgba(255,215,0,0.4); }
+  .btn-ghost { background: transparent; color: #F0EDE8; font-weight: 600; font-family: 'Syne', sans-serif; border: 1.5px solid rgba(240,237,232,0.25); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+  .btn-ghost:hover { border-color: #FFD700; background: rgba(255,215,0,0.06); }
+  .platform-pill { transition: transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, filter 0.25s; }
+  .platform-pill:hover { transform: scale(1.1) translateY(-3px); filter: brightness(1.2); }
+  @keyframes float-hub { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.04)} }
+  @keyframes pulse-ring { 0%{transform:translate(-50%,-50%) scale(0.85);opacity:0.6} 100%{transform:translate(-50%,-50%) scale(1.8);opacity:0} }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-2%)} 30%{transform:translate(2%,-1%)} 50%{transform:translate(-1%,2%)} 70%{transform:translate(2%,1%)} 90%{transform:translate(-2%,1%)} }
+  @keyframes step-glow { 0%,100%{box-shadow:0 0 0 rgba(255,215,0,0)} 50%{box-shadow:0 0 40px rgba(255,215,0,0.3)} }
+  @keyframes connector-flow { 0%{background-position:-100% 0} 100%{background-position:200% 0} }
+  @keyframes badge-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+  @keyframes compose-shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+  @keyframes platform-tag-in { from{opacity:0;transform:translateY(6px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes progress-fill { from{width:0%} to{width:var(--pw)} }
+  @keyframes icon-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .float-hub { position:absolute; top:50%; left:50%; animation:float-hub 4s ease-in-out infinite; }
+  .noise-overlay { position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:256px;animation:grain 0.5s steps(1) infinite; }
+  .grid-bg { background-image:linear-gradient(rgba(255,215,0,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(255,215,0,0.04) 1px, transparent 1px);background-size:60px 60px; }
+  .cursor-blink { animation: cursor-blink 1s ease-in-out infinite; }
+  .compose-glow { box-shadow: 0 0 0 1px rgba(255,215,0,0.15), 0 40px 120px rgba(0,0,0,0.7), 0 0 100px rgba(255,215,0,0.08); }
+  @media (max-width:768px) { .hide-mobile{display:none!important} .mobile-col{flex-direction:column!important} }
+`;
+
+export default function LandingPage() {
+  const [activeNav, setActiveNav]     = useState(null);
+  const [scrollY, setScrollY]         = useState(0);
+  const [orbiting, setOrbiting]       = useState(0);
+  const [windowWidth, setWindowWidth] = useState(1200);
+  const [mounted, setMounted]         = useState(false);
+  const [activeStep, setActiveStep]   = useState(0);
+  const [hubPulse, setHubPulse]       = useState(false);
+  const [schedulingAnim, setSchedulingAnim] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState([0,1,2,3,4,5]);
+  const [postText, setPostText] = useState("🚀 Excited to share our latest update! We've been working hard on something special...");
+  const [scheduleTime, setScheduleTime] = useState("Today, 3:00 PM");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    const handleMouseMove = (e) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    setMounted(true);
+    setWindowWidth(window.innerWidth);
+    const handleScroll = () => setScrollY(window.scrollY);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    return () => { window.removeEventListener("scroll", handleScroll); window.removeEventListener("resize", handleResize); };
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % 3);
-    }, 3000);
+    if (!mounted) return;
+    const interval = setInterval(() => setOrbiting(prev => (prev + 0.25) % 360), 16);
+    return () => clearInterval(interval);
+  }, [mounted]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setActiveStep(s => (s + 1) % 3), 3000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const target = 10247;
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    let current = 0;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setAnimatedNumber(target);
-        clearInterval(timer);
-      } else {
-        setAnimatedNumber(Math.floor(current));
-      }
-    }, 16);
-    
-    return () => clearInterval(timer);
+    const interval = setInterval(() => { setHubPulse(true); setTimeout(() => setHubPulse(false), 600); }, 2500);
+    return () => clearInterval(interval);
   }, []);
 
-  // Interactive Canvas Background
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  const navBg = scrollY > 60 ? "rgba(5,5,10,0.95)" : "transparent";
+  const orbitRadius = Math.min(220, (Math.min(windowWidth * 0.9, 560) * 0.88) / 2 - 36);
 
-    const particles = [];
-    for (let i = 0; i < 50; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 1,
-      });
-    }
+  const togglePlatform = (i) => {
+    setSelectedPlatforms(prev =>
+      prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
+    );
+  };
 
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-        
-        const dx = cursorPos.x - p.x;
-        const dy = cursorPos.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        
-        if (dist < 150) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(cursorPos.x, cursorPos.y);
-          ctx.strokeStyle = `rgba(102, 126, 234, ${0.2 - dist / 750})`;
-          ctx.stroke();
-        }
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(102, 126, 234, 0.5)';
-        ctx.fill();
-      });
-      
-      requestAnimationFrame(animate);
-    };
-    
-    animate();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [cursorPos]);
-
-  const testimonials = [
-    { name: 'Sarah Chen', role: 'Food Blogger', text: 'Found my favorite taco truck in minutes! This app is a game-changer.', avatar: '👩', rating: 5 },
-    { name: 'Mike Johnson', role: 'Software Dev', text: 'Never miss lunch again. The real-time tracking is incredible!', avatar: '👨', rating: 5 },
-    { name: 'Emma Davis', role: 'Foodie', text: 'Best food discovery app ever. I use it every single day!', avatar: '👧', rating: 5 },
-  ];
-
-  const cities = ['New York', 'Los Angeles', 'Chicago', 'Austin', 'Portland', 'Seattle', 'Miami', 'Boston'];
+  const handleSchedule = () => {
+    setSchedulingAnim(true);
+    setTimeout(() => setSchedulingAnim(false), 2500);
+  };
 
   return (
-    <div style={{
-      width: '100%',
-      minHeight: '100vh',
-      background: '#0a0a0f',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      color: '#fff',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* Interactive Canvas */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-          pointerEvents: 'none',
-        }}
-      />
+    <div style={{ background: "#05050A", color: "#F0EDE8", fontFamily: "'Syne', sans-serif", overflowX: "hidden" }}>
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      <div className="noise-overlay" />
 
-      {/* Gradient Orbs */}
-      <div style={{
-        position: 'fixed',
-        top: '-200px',
-        right: '-200px',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(60px)',
-        zIndex: 0,
-        animation: 'float 20s ease-in-out infinite',
-      }} />
-      <div style={{
-        position: 'fixed',
-        bottom: '-300px',
-        left: '-300px',
-        width: '700px',
-        height: '700px',
-        background: 'radial-gradient(circle, rgba(118, 75, 162, 0.3) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(80px)',
-        zIndex: 0,
-        animation: 'float 25s ease-in-out infinite reverse',
-      }} />
-
-      {/* Navigation */}
-      <nav style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        background: scrolled ? 'rgba(10, 10, 15, 0.8)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-     //   borderBottom: scrolled ? '1px solid rgba(102, 126, 234, 0.2)' : 'none',
-        transition: 'all 0.3s ease',
-      }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '20px 40px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              width: '48px',
-              height: '48px',
-              borderRadius: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '24px',
-              boxShadow: '0 0 30px rgba(102, 126, 234, 0.6)',
-              animation: 'glow 2s ease-in-out infinite',
-            }}>
-              🚚
-            </div>
-            <span style={{
-              fontSize: '24px',
-              fontWeight: '800',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-1px',
-            }}>
-              TruckFinder
-            </span>
-          </div>
-
-          <div style={{
-            display: 'flex',
-            gap: '40px',
-            alignItems: 'center',
-          }} className="desktop-menu">
-            {['Features', 'Cities', 'Pricing', 'About'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                style={{
-                  color: '#e5e7eb',
-                  textDecoration: 'none',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease',
-                  position: 'relative',
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#667eea';
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = '#e5e7eb';
-                  e.target.style.transform = 'translateY(0)';
-                }}
-              >
-                {item}
-              </a>
-            ))}
-            <Link href='/dashboard'>
-            
-            
-            <button style={{
-              padding: '12px 28px',
-              borderRadius: '12px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: '#fff',
-              fontSize: '15px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              boxShadow: '0 4px 20px rgba(102, 126, 234, 0.4)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px) scale(1.05)';
-              e.target.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.6)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.4)';
-            }}>
-              Launch App
-            </button>
-            </Link>
-          </div>
-
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              display: 'none',
-              background: 'rgba(102, 126, 234, 0.2)',
-              border: '1px solid rgba(102, 126, 234, 0.3)',
-              padding: '12px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              color: '#fff',
-            }}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+      {/* NAV */}
+      <nav style={{  top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 5%", display: "flex", alignItems: "center", justifyContent: "space-between", background: navBg, backdropFilter: scrollY > 60 ? "blur(20px)" : "none", transition: "all 0.4s ease" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #FFD700, #FF8C42)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 16, color: "#05050A" }}>S</div>
+          <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: "-0.02em" }}>SyncPost</span>
+        </div>
+        <div className="hide-mobile" style={{ display: "flex", gap: 36 }}>
+          {NAV_LINKS.map(link => (
+            <a key={link} href={`#${link.toLowerCase().replace(" ", "-")}`} style={{ color: activeNav === link ? "#FFD700" : "rgba(240,237,232,0.65)", textDecoration: "none", fontSize: 14, fontWeight: 600, transition: "color 0.2s", letterSpacing: "0.04em" }} onMouseEnter={() => setActiveNav(link)} onMouseLeave={() => setActiveNav(null)}>{link}</a>
+          ))}
+        </div>
+        <div className="hide-mobile" style={{ display: "flex", gap: 12 }}>
+          <button className="btn-ghost" style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14 }}>Log In</button>
+          <button className="btn-primary" style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14 }}>Start Free →</button>
         </div>
       </nav>
 
-   {/* Hero Section - 3D Floating City Scene */}
-<section style={{
-  position: 'relative',
-  zIndex: 1,
-  maxWidth: '1400px',
-  margin: '0 auto',
-  padding: '160px 40px 100px',
-  minHeight: '100vh',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '80px',
-}}>
-  {/* Left Content */}
-  <div style={{ flex: 1, zIndex: 2 }}>
-    {/* Animated Badge */}
-    <div style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '12px',
-      padding: '12px 24px',
-      borderRadius: '50px',
-      background: 'linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%)',
-      border: '1px solid rgba(251, 191, 36, 0.4)',
-      marginBottom: '32px',
-      animation: 'slideDown 0.6s ease-out',
-      boxShadow: '0 8px 32px rgba(251, 191, 36, 0.3)',
-    }}>
-      <div style={{
-        width: '10px',
-        height: '10px',
-        background: '#fbbf24',
-        borderRadius: '50%',
-        animation: 'ping 2s ease-in-out infinite',
-        boxShadow: '0 0 20px #fbbf24',
-      }} />
-      <span style={{
-        fontSize: '14px',
-        fontWeight: '700',
-        color: '#fbbf24',
-        letterSpacing: '0.5px',
-      }}>
-        🔥 10,247 trucks tracked today
-      </span>
-    </div>
+      {/* ═══ HERO ══════════════════════════════════════════════════════════════ */}
+      <section className="grid-bg" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "120px 5% 60px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "15%", left: "5%", width: 600, height: 600, background: "radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 65%)", borderRadius: "50%", pointerEvents: "none", transform: `translateY(${scrollY * 0.1}px)` }} />
+        <div style={{ position: "absolute", bottom: "5%", right: "2%", width: 500, height: 500, background: "radial-gradient(circle, rgba(78,205,196,0.08) 0%, transparent 65%)", borderRadius: "50%", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "40%", right: "15%", width: 300, height: 300, background: "radial-gradient(circle, rgba(255,107,107,0.07) 0%, transparent 65%)", borderRadius: "50%", pointerEvents: "none" }} />
 
-    {/* Main Headline with Gradient Animation */}
-    <h1 style={{
-      fontSize: '82px',
-      fontWeight: '900',
-      lineHeight: '1.05',
-      marginBottom: '28px',
-      letterSpacing: '-4px',
-      animation: 'slideUp 0.8s ease-out',
-    }}>
-      <span style={{
-        display: 'block',
-        background: 'linear-gradient(135deg, #fff 0%, #e5e7eb 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        marginBottom: '8px',
-      }}>
-        Food Trucks
-      </span>
-      <span style={{
-        display: 'block',
-        background: 'linear-gradient(135deg, #ff6b6b 0%, #fbbf24 50%, #667eea 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundSize: '200% auto',
-        animation: 'gradientShift 3s ease infinite',
-      }}>
-        At Your Fingertips
-      </span>
-    </h1>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.25)", padding: "8px 18px", borderRadius: 100, fontSize: 12, fontWeight: 700, color: "#FFD700", marginBottom: 32, letterSpacing: "0.08em", animation: "fadeSlideUp 0.6s ease forwards" }}>
+          <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: "#FFD700", boxShadow: "0 0 8px #FFD700", animation: "badge-float 2s ease-in-out infinite" }} />
+          NOW SUPPORTING 8+ PLATFORMS
+        </div>
 
-    <p style={{
-      fontSize: '22px',
-      color: '#cbd5e1',
-      lineHeight: '1.7',
-      marginBottom: '48px',
-      maxWidth: '580px',
-      animation: 'slideUp 1s ease-out',
-      fontWeight: '400',
-    }}>
-      Stop chasing. Start tracking. Find every food truck in your city with GPS precision and never miss your favorite meal again.
-    </p>
+        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: "clamp(44px, 7.5vw, 92px)", lineHeight: 0.95, letterSpacing: "-0.03em", textAlign: "center", maxWidth: 960, marginBottom: 26, animation: "fadeSlideUp 0.7s ease 0.1s both forwards" }}>
+          All Your Social.<br />
+          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontWeight: 400 }}>
+            <span className="glow-text">One Click</span>
+          </span>
+          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700 }}> Away.</span>
+        </h1>
 
-    {/* CTA Buttons with Hover Effects */}
-    <div style={{
-      display: 'flex',
-      gap: '20px',
-      marginBottom: '70px',
-      animation: 'slideUp 1.2s ease-out',
-    }} className="hero-buttons">
-      <Link href='/dashboard'>
-      <button style={{
-        padding: '22px 44px',
-        borderRadius: '18px',
-        border: 'none',
-        background: 'linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%)',
-        color: '#fff',
-        fontSize: '18px',
-        fontWeight: '800',
-        cursor: 'pointer',
-        boxShadow: '0 12px 48px rgba(255, 71, 87, 0.5)',
-        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-      onMouseEnter={(e) => {
-        e.target.style.transform = 'translateY(-6px) scale(1.05)';
-        e.target.style.boxShadow = '0 20px 60px rgba(255, 71, 87, 0.7)';
-      }}
-      onMouseLeave={(e) => {
-        e.target.style.transform = 'translateY(0) scale(1)';
-        e.target.style.boxShadow = '0 12px 48px rgba(255, 71, 87, 0.5)';
-      }}>
-        <Zap style={{ width: '22px', height: '22px' }} />
-        Find Trucks Near Me
-      </button>
-      </Link>
+        <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(16px, 2vw, 20px)", color: "rgba(240,237,232,0.5)", maxWidth: 520, textAlign: "center", lineHeight: 1.65, marginBottom: 44, animation: "fadeSlideUp 0.7s ease 0.2s both forwards" }}>
+          Connect every social account, create once, and schedule everywhere — in the time it takes to make coffee.
+        </p>
 
-      <button style={{
-        padding: '22px 44px',
-        borderRadius: '18px',
-        border: '2px solid rgba(102, 126, 234, 0.6)',
-        background: 'rgba(102, 126, 234, 0.08)',
-        backdropFilter: 'blur(12px)',
-        color: '#fff',
-        fontSize: '18px',
-        fontWeight: '800',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-      }}
-      onMouseEnter={(e) => {
-        e.target.style.background = 'rgba(102, 126, 234, 0.2)';
-        e.target.style.borderColor = '#667eea';
-        e.target.style.transform = 'translateY(-6px)';
-        e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.4)';
-      }}
-      onMouseLeave={(e) => {
-        e.target.style.background = 'rgba(102, 126, 234, 0.08)';
-        e.target.style.borderColor = 'rgba(102, 126, 234, 0.6)';
-        e.target.style.transform = 'translateY(0)';
-        e.target.style.boxShadow = 'none';
-      }}>
-        <Play style={{ width: '22px', height: '22px' }} />
-        Watch Demo
-      </button>
-    </div>
+        <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", animation: "fadeSlideUp 0.7s ease 0.3s both forwards" }}>
+          <Link href="/connection">
+            <button className="btn-primary" style={{ padding: "16px 36px", borderRadius: 14, fontSize: 16 }}>Start Posting Free — No Card Needed</button>
+          </Link>
+          <button className="btn-ghost" style={{ padding: "16px 28px", borderRadius: 14, fontSize: 16 }}>▶ Watch Demo</button>
+        </div>
 
-    {/* Animated Stats Ticker */}
-    <div style={{
-      padding: '28px 32px',
-      borderRadius: '20px',
-      background: 'rgba(26, 26, 46, 0.6)',
-      border: '1px solid rgba(102, 126, 234, 0.2)',
-      backdropFilter: 'blur(20px)',
-      animation: 'slideUp 1.4s ease-out',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-    }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '32px',
-      }} className="hero-stats">
-        {[
-          { icon: '🚚', number: '10K+', label: 'Active Trucks', color: '#ff6b6b' },
-          { icon: '⭐', number: '4.9', label: 'User Rating', color: '#fbbf24' },
-          { icon: '📍', number: '50+', label: 'Cities', color: '#667eea' },
-        ].map((stat, i) => (
-          <div 
-            key={i} 
-            style={{ 
-              textAlign: 'center',
-              transition: 'transform 0.3s ease',
-              cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            <div style={{
-              fontSize: '32px',
-              marginBottom: '10px',
-              animation: `float ${3 + i}s ease-in-out infinite`,
+        {/* ORBIT VISUALIZATION */}
+        {mounted && (
+          <div style={{ position: "relative", width: "min(560px, 88vw)", height: "min(560px, 88vw)", marginTop: 70, animation: "fadeSlideUp 0.8s ease 0.4s both forwards", flexShrink: 0 }}>
+            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }} viewBox="0 0 560 560">
+              <defs>
+                <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#FFD700" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#FFD700" stopOpacity="0" />
+                </radialGradient>
+                {SOCIAL_PLATFORMS.map((p, i) => (
+                  <linearGradient key={i} id={`lineGrad${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor={p.color} stopOpacity="0" />
+                    <stop offset="50%" stopColor={p.color} stopOpacity="0.35" />
+                    <stop offset="100%" stopColor={p.color} stopOpacity="0" />
+                  </linearGradient>
+                ))}
+              </defs>
+              <circle cx="280" cy="280" r="80" fill="url(#hubGlow)" opacity="0.6" />
+              <circle cx="280" cy="280" r={orbitRadius} fill="none" stroke="rgba(255,215,0,0.07)" strokeWidth="1" strokeDasharray="4 8" />
+              <circle cx="280" cy="280" r={orbitRadius * 0.6} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+              {SOCIAL_PLATFORMS.map((platform, i) => {
+                const angle = ((i / SOCIAL_PLATFORMS.length) * 360 + orbiting) * (Math.PI / 180);
+                const px = 280 + Math.cos(angle) * orbitRadius;
+                const py = 280 + Math.sin(angle) * orbitRadius;
+                return <line key={i} x1="280" y1="280" x2={px} y2={py} stroke={platform.color} strokeWidth="0.8" strokeOpacity="0.2" strokeDasharray="3 6" />;
+              })}
+            </svg>
+
+            {/* Hub — icon only, no text */}
+            <div className="float-hub" style={{
+              width: 110, height: 110, borderRadius: "50%",
+              background: hubPulse
+                ? "linear-gradient(135deg, #FFE44D, #FF9C4A)"
+                : "linear-gradient(135deg, #FFD700, #FF8C42)",
+              boxShadow: hubPulse
+                ? "0 0 80px rgba(255,215,0,0.7), 0 0 120px rgba(255,215,0,0.3)"
+                : "0 0 50px rgba(255,215,0,0.5), 0 0 100px rgba(255,215,0,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 44, zIndex: 10,
+              transition: "box-shadow 0.4s ease, background 0.4s ease",
+              border: "2px solid rgba(255,255,255,0.35)",
             }}>
-              {stat.icon}
+              ⚡
             </div>
-            <div style={{
-              fontSize: '32px',
-              fontWeight: '900',
-              color: stat.color,
-              marginBottom: '6px',
-              letterSpacing: '-1px',
-              textShadow: `0 0 20px ${stat.color}80`,
-            }}>
-              {stat.number}
-            </div>
-            <div style={{
-              fontSize: '13px',
-              color: '#8b92b8',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '1px',
-            }}>
-              {stat.label}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
 
-  {/* Right Side - 3D Isometric City */}
-  <div style={{
-    flex: 1,
-    position: 'relative',
-    minHeight: '700px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    perspective: '1500px',
-  }}>
-    {/* Ambient Glow */}
-    <div style={{
-      position: 'absolute',
-      width: '500px',
-      height: '500px',
-      background: 'radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%)',
-      borderRadius: '50%',
-      filter: 'blur(80px)',
-      animation: 'pulse 4s ease-in-out infinite',
-    }} />
-
-    {/* 3D City Container */}
-    <div style={{
-      position: 'relative',
-      width: '600px',
-      height: '600px',
-      transformStyle: 'preserve-3d',
-      transform: `rotateX(${20 - (cursorPos.y / window.innerHeight) * 10}deg) rotateZ(${-25 + (cursorPos.x / window.innerWidth) * 15}deg)`,
-      transition: 'transform 0.15s ease-out',
-      animation: 'float 8s ease-in-out infinite',
-    }}>
-      {/* Isometric Grid Base */}
-      <div style={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(45deg, rgba(102, 126, 234, 0.1) 25%, transparent 25%, transparent 75%, rgba(102, 126, 234, 0.1) 75%), linear-gradient(45deg, rgba(102, 126, 234, 0.1) 25%, transparent 25%, transparent 75%, rgba(102, 126, 234, 0.1) 75%)',
-        backgroundSize: '60px 60px',
-        backgroundPosition: '0 0, 30px 30px',
-        opacity: 0.3,
-        transform: 'translateZ(-50px)',
-      }} />
-
-      {/* Buildings */}
-      {[
-        { left: 100, top: 150, width: 80, height: 200, color: '#667eea', delay: 0 },
-        { left: 200, top: 180, width: 70, height: 160, color: '#764ba2', delay: 0.2 },
-        { left: 350, top: 120, width: 90, height: 220, color: '#667eea', delay: 0.4 },
-        { left: 450, top: 200, width: 75, height: 140, color: '#764ba2', delay: 0.6 },
-        { left: 120, top: 320, width: 85, height: 180, color: '#667eea', delay: 0.3 },
-        { left: 320, top: 300, width: 65, height: 150, color: '#764ba2', delay: 0.5 },
-      ].map((building, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: `${building.left}px`,
-            top: `${building.top}px`,
-            width: `${building.width}px`,
-            height: `${building.height}px`,
-            background: `linear-gradient(135deg, ${building.color} 0%, ${building.color}cc 100%)`,
-            borderRadius: '4px 4px 0 0',
-            boxShadow: `0 20px 60px ${building.color}60, inset 0 -2px 10px rgba(0,0,0,0.3)`,
-            transform: 'translateZ(0px)',
-            animation: `buildingRise 1s ease-out ${building.delay}s backwards`,
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Building Windows */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '8px',
-            padding: '12px',
-            height: '100%',
-          }}>
-            {[...Array(12)].map((_, j) => (
-              <div
-                key={j}
-                style={{
-                  background: Math.random() > 0.3 ? '#fbbf24' : 'transparent',
-                  borderRadius: '2px',
-                  boxShadow: '0 0 10px #fbbf24',
-                  animation: `windowBlink ${2 + Math.random() * 3}s ease-in-out infinite ${Math.random() * 2}s`,
-                }}
-              />
+            {[1, 2, 3].map(i => (
+              <div key={i} style={{
+                position: "absolute", top: "50%", left: "50%",
+                width: 110, height: 110, borderRadius: "50%",
+                border: `2px solid rgba(255,215,0,${0.4 - i * 0.1})`,
+                animation: `pulse-ring 2.5s ease-out ${i * 0.7}s infinite`,
+              }} />
             ))}
-          </div>
-        </div>
-      ))}
 
-      {/* Animated Food Trucks on Streets */}
-      {[
-        { emoji: '🚚', startX: -50, startY: 250, endX: 650, duration: 12, delay: 0, size: 50 },
-        { emoji: '🍕', startX: 650, startY: 320, endX: -50, duration: 10, delay: 2, size: 45 },
-        { emoji: '🌮', startX: -50, startY: 400, endX: 650, duration: 14, delay: 4, size: 48 },
-        { emoji: '🍔', startX: 650, startY: 180, endX: -50, duration: 11, delay: 1, size: 46 },
-      ].map((truck, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            fontSize: `${truck.size}px`,
-            filter: 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5))',
-            animation: `streetDrive${i} ${truck.duration}s linear infinite ${truck.delay}s`,
-            zIndex: 100,
-            cursor: 'pointer',
-            transition: 'transform 0.3s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'scale(1.4)';
-            e.target.style.filter = 'drop-shadow(0 15px 30px rgba(251, 191, 36, 0.8))';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'scale(1)';
-            e.target.style.filter = 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5))';
-          }}
-        >
-          {truck.emoji}
-        </div>
-      ))}
-
-      {/* Floating Food Icons */}
-      {[
-        { emoji: '🍕', x: 80, y: 80, size: 40, delay: 0 },
-        { emoji: '🌮', x: 520, y: 100, size: 35, delay: 1 },
-        { emoji: '🍔', x: 150, y: 500, size: 38, delay: 0.5 },
-        { emoji: '🍦', x: 480, y: 480, size: 36, delay: 1.5 },
-        { emoji: '☕', x: 300, y: 60, size: 32, delay: 2 },
-        { emoji: '🥤', x: 400, y: 520, size: 34, delay: 1.2 },
-      ].map((food, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: `${food.x}px`,
-            top: `${food.y}px`,
-            fontSize: `${food.size}px`,
-            animation: `floatFood ${5 + i}s ease-in-out infinite ${food.delay}s`,
-            filter: 'drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3))',
-            cursor: 'pointer',
-            transform: 'translateZ(100px)',
-            transition: 'all 0.3s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'translateZ(100px) scale(1.5) rotate(15deg)';
-            e.target.style.filter = 'drop-shadow(0 8px 24px rgba(251, 191, 36, 0.8))';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'translateZ(100px) scale(1) rotate(0deg)';
-            e.target.style.filter = 'drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3))';
-          }}
-        >
-          {food.emoji}
-        </div>
-      ))}
-
-      {/* Glowing Location Pins */}
-      {[
-        { x: 150, y: 200 },
-        { x: 380, y: 180 },
-        { x: 250, y: 350 },
-        { x: 470, y: 280 },
-      ].map((pin, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: `${pin.x}px`,
-            top: `${pin.y}px`,
-            width: '20px',
-            height: '20px',
-            animation: `ping ${1.5 + i * 0.3}s ease-in-out infinite ${i * 0.4}s`,
-            transform: 'translateZ(50px)',
-          }}
-        >
-          <div style={{
-            width: '100%',
-            height: '100%',
-            background: '#ff6b6b',
-            borderRadius: '50% 50% 50% 0',
-            transform: 'rotate(-45deg)',
-            boxShadow: '0 0 30px #ff6b6b, 0 10px 20px rgba(255, 107, 107, 0.5)',
-            border: '2px solid #fff',
-          }}>
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%) rotate(45deg)',
-              fontSize: '10px',
-            }}>
-              📍
-            </div>
-          </div>
-        </div>
-      ))}
-
-      {/* Pulsing Circles */}
-      {[...Array(3)].map((_, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            width: `${(i + 1) * 200}px`,
-            height: `${(i + 1) * 200}px`,
-            border: '2px solid rgba(255, 107, 107, 0.2)',
-            borderRadius: '50%',
-            transform: 'translate(-50%, -50%) translateZ(0px)',
-            animation: `radarRing ${3 + i}s ease-out infinite ${i * 0.5}s`,
-          }}
-        />
-      ))}
-    </div>
-
-    {/* Floating Info Cards */}
-    <div style={{
-      position: 'absolute',
-      bottom: '60px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      display: 'flex',
-      gap: '16px',
-      animation: 'slideUp 1.6s ease-out',
-    }}>
-      {[
-        { icon: '⚡', text: 'Real-Time', subtext: 'Updates', color: '#fbbf24' },
-        { icon: '🎯', text: 'Precise', subtext: 'Location', color: '#667eea' },
-        { icon: '❤️', text: 'Top', subtext: 'Rated', color: '#ff6b6b' },
-      ].map((card, i) => (
-        <div
-          key={i}
-          style={{
-            padding: '16px 20px',
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '16px',
-            border: `2px solid ${card.color}40`,
-            minWidth: '110px',
-            textAlign: 'center',
-            boxShadow: `0 8px 32px ${card.color}30`,
-            transition: 'all 0.3s ease',
-            cursor: 'pointer',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-8px) scale(1.05)';
-            e.currentTarget.style.boxShadow = `0 12px 48px ${card.color}60`;
-            e.currentTarget.style.borderColor = card.color;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = `0 8px 32px ${card.color}30`;
-            e.currentTarget.style.borderColor = `${card.color}40`;
-          }}
-        >
-          <div style={{ fontSize: '28px', marginBottom: '8px' }}>{card.icon}</div>
-          <div style={{
-            fontSize: '14px',
-            fontWeight: '800',
-            color: card.color,
-            marginBottom: '2px',
-            letterSpacing: '0.5px',
-          }}>
-            {card.text}
-          </div>
-          <div style={{
-            fontSize: '11px',
-            color: '#8b92b8',
-            fontWeight: '600',
-          }}>
-            {card.subtext}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-      {/* Interactive Map Preview Section */}
-     {/* Live Tracking Section - Radar Interface */}
-<section style={{
-  position: 'relative',
-  zIndex: 1,
-  maxWidth: '1400px',
-  margin: '0 auto',
-  padding: '100px 40px',
-}}>
-  <div style={{
-    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%)',
-    borderRadius: '32px',
-    border: '1px solid rgba(102, 126, 234, 0.3)',
-    padding: '60px',
-    backdropFilter: 'blur(20px)',
-    position: 'relative',
-    overflow: 'hidden',
-  }}>
-    {/* Animated Background Pulse */}
-    <div style={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '600px',
-      height: '600px',
-      background: 'radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%)',
-      borderRadius: '50%',
-      animation: 'radarPulse 4s ease-out infinite',
-    }} />
-    
-    <div style={{ textAlign: 'center', marginBottom: '60px', position: 'relative', zIndex: 1 }}>
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '10px',
-        padding: '8px 20px',
-        borderRadius: '20px',
-        background: 'rgba(16, 185, 129, 0.2)',
-        border: '1px solid rgba(16, 185, 129, 0.4)',
-        marginBottom: '20px',
-      }}>
-        <div style={{
-          width: '8px',
-          height: '8px',
-          background: '#10b981',
-          borderRadius: '50%',
-          boxShadow: '0 0 12px #10b981',
-          animation: 'ping 1.5s ease-in-out infinite',
-        }} />
-        <span style={{ fontSize: '14px', color: '#10b981', fontWeight: '700', letterSpacing: '1px' }}>
-          SCANNING AREA • UPDATES EVERY 60s
-        </span>
-      </div>
-      <h2 style={{
-        fontSize: '56px',
-        fontWeight: '900',
-        marginBottom: '20px',
-        letterSpacing: '-2px',
-      }}>
-        <span style={{ color: '#fff' }}>Watch Trucks Move</span>
-        <span style={{
-          display: 'block',
-          background: 'linear-gradient(135deg, #10b981 0%, #667eea 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}>
-          Like Magic ✨
-        </span>
-      </h2>
-      <p style={{
-        fontSize: '20px',
-        color: '#cbd5e1',
-        maxWidth: '700px',
-        margin: '0 auto',
-      }}>
-        Advanced GPS tracking shows real-time positions with sub-meter accuracy
-      </p>
-    </div>
-
-    {/* Radar/Sonar Interface */}
-    <div style={{
-      position: 'relative',
-      borderRadius: '24px',
-      overflow: 'hidden',
-      boxShadow: '0 30px 80px rgba(0, 0, 0, 0.5)',
-      background: '#0a0a0f',
-      border: '2px solid rgba(16, 185, 129, 0.3)',
-    }}>
-      <div style={{
-        aspectRatio: '16/9',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        {/* Radar Circles */}
-        {[1, 2, 3, 4].map((ring, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              width: `${ring * 150}px`,
-              height: `${ring * 150}px`,
-              border: `1px solid rgba(16, 185, 129, ${0.3 - i * 0.05})`,
-              borderRadius: '50%',
-              animation: `radarRing ${4 + i}s ease-out infinite`,
-            }}
-          />
-        ))}
-
-        {/* Scanning Line */}
-        <div style={{
-          position: 'absolute',
-          width: '2px',
-          height: '50%',
-          background: 'linear-gradient(to bottom, transparent, #10b981, transparent)',
-          transformOrigin: 'bottom center',
-          animation: 'radarScan 4s linear infinite',
-          filter: 'drop-shadow(0 0 10px #10b981)',
-        }} />
-
-        {/* Center Point */}
-        <div style={{
-          position: 'absolute',
-          width: '16px',
-          height: '16px',
-          background: '#10b981',
-          borderRadius: '50%',
-          boxShadow: '0 0 30px #10b981',
-          animation: 'ping 2s ease-in-out infinite',
-        }} />
-
-        {/* Animated Truck Markers with Trails */}
-        {[
-          { x: 30, y: 25, delay: 0, emoji: '🚚', name: 'Taco Palace' },
-          { x: 60, y: 35, delay: 1, emoji: '🍕', name: 'Pizza Paradise' },
-          { x: 45, y: 60, delay: 2, emoji: '🍔', name: 'Burger Boss' },
-          { x: 25, y: 70, delay: 1.5, emoji: '🌮', name: 'Burrito Bliss' },
-          { x: 70, y: 55, delay: 0.5, emoji: '🍦', name: 'Ice Cream Dream' },
-          { x: 55, y: 40, delay: 2.5, emoji: '☕', name: 'Coffee Cart' },
-        ].map((truck, i) => (
-          <div key={i}>
-            {/* Trail Effect */}
-            <div style={{
-              position: 'absolute',
-              left: `${truck.x}%`,
-              top: `${truck.y}%`,
-              width: '80px',
-              height: '80px',
-              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%)',
-              borderRadius: '50%',
-              transform: 'translate(-50%, -50%)',
-              animation: `truckPulse ${2 + i * 0.3}s ease-out infinite ${truck.delay}s`,
-              filter: 'blur(8px)',
-            }} />
-            
-            {/* Truck Marker */}
-            <div
-              style={{
-                position: 'absolute',
-                left: `${truck.x}%`,
-                top: `${truck.y}%`,
-                transform: 'translate(-50%, -50%)',
-                animation: `truckBounce ${3 + i * 0.5}s ease-in-out infinite ${truck.delay}s`,
-                zIndex: 10,
-                cursor: 'pointer',
-              }}
-            >
-              {/* Marker Pin */}
-              <div style={{
-                width: '48px',
-                height: '48px',
-                background: 'linear-gradient(135deg, #10b981 0%, #667eea 100%)',
-                borderRadius: '50% 50% 50% 0',
-                transform: 'rotate(-45deg)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 30px rgba(16, 185, 129, 0.6)',
-                border: '3px solid rgba(255, 255, 255, 0.3)',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'rotate(-45deg) scale(1.3)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(16, 185, 129, 0.8)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'rotate(-45deg) scale(1)';
-                e.currentTarget.style.boxShadow = '0 8px 30px rgba(16, 185, 129, 0.6)';
-              }}>
-                <span style={{
-                  transform: 'rotate(45deg)',
-                  fontSize: '20px',
+            {SOCIAL_PLATFORMS.map((platform, i) => {
+              const angle = ((i / SOCIAL_PLATFORMS.length) * 360 + orbiting) * (Math.PI / 180);
+              const x = Math.cos(angle) * orbitRadius;
+              const y = Math.sin(angle) * orbitRadius;
+              return (
+                <div key={platform.name} className="platform-pill" style={{
+                  position: "absolute", top: "50%", left: "50%",
+                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                  background: "rgba(8,8,18,0.95)",
+                  border: `1.5px solid ${platform.color}55`,
+                  borderRadius: 14, padding: "9px 14px",
+                  display: "flex", alignItems: "center", gap: 8,
+                  backdropFilter: "blur(16px)",
+                  whiteSpace: "nowrap", cursor: "pointer",
+                  boxShadow: `0 4px 24px ${platform.color}30, inset 0 0 0 1px ${platform.color}15`,
+                  zIndex: 5,
                 }}>
-                  {truck.emoji}
-                </span>
-              </div>
-
-              {/* Info Card on Hover */}
-              <div style={{
-                position: 'absolute',
-                bottom: '60px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                padding: '12px 16px',
-                background: 'rgba(0, 0, 0, 0.9)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: '12px',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                whiteSpace: 'nowrap',
-                opacity: 0,
-                pointerEvents: 'none',
-                transition: 'opacity 0.3s ease',
-              }}
-              className={`truck-info-${i}`}>
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  color: '#fff',
-                  marginBottom: '4px',
-                }}>
-                  {truck.name}
-                </div>
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  fontSize: '12px',
-                  color: '#10b981',
-                }}>
-                  <span>📍 Moving</span>
-                  <span>⏱ Updated 30s ago</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Live Status Indicators */}
-        <div style={{
-          position: 'absolute',
-          top: '20px',
-          right: '20px',
-          display: 'flex',
-          gap: '12px',
-        }}>
-          {[
-            { count: '6', label: 'Active', color: '#10b981' },
-            { count: '247', label: 'Today', color: '#667eea' },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              style={{
-                padding: '12px 20px',
-                background: 'rgba(0, 0, 0, 0.7)',
-                backdropFilter: 'blur(10px)',
-                borderRadius: '12px',
-                border: `1px solid ${stat.color}40`,
-              }}
-            >
-              <div style={{
-                fontSize: '24px',
-                fontWeight: '900',
-                color: stat.color,
-                marginBottom: '4px',
-                textAlign: 'center',
-              }}>
-                {stat.count}
-              </div>
-              <div style={{
-                fontSize: '11px',
-                color: '#8b92b8',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-              }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* Feature Pills */}
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      gap: '20px',
-      marginTop: '40px',
-      flexWrap: 'wrap',
-    }}>
-      {[
-        { icon: '⚡', text: '60s Refresh Rate', color: '#fbbf24' },
-        { icon: '📡', text: 'GPS Precision', color: '#667eea' },
-        { icon: '🎯', text: 'Smart Predictions', color: '#10b981' },
-        { icon: '🔔', text: 'Instant Alerts', color: '#ff4757' },
-      ].map((feature, i) => (
-        <div
-          key={i}
-          style={{
-            padding: '14px 24px',
-            background: `rgba(${feature.color === '#fbbf24' ? '251, 191, 36' : feature.color === '#667eea' ? '102, 126, 234' : feature.color === '#10b981' ? '16, 185, 129' : '255, 71, 87'}, 0.1)`,
-            border: `1px solid ${feature.color}40`,
-            borderRadius: '14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
-            cursor: 'pointer',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = `rgba(${feature.color === '#fbbf24' ? '251, 191, 36' : feature.color === '#667eea' ? '102, 126, 234' : feature.color === '#10b981' ? '16, 185, 129' : '255, 71, 87'}, 0.2)`;
-            e.currentTarget.style.transform = 'translateY(-4px)';
-            e.currentTarget.style.borderColor = feature.color;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = `rgba(${feature.color === '#fbbf24' ? '251, 191, 36' : feature.color === '#667eea' ? '102, 126, 234' : feature.color === '#10b981' ? '16, 185, 129' : '255, 71, 87'}, 0.1)`;
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.borderColor = `${feature.color}40`;
-          }}
-        >
-          <span style={{ fontSize: '22px' }}>{feature.icon}</span>
-          <span style={{
-            fontSize: '15px',
-            fontWeight: '700',
-            color: '#fff',
-          }}>{feature.text}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-      {/* Testimonials Carousel */}
-      <section style={{
-        position: 'relative',
-        zIndex: 1,
-        maxWidth: '1400px',
-        margin: '100px auto',
-        padding: '0 40px',
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 style={{
-            fontSize: '48px',
-            fontWeight: '900',
-            marginBottom: '16px',
-            letterSpacing: '-2px',
-          }}>
-            Loved by Food Enthusiasts
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            color: '#8b92b8',
-          }}>
-            Join thousands of happy users discovering amazing street food
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '30px',
-        }} className="testimonials-grid">
-          {testimonials.map((testimonial, i) => (
-            <div
-              key={i}
-              style={{
-                padding: '32px',
-                borderRadius: '20px',
-                background: hoveredCard === i 
-                  ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)'
-                  : 'rgba(26, 26, 46, 0.4)',
-                border: hoveredCard === i
-                  ? '1px solid rgba(102, 126, 234, 0.5)'
-                  : '1px solid rgba(102, 126, 234, 0.2)',
-                backdropFilter: 'blur(20px)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={() => setHoveredCard(i)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <div style={{
-                display: 'flex',
-                marginBottom: '20px',
-              }}>
-                {[...Array(testimonial.rating)].map((_, j) => (
-                  <Star key={j} style={{ width: '20px', height: '20px', fill: '#fbbf24', color: '#fbbf24' }} />
-                ))}
-              </div>
-              <p style={{
-                fontSize: '16px',
-                color: '#e5e7eb',
-                lineHeight: '1.6',
-                marginBottom: '24px',
-              }}>
-                "{testimonial.text}"
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '24px',
-                }}>
-                  {testimonial.avatar}
-                </div>
-                <div>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#fff' }}>
-                    {testimonial.name}
+                  <div style={{
+                    width: 30, height: 30, borderRadius: 9,
+                    background: `linear-gradient(135deg, ${platform.color}30, ${platform.color}15)`,
+                    border: `1.5px solid ${platform.color}70`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 13, fontWeight: 800, color: platform.color,
+                    boxShadow: `0 0 12px ${platform.color}40`,
+                  }}>{platform.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#F0EDE8", letterSpacing: "0.02em" }}>{platform.name}</div>
+                    <div style={{ fontSize: 10, color: platform.color, fontWeight: 600, marginTop: 1 }}>{platform.followers}</div>
                   </div>
-                  <div style={{ fontSize: '13px', color: '#8b92b8' }}>
-                    {testimonial.role}
-                  </div>
+                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: platform.color, boxShadow: `0 0 6px ${platform.color}`, marginLeft: 2, flexShrink: 0 }} />
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Cities Ticker */}
-      <section style={{
-        position: 'relative',
-        zIndex: 1,
-        padding: '60px 0',
-        overflow: 'hidden',
-        background: 'rgba(102, 126, 234, 0.05)',
-        borderTop: '1px solid rgba(102, 126, 234, 0.2)',
-        borderBottom: '1px solid rgba(102, 126, 234, 0.2)',
-      }}>
-        <div style={{
-          display: 'flex',
-          gap: '40px',
-          animation: 'scroll 30s linear infinite',
-          whiteSpace: 'nowrap',
-        }}>
-          {[...cities, ...cities, ...cities].map((city, i) => (
-            <div
-              key={i}
-              style={{
-                fontSize: '32px',
-                fontWeight: '800',
-                color: i % 2 === 0 ? '#667eea' : '#764ba2',
-                opacity: 0.7,
-                letterSpacing: '-1px',
-              }}
-            >
-              {city}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Pricing Section with Unique Design */}
-      <section style={{
-        position: 'relative',
-        zIndex: 1,
-        maxWidth: '1400px',
-        margin: '100px auto',
-        padding: '0 40px',
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <h2 style={{
-            fontSize: '48px',
-            fontWeight: '900',
-            marginBottom: '16px',
-            letterSpacing: '-2px',
-          }}>
-            Simple, Transparent Pricing
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            color: '#8b92b8',
-          }}>
-            Choose the plan that's right for you
-          </p>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '30px',
-        }} className="pricing-grid">
-          {[
-            { 
-              name: 'Free', 
-              price: '$0', 
-              period: 'forever',
-              features: ['Basic truck locations', 'Limited search', '5 favorites', 'Community reviews'],
-              cta: 'Get Started',
-              popular: false
-            },
-            { 
-              name: 'Pro', 
-              price: '$9', 
-              period: '/month',
-              features: ['Real-time tracking', 'Unlimited search', 'Unlimited favorites', 'Priority support', 'No ads', 'Advanced filters'],
-              cta: 'Start Free Trial',
-              popular: true
-            },
-            { 
-              name: 'Business', 
-              price: '$29', 
-              period: '/month',
-              features: ['Everything in Pro', 'List your truck', 'Analytics dashboard', 'Custom branding', 'API access', 'Dedicated support'],
-              cta: 'Contact Sales',
-              popular: false
-            },
-          ].map((plan, i) => (
-            <div
-              key={i}
-              style={{
-                padding: '40px',
-                borderRadius: '24px',
-                background: plan.popular 
-                  ? 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)'
-                  : 'rgba(26, 26, 46, 0.4)',
-                border: plan.popular
-                  ? '2px solid rgba(102, 126, 234, 0.5)'
-                  : '1px solid rgba(102, 126, 234, 0.2)',
-                backdropFilter: 'blur(20px)',
-                transition: 'all 0.3s ease',
-                position: 'relative',
-                transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05) translateY(-10px)';
-                e.currentTarget.style.boxShadow = '0 20px 60px rgba(102, 126, 234, 0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = plan.popular ? 'scale(1.05)' : 'scale(1)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              {plan.popular && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-12px',
-                  right: '30px',
-                  padding: '6px 16px',
-                  borderRadius: '20px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  fontSize: '12px',
-                  fontWeight: '700',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-                }}>
-                  MOST POPULAR
-                </div>
-              )}
-
-              <div style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#8b92b8',
-                marginBottom: '16px',
-              }}>
-                {plan.name}
-              </div>
-
-              <div style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                marginBottom: '8px',
-              }}>
-                <span style={{
-                  fontSize: '56px',
-                  fontWeight: '900',
-                  color: '#fff',
-                  letterSpacing: '-2px',
-                }}>
-                  {plan.price}
-                </span>
-                <span style={{
-                  fontSize: '18px',
-                  color: '#8b92b8',
-                  marginLeft: '8px',
-                }}>
-                  {plan.period}
-                </span>
-              </div>
-
-              <button style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                border: 'none',
-                background: plan.popular 
-                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                  : 'rgba(102, 126, 234, 0.2)',
-                color: '#fff',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                marginTop: '24px',
-                marginBottom: '32px',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 20px rgba(102, 126, 234, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
-              }}>
-                {plan.cta}
-              </button>
-
-              <div style={{ borderTop: '1px solid rgba(102, 126, 234, 0.2)', paddingTop: '24px' }}>
-                {plan.features.map((feature, j) => (
-                  <div
-                    key={j}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '16px',
-                    }}
-                  >
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '12px',
-                    }}>
-                      ✓
-                    </div>
-                    <span style={{
-                      fontSize: '15px',
-                      color: '#e5e7eb',
-                    }}>
-                      {feature}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section style={{
-        position: 'relative',
-        zIndex: 1,
-        maxWidth: '1400px',
-        margin: '100px auto 60px',
-        padding: '0 40px',
-      }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          borderRadius: '32px',
-          padding: '80px 60px',
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-            opacity: 0.1,
-          }} />
-          
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h2 style={{
-              fontSize: '52px',
-              fontWeight: '900',
-              marginBottom: '24px',
-              color: '#fff',
-              letterSpacing: '-2px',
-            }}>
-              Ready to Find Your Next
-              <br />
-              Favorite Food Truck?
-            </h2>
-            <p style={{
-              fontSize: '20px',
-              color: 'rgba(255, 255, 255, 0.9)',
-              marginBottom: '40px',
-              maxWidth: '700px',
-              margin: '0 auto 40px',
-            }}>
-              Join 500,000+ users discovering amazing street food every single day
-            </p>
-            <button style={{
-              padding: '20px 48px',
-              borderRadius: '16px',
-              border: 'none',
-              background: '#fff',
-              color: '#667eea',
-              fontSize: '18px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3)',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'scale(1.05) translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'scale(1) translateY(0)';
-              e.target.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.3)';
-            }}>
-              Get Started Free
-            </button>
+              );
+            })}
           </div>
+        )}
+
+        {/* Stats bar */}
+        <div style={{ display: "flex", gap: 48, flexWrap: "wrap", justifyContent: "center", marginTop: 56, padding: "24px 48px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, backdropFilter: "blur(10px)" }}>
+          {[
+            { num: "500K+", label: "Active Creators" },
+            { num: "8",     label: "Platforms Connected" },
+            { num: "12M+",  label: "Posts Scheduled" },
+            { num: "99.9%", label: "Uptime SLA" },
+          ].map(stat => (
+            <div key={stat.label} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#FFD700", lineHeight: 1 }}>{stat.num}</div>
+              <div style={{ fontSize: 13, color: "rgba(240,237,232,0.4)", marginTop: 6, letterSpacing: "0.06em" }}>{stat.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{
-        position: 'relative',
-        zIndex: 1,
-        borderTop: '1px solid rgba(102, 126, 234, 0.2)',
-        padding: '60px 40px 40px',
-        background: 'rgba(10, 10, 15, 0.8)',
-      }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '60px',
-          marginBottom: '60px',
-        }} className="footer-grid">
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                width: '40px',
-                height: '40px',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-              }}>
-                🚚
-              </div>
-              <span style={{
-                fontSize: '20px',
-                fontWeight: '800',
-                color: '#fff',
-              }}>
-                TruckFinder
-              </span>
-            </div>
-            <p style={{
-              fontSize: '14px',
-              color: '#8b92b8',
-              lineHeight: '1.6',
-            }}>
-              Discover the best street food in your city with real-time tracking and authentic reviews.
-            </p>
-          </div>
-
-          {[
-            {
-              title: 'Product',
-              links: ['Features', 'Pricing', 'Download', 'Updates']
-            },
-            {
-              title: 'Company',
-              links: ['About', 'Blog', 'Careers', 'Press']
-            },
-            {
-              title: 'Resources',
-              links: ['Help Center', 'Contact', 'Privacy', 'Terms']
-            },
-          ].map((section, i) => (
-            <div key={i}>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: '700',
-                color: '#fff',
-                marginBottom: '20px',
-                letterSpacing: '1px',
-              }}>
-                {section.title}
-              </div>
-              {section.links.map((link, j) => (
-                <a
-                  key={j}
-                  href="#"
-                  style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    color: '#8b92b8',
-                    textDecoration: 'none',
-                    marginBottom: '12px',
-                    transition: 'color 0.3s ease',
-                  }}
-                  onMouseEnter={(e) => e.target.style.color = '#667eea'}
-                  onMouseLeave={(e) => e.target.style.color = '#8b92b8'}
-                >
-                  {link}
-                </a>
+      {/* TICKER */}
+      <div style={{ background: "#FFD700", padding: "14px 0", overflow: "hidden" }}>
+        <div style={{ display: "inline-flex", animation: "ticker 20s linear infinite" }}>
+          {[...Array(3)].map((_, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center" }}>
+              {["Instagram","Twitter","LinkedIn","TikTok","Facebook","YouTube","Pinterest","Threads"].map(p => (
+                <span key={p} style={{ fontSize: 13, fontWeight: 700, color: "#05050A", padding: "0 32px", letterSpacing: "0.08em", whiteSpace: "nowrap" }}>
+                  {p} <span style={{ opacity: 0.4 }}>✦</span>
+                </span>
               ))}
             </div>
           ))}
         </div>
+      </div>
 
-        <div style={{
-          paddingTop: '40px',
-          borderTop: '1px solid rgba(102, 126, 234, 0.2)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }} className="footer-bottom">
-          <div style={{
-            fontSize: '14px',
-            color: '#8b92b8',
-          }}>
-            © 2026 TruckFinder. All rights reserved.
+      {/* ═══ FEATURES ══════════════════════════════════════════════════════════ */}
+      <section id="features" style={{ padding: "120px 5%", position: "relative" }}>
+        <div style={{ position: "absolute", top: "30%", right: 0, width: 300, height: 600, background: "radial-gradient(circle, rgba(255,107,107,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <div style={{ display: "inline-block", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#4ECDC4", marginBottom: 16 }}>WHAT MAKES US DIFFERENT</div>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+            Built for creators who<br />
+            <span className="glow-text" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>mean business</span>
+          </h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, maxWidth: 1100, margin: "0 auto" }}>
+          {FEATURES.map(f => (
+            <div key={f.title} className="card-hover" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: 32, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${f.accent}, transparent)` }} />
+              <div style={{ width: 52, height: 52, background: f.accent + "18", border: `1px solid ${f.accent}40`, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 20 }}>{f.icon}</div>
+              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12, letterSpacing: "-0.02em" }}>{f.title}</h3>
+              <p style={{ fontSize: 15, color: "rgba(240,237,232,0.5)", lineHeight: 1.65 }}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ HOW IT WORKS ═══════════════════════════════════════════════════════ */}
+      <section id="how-it-works" style={{ padding: "120px 5%", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,215,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,215,0,0.025) 1px, transparent 1px)", backgroundSize: "40px 40px", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 800, height: 800, background: "radial-gradient(ellipse, rgba(255,215,0,0.04) 0%, transparent 65%)", borderRadius: "50%", pointerEvents: "none" }} />
+
+        <div style={{ textAlign: "center", marginBottom: 80, position: "relative" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#FFD700", marginBottom: 12 }}>THE PROCESS</div>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 64px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.0, fontFamily: "'Playfair Display', serif", marginBottom: 16 }}>From zero to everywhere</h2>
+          <p style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "clamp(18px, 2.5vw, 24px)", color: "rgba(240,237,232,0.35)" }}>in three effortless moves</p>
+        </div>
+
+        <div style={{ maxWidth: 1100, margin: "0 auto 80px", position: "relative" }}>
+          <div style={{ position: "absolute", top: 52, left: "16.66%", right: "16.66%", height: 2, background: "rgba(255,215,0,0.1)", borderRadius: 2 }}>
+            <div style={{ position: "absolute", inset: 0, borderRadius: 2, background: "linear-gradient(90deg, transparent, #FFD700, transparent)", backgroundSize: "200% 100%", animation: "connector-flow 3s linear infinite" }} />
           </div>
-          <div style={{
-            display: 'flex',
-            gap: '20px',
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 32, position: "relative" }}>
+            {STEPS.map((step, i) => {
+              const isActive = activeStep === i;
+              return (
+                <div key={step.num} onClick={() => setActiveStep(i)} style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", transition: "all 0.3s ease" }}>
+                  <div style={{ width: 104, height: 104, borderRadius: "50%", marginBottom: 28, background: isActive ? `linear-gradient(135deg, ${step.accent}40, ${step.accent}20)` : "rgba(255,255,255,0.04)", border: `2px solid ${isActive ? step.accent : "rgba(255,255,255,0.1)"}`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, position: "relative", boxShadow: isActive ? `0 0 40px ${step.accent}40, 0 0 80px ${step.accent}20` : "none", transition: "all 0.4s ease" }}>
+                    {isActive && <div style={{ position: "absolute", inset: -8, borderRadius: "50%", border: `1px solid ${step.accent}30`, animation: "pulse-ring 2s ease-out infinite" }} />}
+                    <span style={{ fontSize: 32, lineHeight: 1, filter: isActive ? "none" : "grayscale(0.5) opacity(0.6)", transition: "filter 0.4s" }}>{step.emoji}</span>
+                    <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: isActive ? step.accent : "rgba(255,255,255,0.25)", transition: "color 0.4s" }}>{step.num}</span>
+                  </div>
+                  <div style={{ textAlign: "center", maxWidth: 300 }}>
+                    <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, letterSpacing: "-0.02em", color: isActive ? "#F0EDE8" : "rgba(240,237,232,0.55)", transition: "color 0.4s" }}>{step.title}</h3>
+                    <p style={{ fontSize: 15, color: isActive ? "rgba(240,237,232,0.7)" : "rgba(240,237,232,0.3)", lineHeight: 1.65, marginBottom: 16, transition: "color 0.4s" }}>{step.desc}</p>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center", opacity: isActive ? 1 : 0, transform: isActive ? "translateY(0)" : "translateY(8px)", transition: "all 0.4s ease" }}>
+                      {step.detail.split(" · ").map(tag => (
+                        <span key={tag} style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: step.accent + "18", border: `1px solid ${step.accent}35`, color: step.accent, letterSpacing: "0.04em" }}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 48 }}>
+            {STEPS.map((step, i) => (
+              <div key={i} onClick={() => setActiveStep(i)} style={{ width: activeStep === i ? 28 : 8, height: 8, borderRadius: 100, background: activeStep === i ? step.accent : "rgba(255,255,255,0.15)", cursor: "pointer", transition: "all 0.35s ease", boxShadow: activeStep === i ? `0 0 12px ${step.accent}70` : "none" }} />
+            ))}
+          </div>
+        </div>
+
+        {/* ══ REDESIGNED COMPOSE UI ══════════════════════════════════════════ */}
+        <div style={{ maxWidth: 960, margin: "0 auto", position: "relative" }}>
+
+          {/* Outer glow halo */}
+          <div style={{ position: "absolute", inset: -40, background: "radial-gradient(ellipse at 50% 50%, rgba(255,215,0,0.07) 0%, transparent 70%)", pointerEvents: "none", borderRadius: 40 }} />
+
+          <div className="compose-glow" style={{
+            background: "rgba(6,6,16,0.98)",
+            border: "1px solid rgba(255,215,0,0.14)",
+            borderRadius: 28, overflow: "hidden",
+            position: "relative",
           }}>
-            {['Twitter', 'Instagram', 'Facebook'].map((social) => (
-              <a
-                key={social}
-                href="#"
-                style={{
-                  fontSize: '14px',
-                  color: '#8b92b8',
-                  textDecoration: 'none',
-                  transition: 'color 0.3s ease',
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#667eea'}
-                onMouseLeave={(e) => e.target.style.color = '#8b92b8'}
-              >
-                {social}
-              </a>
+
+            {/* Top gradient bar */}
+            <div style={{ height: 3, background: "linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #FFD700)", backgroundSize: "200% 100%", animation: "connector-flow 4s linear infinite" }} />
+
+            {/* Window chrome */}
+            <div style={{ padding: "14px 20px", background: "rgba(255,255,255,0.025)", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", gap: 6 }}>
+                {["#FF5F57","#FEBC2E","#28C840"].map(c => <div key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c }} />)}
+              </div>
+              <div style={{ flex: 1, margin: "0 10px", background: "rgba(255,255,255,0.05)", borderRadius: 8, height: 28, display: "flex", alignItems: "center", paddingLeft: 12, fontSize: 12, color: "rgba(240,237,232,0.3)", gap: 8 }}>
+                <span style={{ fontSize: 10, color: "rgba(255,215,0,0.4)" }}>🔒</span>
+                app.syncpost.io/compose
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(40,200,64,0.1)", border: "1px solid rgba(40,200,64,0.25)", borderRadius: 20, padding: "4px 10px" }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#28C840", boxShadow: "0 0 6px #28C840" }} />
+                <span style={{ fontSize: 11, color: "#28C840", fontWeight: 700, letterSpacing: "0.06em" }}>LIVE</span>
+              </div>
+            </div>
+
+            {/* App body */}
+            <div style={{ display: "flex", minHeight: 520 }}>
+
+              {/* Sidebar */}
+              <div style={{ width: 180, borderRight: "1px solid rgba(255,255,255,0.05)", padding: "20px 12px", flexShrink: 0, background: "rgba(0,0,0,0.2)" }}>
+                <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.14em", color: "rgba(255,255,255,0.18)", marginBottom: 14, paddingLeft: 4 }}>NAVIGATION</div>
+                {[
+                  { icon: "◈", label: "Dashboard", active: false },
+                  { icon: "✦", label: "Compose",   active: true  },
+                  { icon: "▦", label: "Calendar",  active: false },
+                  { icon: "◎", label: "Analytics", active: false },
+                  { icon: "⊞", label: "Accounts",  active: false },
+                ].map(item => (
+                  <div key={item.label} style={{ padding: "10px 12px", borderRadius: 10, marginBottom: 2, background: item.active ? "rgba(255,215,0,0.1)" : "transparent", border: item.active ? "1px solid rgba(255,215,0,0.18)" : "1px solid transparent", fontSize: 12, color: item.active ? "#FFD700" : "rgba(240,237,232,0.35)", fontWeight: item.active ? 700 : 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "all 0.2s" }}>
+                    <span style={{ fontSize: 14 }}>{item.icon}</span> {item.label}
+                  </div>
+                ))}
+
+                {/* Mini stats */}
+                <div style={{ marginTop: 28, padding: "14px 12px", background: "rgba(255,215,0,0.04)", border: "1px solid rgba(255,215,0,0.08)", borderRadius: 12 }}>
+                  <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.12em", color: "rgba(255,215,0,0.4)", marginBottom: 12 }}>THIS MONTH</div>
+                  {[
+                    { label: "Posts sent", value: "47", color: "#FFD700" },
+                    { label: "Reach", value: "284K", color: "#4ECDC4" },
+                    { label: "Engagements", value: "12.4K", color: "#FF6B6B" },
+                  ].map(s => (
+                    <div key={s.label} style={{ marginBottom: 10 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                        <span style={{ fontSize: 10, color: "rgba(240,237,232,0.35)" }}>{s.label}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: s.color }}>{s.value}</span>
+                      </div>
+                      <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 2 }}>
+                        <div style={{ height: "100%", width: s.label === "Posts sent" ? "65%" : s.label === "Reach" ? "80%" : "45%", background: s.color, borderRadius: 2, boxShadow: `0 0 6px ${s.color}` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main compose area */}
+              <div style={{ flex: 1, padding: "24px 28px", display: "flex", flexDirection: "column", gap: 18 }}>
+
+                {/* Header row */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div>
+                    <h3 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 2 }}>New Post</h3>
+                    <p style={{ fontSize: 12, color: "rgba(240,237,232,0.35)" }}>Compose once, publish everywhere</p>
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button style={{ padding: "7px 14px", borderRadius: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11, color: "rgba(240,237,232,0.5)", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Save Draft</button>
+                    <button style={{ padding: "7px 14px", borderRadius: 8, background: "rgba(78,205,196,0.1)", border: "1px solid rgba(78,205,196,0.25)", fontSize: 11, color: "#4ECDC4", cursor: "pointer", fontFamily: "inherit", fontWeight: 700 }}>✨ AI Assist</button>
+                  </div>
+                </div>
+
+                {/* Platform selector */}
+                <div>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,255,255,0.25)", marginBottom: 10 }}>PUBLISHING TO</div>
+                  <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+                    {SOCIAL_PLATFORMS.map((p, i) => {
+                      const sel = selectedPlatforms.includes(i);
+                      return (
+                        <div key={p.name} onClick={() => togglePlatform(i)} style={{ padding: "6px 12px", background: sel ? p.color + "22" : "rgba(255,255,255,0.03)", border: `1.5px solid ${sel ? p.color + "70" : "rgba(255,255,255,0.08)"}`, borderRadius: 10, fontSize: 11, fontWeight: 700, color: sel ? p.color : "rgba(240,237,232,0.3)", display: "flex", alignItems: "center", gap: 6, cursor: "pointer", transition: "all 0.2s", boxShadow: sel ? `0 0 12px ${p.color}25` : "none" }}>
+                          <span style={{ fontSize: 13 }}>{p.icon}</span>
+                          <span>{p.name}</span>
+                          {sel && <span style={{ fontSize: 9, width: 14, height: 14, background: p.color, color: "#000", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>✓</span>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Text area */}
+                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,215,0,0.1)", borderRadius: 14, padding: "14px 16px", position: "relative" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,215,0,0.4)", marginBottom: 10 }}>CAPTION</div>
+                  <div style={{ fontSize: 14, color: "rgba(240,237,232,0.75)", lineHeight: 1.65, minHeight: 60 }}>
+                    {postText}<span className="cursor-blink" style={{ color: "#FFD700", fontWeight: 300 }}>|</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div style={{ display: "flex", gap: 10 }}>
+                      {["😊","#","@","🖼️","🔗"].map(e => (
+                        <button key={e} style={{ background: "none", border: "none", fontSize: 16, cursor: "pointer", opacity: 0.5, transition: "opacity 0.2s", padding: "2px 4px" }} onMouseEnter={ev => ev.target.style.opacity=1} onMouseLeave={ev => ev.target.style.opacity=0.5}>{e}</button>
+                      ))}
+                    </div>
+                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", fontWeight: 600 }}>{postText.length} / 280</span>
+                  </div>
+                </div>
+
+                {/* Media drop zone */}
+                <div style={{ background: "rgba(255,255,255,0.02)", border: "1.5px dashed rgba(255,215,0,0.15)", borderRadius: 14, padding: "18px 20px", display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,140,66,0.1))", border: "1px solid rgba(255,215,0,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>🖼️</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(240,237,232,0.6)", marginBottom: 2 }}>Drop media here or browse</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG, MP4, MOV · Max 500MB</div>
+                  </div>
+                  <button style={{ padding: "8px 16px", borderRadius: 9, background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.2)", color: "rgba(255,215,0,0.8)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, transition: "all 0.2s" }}>Browse Files</button>
+                </div>
+
+                {/* Schedule row */}
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <div style={{ flex: 1, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 16 }}>🕐</span>
+                    <div>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>SCHEDULE FOR</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(240,237,232,0.7)" }}>{scheduleTime}</div>
+                    </div>
+                    <div style={{ marginLeft: "auto", fontSize: 11, background: "rgba(168,255,120,0.1)", border: "1px solid rgba(168,255,120,0.2)", color: "#A8FF78", borderRadius: 6, padding: "3px 8px", fontWeight: 700 }}>OPTIMAL</div>
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 16 }}>⚡</span>
+                    <div>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,255,255,0.2)", marginBottom: 2 }}>PLATFORMS</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(240,237,232,0.7)" }}>{selectedPlatforms.length} selected</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <button
+                  className="btn-primary"
+                  onClick={handleSchedule}
+                  style={{
+                    width: "100%", padding: "16px", borderRadius: 14, fontSize: 15,
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+                    position: "relative", overflow: "hidden",
+                    background: schedulingAnim
+                      ? "linear-gradient(135deg, #28C840, #4ECDC4)"
+                      : "linear-gradient(135deg, #FFD700, #FF8C42)",
+                    transition: "background 0.4s ease",
+                  }}
+                >
+                  {schedulingAnim ? (
+                    <>
+                      <span style={{ fontSize: 18 }}>✓</span>
+                      <span>Scheduled to {selectedPlatforms.length} Platforms!</span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ fontSize: 18 }}>⚡</span>
+                      <span>Schedule to {selectedPlatforms.length} Platform{selectedPlatforms.length !== 1 ? "s" : ""} Now</span>
+                      <span style={{ fontSize: 12, opacity: 0.7, marginLeft: 4 }}>→</span>
+                    </>
+                  )}
+                  {/* Shimmer overlay */}
+                  {!schedulingAnim && (
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%)", backgroundSize: "200% 100%", animation: "compose-shimmer 3s ease-in-out infinite" }} />
+                  )}
+                </button>
+
+                {/* Trust strip */}
+                <div style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
+                  {["🔒 End-to-end encrypted", "⚡ Posts in < 2 seconds", "✦ 99.9% delivery rate"].map(t => (
+                    <span key={t} style={{ fontSize: 11, color: "rgba(240,237,232,0.25)", fontWeight: 600 }}>{t}</span>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ PRICING ════════════════════════════════════════════════════════════ */}
+      <section id="pricing" style={{ padding: "120px 5%", position: "relative" }}>
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, background: "radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none" }} />
+        <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#FF6B6B", marginBottom: 16 }}>PRICING PLANS</div>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+            Simple, honest pricing.<br />
+            <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>No hidden surprises.</span>
+          </h2>
+        </div>
+        <div style={{ display: "flex", gap: 24, maxWidth: 1000, margin: "0 auto", alignItems: "stretch", flexWrap: "wrap", justifyContent: "center" }}>
+          {PLANS.map(plan => (
+            <div key={plan.name} className="card-hover" style={{ flex: "1 1 280px", maxWidth: 320, background: plan.highlight ? "linear-gradient(145deg, rgba(255,215,0,0.12), rgba(255,140,66,0.08))" : "rgba(255,255,255,0.03)", border: plan.highlight ? "1.5px solid rgba(255,215,0,0.35)" : "1px solid rgba(255,255,255,0.07)", borderRadius: 24, padding: 36, position: "relative", overflow: "hidden" }}>
+              {plan.highlight && <div style={{ position: "absolute", top: 20, right: 20, background: "#FFD700", color: "#05050A", fontSize: 10, fontWeight: 800, padding: "4px 12px", borderRadius: 100, letterSpacing: "0.08em" }}>POPULAR</div>}
+              <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(240,237,232,0.5)", marginBottom: 12 }}>{plan.name.toUpperCase()}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 6 }}>
+                <span style={{ fontSize: 52, fontWeight: 800, letterSpacing: "-0.04em", color: plan.highlight ? "#FFD700" : "#F0EDE8" }}>{plan.price}</span>
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(240,237,232,0.35)", marginBottom: 32 }}>{plan.period}</div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 24, marginBottom: 28 }}>
+                {plan.features.map(feat => (
+                  <div key={feat} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: "rgba(240,237,232,0.65)", marginBottom: 12 }}>
+                    <span style={{ color: plan.highlight ? "#FFD700" : "#4ECDC4", fontSize: 16, fontWeight: 800 }}>✓</span>{feat}
+                  </div>
+                ))}
+              </div>
+              <button className={plan.highlight ? "btn-primary" : "btn-ghost"} style={{ width: "100%", padding: "14px", borderRadius: 12, fontSize: 15 }}>{plan.cta}</button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ TESTIMONIALS ═══════════════════════════════════════════════════════ */}
+      <section id="testimonials" style={{ padding: "120px 5%", background: "rgba(255,255,255,0.015)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: "#4ECDC4", marginBottom: 16 }}>LOVED BY CREATORS</div>
+          <h2 style={{ fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, fontFamily: "'Playfair Display', serif" }}>
+            Don't take our word for it.<br />
+            <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400, color: "rgba(240,237,232,0.4)" }}>Take theirs.</span>
+          </h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, maxWidth: 1000, margin: "0 auto" }}>
+          {TESTIMONIALS.map(t => (
+            <div key={t.name} className="card-hover" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 20, padding: 32, position: "relative" }}>
+              <div style={{ fontSize: 52, lineHeight: 1, color: t.color, opacity: 0.25, fontFamily: "Georgia, serif", marginBottom: 8 }}>"</div>
+              <p style={{ fontSize: 16, fontFamily: "'Playfair Display', serif", fontStyle: "italic", color: "rgba(240,237,232,0.75)", lineHeight: 1.65, marginBottom: 24 }}>{t.quote}</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 14, background: t.color + "33", border: `1.5px solid ${t.color}60`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, color: t.color }}>{t.avatar}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>{t.name}</div>
+                  <div style={{ fontSize: 12, color: "rgba(240,237,232,0.4)", marginTop: 2 }}>{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ CTA ════════════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "120px 5%", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: "-30%", left: "-10%", width: "120%", height: "160%", background: "radial-gradient(ellipse at center, rgba(255,215,0,0.07) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "relative", maxWidth: 720, margin: "0 auto", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,215,0,0.14)", borderRadius: 32, padding: "72px 48px", backdropFilter: "blur(20px)" }}>
+          <div style={{ fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 24, fontFamily: "'Playfair Display', serif" }}>
+            Ready to post<br />
+            <span className="glow-text" style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontWeight: 400 }}>like a pro?</span>
+          </div>
+          <p style={{ fontSize: 18, color: "rgba(240,237,232,0.5)", fontFamily: "'Playfair Display', serif", fontStyle: "italic", marginBottom: 40, lineHeight: 1.5 }}>
+            Join 500,000+ creators who've already made the switch. Free forever, no credit card needed.
+          </p>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="btn-primary" style={{ padding: "18px 44px", borderRadius: 14, fontSize: 17 }}>Get Started — It's Free</button>
+            <button className="btn-ghost" style={{ padding: "18px 30px", borderRadius: 14, fontSize: 17 }}>Talk to Sales</button>
+          </div>
+          <div style={{ marginTop: 28, fontSize: 13, color: "rgba(240,237,232,0.3)", display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap" }}>
+            <span>✦ No credit card</span><span>✦ Cancel anytime</span><span>✦ Setup in 2 minutes</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ FOOTER ═════════════════════════════════════════════════════════════ */}
+      <footer style={{ padding: "56px 5% 32px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 40, marginBottom: 48 }}>
+          <div style={{ maxWidth: 280 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #FFD700, #FF8C42)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 16, color: "#05050A" }}>S</div>
+              <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: "-0.02em" }}>SyncPost</span>
+            </div>
+            <p style={{ fontSize: 14, color: "rgba(240,237,232,0.4)", lineHeight: 1.65 }}>The all-in-one social scheduling platform for creators who move fast and create things worth sharing.</p>
+          </div>
+          {[
+            { title: "Product", links: ["Features","Pricing","Changelog","API Docs"] },
+            { title: "Company", links: ["About","Blog","Careers","Press Kit"] },
+            { title: "Support", links: ["Help Center","Status","Privacy","Terms"] },
+          ].map(col => (
+            <div key={col.title}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(240,237,232,0.35)", marginBottom: 16 }}>{col.title}</div>
+              {col.links.map(link => (
+                <div key={link} style={{ marginBottom: 10 }}>
+                  <a href="#" style={{ fontSize: 14, color: "rgba(240,237,232,0.55)", textDecoration: "none" }} onMouseEnter={e => e.target.style.color = "#FFD700"} onMouseLeave={e => e.target.style.color = "rgba(240,237,232,0.55)"}>{link}</a>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ fontSize: 13, color: "rgba(240,237,232,0.3)" }}>© 2025 SyncPost. Made with ♥ for creators.</div>
+          <div style={{ display: "flex", gap: 20 }}>
+            {["Twitter","LinkedIn","Instagram","YouTube"].map(s => (
+              <a key={s} href="#" style={{ fontSize: 13, color: "rgba(240,237,232,0.35)", textDecoration: "none" }} onMouseEnter={e => e.target.style.color = "#FFD700"} onMouseLeave={e => e.target.style.color = "rgba(240,237,232,0.35)"}>{s}</a>
             ))}
           </div>
         </div>
       </footer>
-
-      <style jsx global>{`
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes buildingRise {
-  0% {
-    transform: translateZ(0px) translateY(100px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateZ(0px) translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes windowBlink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
-@keyframes streetDrive0 {
-  0% {
-    left: -50px;
-    top: 250px;
-  }
-  100% {
-    left: 650px;
-    top: 250px;
-  }
-}
-
-@keyframes streetDrive1 {
-  0% {
-    left: 650px;
-    top: 320px;
-    transform: scaleX(-1);
-  }
-  100% {
-    left: -50px;
-    top: 320px;
-    transform: scaleX(-1);
-  }
-}
-
-@keyframes streetDrive2 {
-  0% {
-    left: -50px;
-    top: 400px;
-  }
-  100% {
-    left: 650px;
-    top: 400px;
-  }
-}
-
-@keyframes streetDrive3 {
-  0% {
-    left: 650px;
-    top: 180px;
-    transform: scaleX(-1);
-  }
-  100% {
-    left: -50px;
-    top: 180px;
-    transform: scaleX(-1);
-  }
-}
-
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-@keyframes wheelSpin {
-  from {
-    transform: translateZ(10px) rotate(0deg);
-  }
-  to {
-    transform: translateZ(10px) rotate(360deg);
-  }
-}
-
-@keyframes serveWindow {
-  0%, 100% {
-    transform: translateZ(30px) translateY(0);
-  }
-  50% {
-    transform: translateZ(30px) translateY(-10px);
-  }
-}
-
-@keyframes smoke {
-  0% {
-    transform: translateY(0) translateX(0) scale(0.5);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-150px) translateX(50px) scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes floatFood {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-20px) rotate(5deg);
-  }
-  66% {
-    transform: translateY(10px) rotate(-5deg);
-  }
-}
-
-@keyframes orbPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.6;
-  }
-}
-
-
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-30px);
-          }
-        }
-
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
-          }
-          50% {
-            box-shadow: 0 0 50px rgba(102, 126, 234, 0.9);
-          }
-        }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes ping {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 0.8;
-          }
-        }
-
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-
-        @media (max-width: 968px) {
-          .desktop-menu {
-            display: none !important;
-          }
-
-          .mobile-menu-btn {
-            display: flex !important;
-          }
-
-          .hero-buttons {
-            flex-direction: column !important;
-          }
-
-          .hero-buttons button {
-            width: 100% !important;
-            justify-content: center !important;
-          }
-
-          .stats-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 20px !important;
-          }
-
-          .testimonials-grid {
-            grid-template-columns: 1fr !important;
-          }
-
-          .pricing-grid {
-            grid-template-columns: 1fr !important;
-          }
-
-          .footer-grid {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-
-          .footer-bottom {
-            flex-direction: column !important;
-            gap: 20px !important;
-            text-align: center !important;
-          }
-
-          h1 {
-            font-size: 48px !important;
-          }
-
-          h2 {
-            font-size: 36px !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
-
-
