@@ -1,7 +1,5 @@
 // app/page.js  (or pages/index.js)
 // app/page.js
-
-
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -147,6 +145,19 @@ const howItWorks = [
 
 const logos = ["Shopify", "Notion", "Figma", "Slack", "HubSpot", "Stripe", "Webflow", "Canva"];
 
+// ── Scheduling Section Data ──
+const scheduledPosts = [
+  { id: 1, platform: "Instagram", icon: "📸", color: "#E1306C", time: "9:00 AM", day: "Mon", content: "New collection drop! 🔥", img: "🌅", status: "live", engagement: "4.2K" },
+  { id: 2, platform: "Twitter", icon: "🐦", color: "#1DA1F2", time: "10:30 AM", day: "Mon", content: "Hot take: consistency beats virality every time 🧵", img: "💬", status: "scheduled", engagement: "—" },
+  { id: 3, platform: "LinkedIn", icon: "💼", color: "#0A66C2", time: "12:00 PM", day: "Tue", content: "We hit $1M ARR. Here's what we learned.", img: "📈", status: "scheduled", engagement: "—" },
+  { id: 4, platform: "TikTok", icon: "🎵", color: "#FF0050", time: "6:00 PM", day: "Tue", content: "POV: when the algorithm finally loves you ✨", img: "🎬", status: "scheduled", engagement: "—" },
+  { id: 5, platform: "Facebook", icon: "📘", color: "#1877F2", time: "8:00 AM", day: "Wed", content: "Behind the scenes of our new campaign 👀", img: "🎨", status: "scheduled", engagement: "—" },
+  { id: 6, platform: "Pinterest", icon: "📌", color: "#E60023", time: "3:00 PM", day: "Wed", content: "Mood board for spring 2025 🌸", img: "🌸", status: "scheduled", engagement: "—" },
+];
+
+const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const timeSlots = ["8 AM", "10 AM", "12 PM", "2 PM", "4 PM", "6 PM", "8 PM"];
+
 function ScheduleVisual({ accent }) {
   const times = ["9:00 AM", "12:30 PM", "5:00 PM", "8:00 PM"];
   return (
@@ -251,6 +262,352 @@ function FeatureVisual({ visual, accent }) {
   if (visual === "collab") return <CollabVisual accent={accent} />;
   if (visual === "republish") return <RepublishVisual accent={accent} />;
   return null;
+}
+
+// ── NEW: Scheduling Showcase Component ──
+function SchedulingShowcase() {
+  const [activePost, setActivePost] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [dragOver, setDragOver] = useState(null);
+
+  const aiTimes = [
+    { time: "9:00 AM", score: 98, label: "Peak" },
+    { time: "12:30 PM", score: 84, label: "High" },
+    { time: "5:00 PM", score: 76, label: "Good" },
+    { time: "8:00 PM", score: 61, label: "Low" },
+  ];
+
+  const post = scheduledPosts[activePost];
+
+  const handleNext = () => {
+    if (animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setActivePost((p) => (p + 1) % scheduledPosts.length);
+      setAnimating(false);
+    }, 300);
+  };
+
+  return (
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "2rem",
+      alignItems: "stretch",
+    }}>
+      {/* Left: Calendar Grid */}
+      <div style={{
+        background: "white",
+        borderRadius: 24,
+        border: "1px solid #E5E7EB",
+        overflow: "hidden",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.06)",
+      }}>
+        {/* Header */}
+        <div style={{
+          padding: "1.25rem 1.5rem",
+          borderBottom: "1px solid #F3F4F6",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "linear-gradient(135deg, #FAFAFA, #F5F3FF)",
+        }}>
+          <div>
+            <div style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "1rem", color: "#0D0D14", letterSpacing: "-0.02em" }}>April 2025</div>
+            <div style={{ fontSize: "0.72rem", color: "#9CA3AF", fontWeight: 500, marginTop: 2 }}>12 posts scheduled this week</div>
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button style={{ width: 32, height: 32, borderRadius: 10, border: "1px solid #E5E7EB", background: "white", cursor: "pointer", fontSize: "0.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>◀</button>
+            <button style={{ width: 32, height: 32, borderRadius: 10, border: "1px solid #E5E7EB", background: "white", cursor: "pointer", fontSize: "0.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>▶</button>
+          </div>
+        </div>
+
+        {/* Day labels */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0.75rem 1rem 0.25rem", gap: 4 }}>
+          {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+            <div key={i} style={{ textAlign: "center", fontSize: "0.65rem", fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em" }}>{d}</div>
+          ))}
+        </div>
+
+        {/* Calendar days */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0.25rem 1rem 1rem", gap: 4 }}>
+          {Array.from({ length: 35 }, (_, i) => {
+            const day = i - 1;
+            const postsOnDay = [3, 7, 10, 14, 17, 20, 22, 24, 27].includes(day);
+            const multiPost = [7, 14, 22].includes(day);
+            const isToday = day === 14;
+            const dotColors = ["#7C3AED", "#DB2777", "#059669", "#1DA1F2"];
+            return (
+              <div
+                key={i}
+                onClick={() => postsOnDay && setDragOver(day)}
+                style={{
+                  aspectRatio: "1",
+                  borderRadius: 10,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.72rem",
+                  fontWeight: isToday ? 800 : postsOnDay ? 600 : 400,
+                  color: isToday ? "white" : day <= 0 || day > 30 ? "#D1D5DB" : postsOnDay ? "#0D0D14" : "#6B7280",
+                  background: isToday
+                    ? "linear-gradient(135deg, #7C3AED, #DB2777)"
+                    : dragOver === day
+                    ? "#F5F3FF"
+                    : postsOnDay
+                    ? "#FAFAFA"
+                    : "transparent",
+                  border: isToday ? "none" : dragOver === day ? "1.5px dashed #7C3AED" : postsOnDay ? "1px solid #F3F4F6" : "none",
+                  cursor: postsOnDay ? "pointer" : "default",
+                  transition: "all 0.2s",
+                  position: "relative",
+                  gap: 2,
+                  boxShadow: isToday ? "0 4px 16px rgba(124,58,237,0.3)" : "none",
+                }}
+              >
+                <span>{day > 0 && day <= 30 ? day : ""}</span>
+                {postsOnDay && day > 0 && !isToday && (
+                  <div style={{ display: "flex", gap: 2 }}>
+                    {(multiPost ? [0, 1, 2] : [0]).map((dot) => (
+                      <div key={dot} style={{ width: 4, height: 4, borderRadius: "50%", background: dotColors[dot % dotColors.length] }} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Upcoming posts strip */}
+        <div style={{ borderTop: "1px solid #F3F4F6", padding: "0.875rem 1.25rem" }}>
+          <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Upcoming Today</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {scheduledPosts.slice(0, 3).map((p, i) => (
+              <div
+                key={p.id}
+                onClick={() => setActivePost(i)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "7px 10px",
+                  borderRadius: 10,
+                  background: activePost === i ? `${p.color}10` : "#FAFAFA",
+                  border: `1px solid ${activePost === i ? p.color + "30" : "#F3F4F6"}`,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem", flexShrink: 0 }}>{p.icon}</div>
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#0D0D14", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.content}</div>
+                  <div style={{ fontSize: "0.65rem", color: "#9CA3AF" }}>{p.time}</div>
+                </div>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.status === "live" ? "#22C55E" : "#D1D5DB", flexShrink: 0 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: AI Time Picker + Post Preview */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        {/* Post Preview Card */}
+        <div style={{
+          background: "white",
+          borderRadius: 20,
+          border: "1px solid #E5E7EB",
+          overflow: "hidden",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+          flex: 1,
+          opacity: animating ? 0 : 1,
+          transform: animating ? "translateY(8px)" : "translateY(0)",
+          transition: "opacity 0.3s, transform 0.3s",
+        }}>
+          {/* Platform bar */}
+          <div style={{
+            padding: "0.875rem 1.25rem",
+            background: post.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: "1.1rem" }}>{post.icon}</span>
+              <div>
+                <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "white" }}>{post.platform}</div>
+                <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.7)" }}>{post.day} · {post.time}</div>
+              </div>
+            </div>
+            <div style={{
+              background: "rgba(255,255,255,0.2)",
+              borderRadius: 20,
+              padding: "3px 10px",
+              fontSize: "0.65rem",
+              fontWeight: 700,
+              color: "white",
+              backdropFilter: "blur(8px)",
+            }}>
+              {post.status === "live" ? "🟢 Live" : "⏳ Scheduled"}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div style={{ padding: "1.25rem" }}>
+            <div style={{
+              height: 80,
+              borderRadius: 14,
+              background: `linear-gradient(135deg, ${post.color}15, ${post.color}08)`,
+              border: `1px solid ${post.color}20`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2.5rem",
+              marginBottom: "1rem",
+            }}>{post.img}</div>
+            <div style={{ fontSize: "0.88rem", color: "#0D0D14", fontWeight: 500, lineHeight: 1.6, marginBottom: "0.875rem" }}>{post.content}</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: "0.875rem" }}>
+              {["#trending", "#brand", "#viral"].map(tag => (
+                <span key={tag} style={{ fontSize: "0.72rem", padding: "2px 8px", borderRadius: 6, background: `${post.color}12`, color: post.color, fontWeight: 600 }}>{tag}</span>
+              ))}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "#9CA3AF" }}>Est. reach: <strong style={{ color: "#0D0D14" }}>{post.engagement === "—" ? "~8.4K" : post.engagement}</strong></div>
+              <button
+                onClick={handleNext}
+                style={{
+                  background: post.color,
+                  color: "white",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "5px 12px",
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "opacity 0.2s",
+                }}
+              >Next Post →</button>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Time Optimizer */}
+        <div style={{
+          background: "white",
+          borderRadius: 20,
+          border: "1px solid #E5E7EB",
+          padding: "1.25rem",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
+            <div style={{
+              width: 32,
+              height: 32,
+              borderRadius: 10,
+              background: "linear-gradient(135deg, #7C3AED, #DB2777)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "0.9rem",
+              flexShrink: 0,
+            }}>✨</div>
+            <div>
+              <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0D0D14" }}>AI Best Times</div>
+              <div style={{ fontSize: "0.65rem", color: "#9CA3AF" }}>Based on your audience activity</div>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {aiTimes.map((t, i) => (
+              <div key={t.time} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: i === 0 ? "#22C55E" : i === 1 ? "#7C3AED" : i === 2 ? "#F59E0B" : "#D1D5DB",
+                  flexShrink: 0,
+                }} />
+                <span style={{ fontSize: "0.72rem", color: "#6B7280", fontFamily: "monospace", minWidth: 60 }}>{t.time}</span>
+                <div style={{ flex: 1, height: 6, borderRadius: 3, background: "#F3F4F6", overflow: "hidden" }}>
+                  <div style={{
+                    height: "100%",
+                    width: `${t.score}%`,
+                    borderRadius: 3,
+                    background: i === 0
+                      ? "linear-gradient(90deg, #22C55E, #86EFAC)"
+                      : i === 1
+                      ? "linear-gradient(90deg, #7C3AED, #A78BFA)"
+                      : i === 2
+                      ? "linear-gradient(90deg, #F59E0B, #FCD34D)"
+                      : "#E5E7EB",
+                    transition: "width 1s ease",
+                  }} />
+                </div>
+                <span style={{
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  color: i === 0 ? "#22C55E" : i === 1 ? "#7C3AED" : i === 2 ? "#F59E0B" : "#9CA3AF",
+                  minWidth: 28,
+                  textAlign: "right",
+                }}>{t.score}%</span>
+                <span style={{
+                  fontSize: "0.6rem",
+                  fontWeight: 700,
+                  padding: "1px 6px",
+                  borderRadius: 4,
+                  background: i === 0 ? "#DCFCE7" : i === 1 ? "#F5F3FF" : i === 2 ? "#FEF3C7" : "#F3F4F6",
+                  color: i === 0 ? "#16A34A" : i === 1 ? "#7C3AED" : i === 2 ? "#D97706" : "#9CA3AF",
+                }}>{t.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── NEW: Live Queue Strip ──
+function QueueStrip() {
+  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setOffset(o => (o + 1) % (scheduledPosts.length * 120)), 30);
+    return () => clearInterval(id);
+  }, []);
+
+  const items = [...scheduledPosts, ...scheduledPosts, ...scheduledPosts];
+
+  return (
+    <div style={{ overflow: "hidden", position: "relative" }}>
+      <div style={{ display: "flex", gap: 12, transition: "none" }}>
+        {items.map((p, i) => (
+          <div
+            key={i}
+            style={{
+              flexShrink: 0,
+              background: "white",
+              border: `1.5px solid ${p.color}25`,
+              borderRadius: 16,
+              padding: "0.875rem 1.125rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              minWidth: 220,
+              boxShadow: `0 4px 16px ${p.color}10`,
+              transition: "transform 0.2s",
+            }}
+          >
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: `${p.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{p.icon}</div>
+            <div style={{ flex: 1, overflow: "hidden" }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0D0D14", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.platform}</div>
+              <div style={{ fontSize: "0.65rem", color: "#9CA3AF" }}>{p.day} · {p.time}</div>
+            </div>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: p.status === "live" ? "#22C55E" : p.color, flexShrink: 0, boxShadow: `0 0 0 3px ${p.status === "live" ? "#DCFCE7" : p.color + "20"}` }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -567,6 +924,272 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .marquee-logo:hover { color: var(--violet); }
 .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+
+/* ─── SCHEDULING SECTION ─── */
+.scheduling-section {
+  padding: 120px 5%;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+.scheduling-bg {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 50% at 0% 50%, rgba(124,58,237,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(219,39,119,0.03) 0%, transparent 60%);
+}
+.scheduling-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* Bento Grid */
+.sched-bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.25rem;
+  margin-top: 4rem;
+}
+
+/* Queue Bar */
+.sched-queue {
+  grid-column: 1 / -1;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+.queue-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.queue-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 0.88rem; font-weight: 700; color: #0D0D14;
+  display: flex; align-items: center; gap: 8px;
+}
+.queue-live-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 20px;
+  background: #DCFCE7; color: #16A34A;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+}
+.queue-count {
+  font-size: 0.72rem; color: #9CA3AF; font-weight: 500;
+}
+
+/* Stat Cards Row */
+.sched-stats-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.sched-stat-card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 18px;
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.sched-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+}
+.sched-stat-card::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 0 0 18px 18px;
+}
+.ssc-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; margin-bottom: 0.875rem;
+}
+.ssc-val {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.75rem; font-weight: 800; line-height: 1;
+  margin-bottom: 3px; letter-spacing: -0.03em;
+}
+.ssc-lbl { font-size: 0.72rem; color: #9CA3AF; font-weight: 500; }
+.ssc-trend {
+  position: absolute; top: 1rem; right: 1rem;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 6px;
+}
+
+/* Timeline visual */
+.sched-timeline {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  position: relative; overflow: hidden;
+}
+.timeline-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.timeline-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 0.95rem; font-weight: 700; color: #0D0D14;
+}
+.timeline-sub { font-size: 0.7rem; color: #9CA3AF; margin-top: 2px; }
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 48px repeat(7, 1fr);
+  gap: 4px;
+}
+.tg-time {
+  font-size: 0.6rem; color: #9CA3AF; font-weight: 600;
+  display: flex; align-items: center;
+  font-family: monospace;
+}
+.tg-day-head {
+  text-align: center; font-size: 0.62rem; font-weight: 700;
+  color: #9CA3AF; padding-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+.tg-cell {
+  height: 28px; border-radius: 6px;
+  position: relative; cursor: pointer;
+  transition: all 0.2s;
+}
+.tg-cell.empty { background: #F9FAFB; border: 1px dashed #E5E7EB; }
+.tg-cell.empty:hover { background: #F5F3FF; border-color: #7C3AED50; }
+.tg-cell.has-post { display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+.tg-cell.has-post:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.tg-tooltip {
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: #0D0D14; color: white; font-size: 0.6rem;
+  padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  z-index: 10;
+}
+.tg-cell:hover .tg-tooltip { opacity: 1; }
+
+/* AI Optimizer card */
+.sched-optimizer {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.opt-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.opt-icon {
+  width: 44px; height: 44px; border-radius: 14px;
+  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+}
+.opt-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1rem; font-weight: 700; color: #0D0D14;
+}
+.opt-sub { font-size: 0.72rem; color: #9CA3AF; margin-top: 2px; }
+.opt-platform-row {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.125rem;
+}
+.opt-plat-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 600;
+  border: 1.5px solid; cursor: pointer;
+  transition: all 0.2s;
+}
+.opt-time-slots {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.opt-slot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 12px;
+  transition: all 0.25s; cursor: pointer;
+}
+.opt-slot:hover { transform: translateX(4px); }
+.opt-slot-rank {
+  width: 20px; height: 20px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 800; flex-shrink: 0;
+}
+.opt-slot-time {
+  font-size: 0.78rem; font-weight: 700; color: #0D0D14;
+  font-family: monospace; flex-shrink: 0; min-width: 65px;
+}
+.opt-slot-bar-wrap {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: #F3F4F6; overflow: hidden;
+}
+.opt-slot-bar { height: 100%; border-radius: 3px; }
+.opt-slot-pct {
+  font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+}
+.opt-slot-tag {
+  font-size: 0.58rem; font-weight: 700;
+  padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
+}
+
+/* Approve queue */
+.sched-approve {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.approve-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.approve-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 0.95rem; font-weight: 700; color: #0D0D14;
+}
+.approve-badge {
+  background: #FEF3C7; color: #D97706;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 3px 8px; border-radius: 8px;
+}
+.approve-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1.5px solid;
+  transition: all 0.25s; cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.approve-item:hover { transform: translateX(3px); }
+.approve-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; border-radius: 0 2px 2px 0;
+}
+.approve-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.approve-content { flex: 1; overflow: hidden; }
+.approve-plat { font-size: 0.68rem; font-weight: 700; margin-bottom: 1px; }
+.approve-text {
+  font-size: 0.75rem; color: #6B7280;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.approve-time { font-size: 0.65rem; color: #9CA3AF; font-family: monospace; flex-shrink: 0; }
+.approve-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.approve-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
+}
+.approve-btn:hover { transform: scale(1.15); }
 
 /* ─── FEATURES ─── */
 .features-section { padding: 100px 5%; background: white; }
@@ -896,6 +1519,9 @@ footer {
   .popular-card { transform: none; }
   .popular-card:hover { transform: translateY(-4px); }
   .testi-grid-new { grid-template-columns: 1fr; }
+  .sched-bento { grid-template-columns: 1fr; }
+  .sched-queue { grid-column: 1; }
+  .sched-stats-row { grid-template-columns: repeat(2,1fr); grid-column: 1; }
 }
 @media (max-width: 640px) {
   .nav-links, .nav-cta { display: none; }
@@ -904,14 +1530,8 @@ footer {
   .hero-metrics { flex-wrap: wrap; }
   .hero-metric { min-width: 50%; border-bottom: 1px solid var(--border); }
   .how-grid { grid-template-columns: 1fr; }
+  .sched-stats-row { grid-template-columns: 1fr 1fr; }
 }
-
-
-
-
-
-
-   
       `}</style>
 
       {/* ── NAV ── */}
@@ -921,7 +1541,7 @@ footer {
           {navLinks.map(l => <li key={l}><a href={`#${l.toLowerCase()}`}>{l}</a></li>)}
         </ul>
         <Link href='/dashboard'>
-        <button className="nav-cta">Start Free →</button>
+          <button className="nav-cta">Start Free →</button>
         </Link>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <span /><span /><span />
@@ -929,84 +1549,77 @@ footer {
       </nav>
       <div className={`mobile-menu${menuOpen ? " open" : ""}`}>
         {navLinks.map(l => <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{l}</a>)}
-       <Link href='/dashboard'>
-        <button className="btn-primary" style={{ justifyContent: "center" }}>Start Free →</button>
+        <Link href='/dashboard'>
+          <button className="btn-primary" style={{ justifyContent: "center" }}>Start Free →</button>
         </Link>
       </div>
 
       {/* ── HERO ── */}
-    {/* ── HERO ── */}
-<section className="hero">
-  <div className="hero-noise" />
-  <div className="hero-aurora" />
-  <div className="hero-grid-lines" />
-  <div className="hero-inner">
-    {/* Left */}
-    <div>
-      <div className="hero-pill">
-        <span className="pill-badge">New</span>
-        <span className="pill-text">AI-powered scheduling is live ✨</span>
-      </div>
-      <h1 className="hero-title display">
-        Schedule smarter.<br />
-        Grow <em>every</em><br />
-        social channel.
-      </h1>
-      <p className="hero-sub">
-        One beautiful dashboard to plan, publish, and grow across Instagram, Twitter, LinkedIn, TikTok, and 8 more — powered by AI.
-      </p>
-      <div className="hero-actions">
-        <Link href='/dashboard'>
-        <button className="btn-primary"><span>🚀 Start for Free</span></button>
-        </Link>
-        <button className="btn-ghost">▶ Watch Demo</button>
-      </div>
-    
-    
-    </div>
-
-    {/* Right — Dashboard */}
-    <div className="hero-visual">
-      <div className="dash-outer">
-        <div style={{ position: "relative" }}>
-          <div className="float-badge fb-top">
-            <div className="fb-label">Today's Posts</div>
-            <div className="fb-value" style={{ color: "#A78BFA" }}>24 📅</div>
+      <section className="hero">
+        <div className="hero-noise" />
+        <div className="hero-aurora" />
+        <div className="hero-grid-lines" />
+        <div className="hero-inner">
+          <div>
+            <div className="hero-pill">
+              <span className="pill-badge">New</span>
+              <span className="pill-text">AI-powered scheduling is live ✨</span>
+            </div>
+            <h1 className="hero-title display">
+              Schedule smarter.<br />
+              Grow <em>every</em><br />
+              social channel.
+            </h1>
+            <p className="hero-sub">
+              One beautiful dashboard to plan, publish, and grow across Instagram, Twitter, LinkedIn, TikTok, and 8 more — powered by AI.
+            </p>
+            <div className="hero-actions">
+              <Link href='/dashboard'>
+                <button className="btn-primary"><span>🚀 Start for Free</span></button>
+              </Link>
+              <button className="btn-ghost">▶ Watch Demo</button>
+            </div>
           </div>
-          <div className="dash-wrap">
-            <div className="dash-topbar">
-              <div className="window-dots">
-                <div className="wd wd-r" /><div className="wd wd-y" /><div className="wd wd-g" />
-              </div>
-              <span className="dash-label">Platform Overview</span>
-              <div className="dash-live">
-                <span className="live-dot" />
-                Live
+          <div className="hero-visual">
+            <div className="dash-outer">
+              <div style={{ position: "relative" }}>
+                <div className="float-badge fb-top">
+                  <div className="fb-label">Today's Posts</div>
+                  <div className="fb-value" style={{ color: "#A78BFA" }}>24 📅</div>
+                </div>
+                <div className="dash-wrap">
+                  <div className="dash-topbar">
+                    <div className="window-dots">
+                      <div className="wd wd-r" /><div className="wd wd-y" /><div className="wd wd-g" />
+                    </div>
+                    <span className="dash-label">Platform Overview</span>
+                    <div className="dash-live">
+                      <span className="live-dot" />Live
+                    </div>
+                  </div>
+                  {platforms.slice(0, 5).map(p => (
+                    <div className="plat-item" key={p.name}>
+                      <span className="plat-emoji">{p.icon}</span>
+                      <div className="plat-info">
+                        <div className="plat-name-d">{p.name}</div>
+                        <div className="plat-handle">{p.handle}</div>
+                      </div>
+                      <div className="plat-progress">
+                        <div className="plat-progress-fill" style={{ width: `${(p.posts / 400) * 100}%`, background: p.color }} />
+                      </div>
+                      <span className="plat-reach" style={{ color: p.color }}>{p.reach}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="float-badge fb-bot">
+                  <div className="fb-label">Avg. Engagement</div>
+                  <div className="fb-value" style={{ color: "#34D399" }}>+8.4% 📈</div>
+                </div>
               </div>
             </div>
-            {platforms.slice(0, 5).map(p => (
-              <div className="plat-item" key={p.name}>
-                <span className="plat-emoji">{p.icon}</span>
-                <div className="plat-info">
-                  <div className="plat-name-d">{p.name}</div>
-                  <div className="plat-handle">{p.handle}</div>
-                </div>
-                <div className="plat-progress">
-                  <div className="plat-progress-fill" style={{ width: `${(p.posts / 400) * 100}%`, background: p.color }} />
-                </div>
-                <span className="plat-reach" style={{ color: p.color }}>{p.reach}</span>
-              </div>
-            ))}
-          </div>
-          <div className="float-badge fb-bot">
-            <div className="fb-label">Avg. Engagement</div>
-            <div className="fb-value" style={{ color: "#34D399" }}>+8.4% 📈</div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* ── LOGO MARQUEE ── */}
       <div className="marquee-section">
@@ -1020,7 +1633,202 @@ footer {
         </div>
       </div>
 
-    
+      {/* ══════════════════════════════════════════
+          ── SCHEDULING SHOWCASE SECTION (NEW) ──
+      ══════════════════════════════════════════ */}
+      <section className="scheduling-section" id="scheduling">
+        <div className="scheduling-bg" />
+        <div className="scheduling-inner">
+
+          {/* Section Header */}
+          <div
+            id="sched-hd"
+            ref={setRef("sched-hd")}
+            className={`ani${isVisible("sched-hd") ? " visible" : ""}`}
+            style={{ maxWidth: 640, marginBottom: "1rem" }}
+          >
+            <div className="section-tag-new"><span className="tag-line" />Post Scheduling</div>
+            <h2 className="section-title-new display">
+              Your content, perfectly<br />timed. Every single time.
+            </h2>
+            <p className="section-sub-new">
+              Drag, drop, and let AI handle the rest. Our intelligent scheduler learns your audience patterns and posts when they're most likely to engage.
+            </p>
+          </div>
+
+          {/* Bento Grid */}
+          <div className="sched-bento">
+
+            {/* ── Live Queue Strip (full width) ── */}
+            <div
+              id="sched-queue"
+              ref={setRef("sched-queue")}
+              className={`sched-queue ani${isVisible("sched-queue") ? " visible" : ""}`}
+            >
+              <div className="queue-header">
+                <div className="queue-title">
+                  📡 Live Publishing Queue
+                  <span className="queue-live-badge">
+                    <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#16A34A", display: "inline-block", animation: "pulse 1.5s infinite" }} />
+                    LIVE
+                  </span>
+                </div>
+                <span className="queue-count">18 posts in queue · Next: 9:00 AM</span>
+              </div>
+              <QueueStrip />
+            </div>
+
+            {/* ── Left: Interactive Calendar + Post Preview ── */}
+            <div
+              id="sched-main"
+              ref={setRef("sched-main")}
+              className={`ani d1${isVisible("sched-main") ? " visible" : ""}`}
+            >
+              <SchedulingShowcase />
+            </div>
+
+            {/* ── Right column: Timeline Grid + Approve Queue ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+
+              {/* Weekly Timeline Grid */}
+              <div
+                id="sched-timeline"
+                ref={setRef("sched-timeline")}
+                className={`sched-timeline ani d2${isVisible("sched-timeline") ? " visible" : ""}`}
+              >
+                <div className="timeline-header">
+                  <div>
+                    <div className="timeline-title">This Week's Schedule</div>
+                    <div className="timeline-sub">Click a slot to add a post</div>
+                  </div>
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 6,
+                    fontSize: "0.72rem", color: "#9CA3AF",
+                  }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#E1306C" }} />IG
+                    </div>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#1DA1F2" }} />TW
+                    </div>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#0A66C2" }} />LI
+                    </div>
+                  </div>
+                </div>
+
+                {/* Grid */}
+                <div className="timeline-grid">
+                  {/* Header row */}
+                  <div />
+                  {weekDays.map(d => (
+                    <div key={d} className="tg-day-head">{d}</div>
+                  ))}
+
+                  {/* Time rows */}
+                  {timeSlots.map((time, ti) => {
+                    const postMap = {
+                      "8 AM": { 0: { color: "#E1306C", icon: "📸" }, 2: { color: "#0A66C2", icon: "💼" } },
+                      "10 AM": { 1: { color: "#1DA1F2", icon: "🐦" }, 4: { color: "#FF0050", icon: "🎵" } },
+                      "12 PM": { 0: { color: "#1877F2", icon: "📘" }, 3: { color: "#E1306C", icon: "📸" } },
+                      "2 PM": { 2: { color: "#1DA1F2", icon: "🐦" }, 5: { color: "#0A66C2", icon: "💼" } },
+                      "4 PM": { 1: { color: "#FF0050", icon: "🎵" }, 6: { color: "#E60023", icon: "📌" } },
+                      "6 PM": { 3: { color: "#1DA1F2", icon: "🐦" }, 4: { color: "#E1306C", icon: "📸" } },
+                      "8 PM": { 0: { color: "#FF0050", icon: "🎵" }, 5: { color: "#1877F2", icon: "📘" } },
+                    };
+                    const rowPosts = postMap[time] || {};
+                    return (
+                      <>
+                        <div key={`time-${ti}`} className="tg-time">{time}</div>
+                        {weekDays.map((_, di) => {
+                          const post = rowPosts[di];
+                          return (
+                            <div
+                              key={`cell-${ti}-${di}`}
+                              className={`tg-cell ${post ? "has-post" : "empty"}`}
+                              style={post ? { background: `${post.color}18`, border: `1.5px solid ${post.color}40` } : {}}
+                            >
+                              {post && (
+                                <>
+                                  <span style={{ fontSize: "0.75rem" }}>{post.icon}</span>
+                                  <div className="tg-tooltip">{time} · {weekDays[di]}</div>
+                                </>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Approve Queue */}
+              <div
+                id="sched-approve"
+                ref={setRef("sched-approve")}
+                className={`sched-approve ani d3${isVisible("sched-approve") ? " visible" : ""}`}
+              >
+                <div className="approve-header">
+                  <div className="approve-title">⏳ Awaiting Approval</div>
+                  <span className="approve-badge">3 pending</span>
+                </div>
+                {scheduledPosts.slice(1, 4).map((p, i) => (
+                  <div
+                    key={p.id}
+                    className="approve-item"
+                    style={{ background: `${p.color}05`, borderColor: `${p.color}20` }}
+                  >
+                    <div style={{
+                      position: "absolute", left: 0, top: 0, bottom: 0,
+                      width: 3, background: p.color, borderRadius: "0 2px 2px 0",
+                    }} />
+                    <div className="approve-icon" style={{ background: `${p.color}15` }}>{p.icon}</div>
+                    <div className="approve-content">
+                      <div className="approve-plat" style={{ color: p.color }}>{p.platform}</div>
+                      <div className="approve-text">{p.content}</div>
+                    </div>
+                    <div className="approve-time">{p.day} {p.time}</div>
+                    <div className="approve-actions">
+                      <button className="approve-btn" style={{ background: "#DCFCE7", color: "#16A34A" }} title="Approve">✓</button>
+                      <button className="approve-btn" style={{ background: "#FEE2E2", color: "#DC2626" }} title="Reject">✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Stats Row (full width) ── */}
+            <div
+              id="sched-stats"
+              ref={setRef("sched-stats")}
+              className={`sched-stats-row ani${isVisible("sched-stats") ? " visible" : ""}`}
+            >
+              {[
+                { icon: "📅", val: "2.4M+", lbl: "Posts Scheduled", color: "#7C3AED", bg: "#F5F3FF", trend: "+12%", trendBg: "#F5F3FF", trendColor: "#7C3AED" },
+                { icon: "⏱️", val: "3 hrs", lbl: "Saved Per Week", color: "#DB2777", bg: "#FDF2F8", trend: "avg", trendBg: "#FDF2F8", trendColor: "#DB2777" },
+                { icon: "📈", val: "3.2×", lbl: "More Reach", color: "#059669", bg: "#ECFDF5", trend: "vs manual", trendBg: "#ECFDF5", trendColor: "#059669" },
+                { icon: "🤖", val: "98%", lbl: "AI Accuracy", color: "#D97706", bg: "#FFFBEB", trend: "best time", trendBg: "#FFFBEB", trendColor: "#D97706" },
+              ].map((s, i) => (
+                <div
+                  key={s.lbl}
+                  className="sched-stat-card"
+                  style={{ "--card-color": s.color }}
+                >
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: s.color, borderRadius: "0 0 18px 18px" }} />
+                  <div className="ssc-icon" style={{ background: s.bg }}>
+                    <span>{s.icon}</span>
+                  </div>
+                  <div className="ssc-val" style={{ color: s.color }}>{s.val}</div>
+                  <div className="ssc-lbl">{s.lbl}</div>
+                  <div className="ssc-trend" style={{ background: s.trendBg, color: s.trendColor }}>{s.trend}</div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* ── FEATURES ── */}
       <section className="features-section" id="features">
@@ -1040,14 +1848,13 @@ footer {
                 key={f.title}
                 id={`feat-${i}`}
                 ref={setRef(`feat-${i}`)}
-                className={`feat-card-new ani d${(i%3)+1}${isVisible(`feat-${i}`) ? " visible" : ""}`}
-                style={{ "--hover-border": f.accent }}
+                className={`feat-card-new ani d${(i % 3) + 1}${isVisible(`feat-${i}`) ? " visible" : ""}`}
                 onMouseEnter={() => setHoveredFeature(i)}
                 onMouseLeave={() => setHoveredFeature(null)}
               >
                 <div className="feat-preview-new" style={{ background: hoveredFeature === i ? f.light : "var(--surface)" }}>
                   <div className="feat-number">{f.number}</div>
-                  <div className="feat-preview-inner" style={{ position: "relative", zIndex: 1 }}>
+                  <div style={{ position: "relative", zIndex: 1 }}>
                     <div className="feat-tag-new" style={{ color: f.accent, borderColor: `${f.accent}35`, background: `${f.accent}10` }}>{f.tag}</div>
                     <FeatureVisual visual={f.visual} accent={f.accent} />
                   </div>
@@ -1085,7 +1892,7 @@ footer {
                 key={h.step}
                 id={`how-${i}`}
                 ref={setRef(`how-${i}`)}
-                className={`how-card ani d${i+1}${isVisible(`how-${i}`) ? " visible" : ""}`}
+                className={`how-card ani d${i + 1}${isVisible(`how-${i}`) ? " visible" : ""}`}
               >
                 <div className="how-step-wrap" style={{ borderColor: `${h.color}30`, background: `${h.color}08` }}>
                   <span style={{ fontSize: "1.6rem" }}>{h.icon}</span>
@@ -1147,12 +1954,12 @@ footer {
               </div>
               <div className="cal-header">{platforms[activeTab].name} Calendar — {new Date().toLocaleString("default", { month: "long", year: "numeric" })}</div>
               <div className="cal-grid-new">
-                {["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => (
+                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(d => (
                   <div key={d} className="cal-day-label">{d}</div>
                 ))}
                 {Array.from({ length: 35 }, (_, i) => {
                   const day = i - 3;
-                  const hasPost = [2,5,7,11,14,16,19,21,24,26,28].includes(day);
+                  const hasPost = [2, 5, 7, 11, 14, 16, 19, 21, 24, 26, 28].includes(day);
                   const isToday = day === 15;
                   return (
                     <div
@@ -1189,7 +1996,7 @@ footer {
                 key={plan.name}
                 id={`plan-${i}`}
                 ref={setRef(`plan-${i}`)}
-                className={`price-card${plan.popular ? " popular-card" : ""} ani d${i+1}${isVisible(`plan-${i}`) ? " visible" : ""}`}
+                className={`price-card${plan.popular ? " popular-card" : ""} ani d${i + 1}${isVisible(`plan-${i}`) ? " visible" : ""}`}
               >
                 {plan.popular && <div className="popular-label">Most Popular</div>}
                 <div className="price-accent-bar" style={{ background: plan.popular ? `linear-gradient(90deg, #7C3AED, #DB2777)` : plan.accent }} />
@@ -1232,7 +2039,7 @@ footer {
                 key={t.name}
                 id={`testi-${i}`}
                 ref={setRef(`testi-${i}`)}
-                className={`testi-card-new ani d${i+1}${isVisible(`testi-${i}`) ? " visible" : ""}`}
+                className={`testi-card-new ani d${i + 1}${isVisible(`testi-${i}`) ? " visible" : ""}`}
               >
                 <div className="testi-accent-strip" style={{ background: t.color }} />
                 <div className="testi-stars">
