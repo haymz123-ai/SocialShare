@@ -10,11 +10,11 @@ const PLATFORMS = [
   { id: 'linkedin',  label: 'LinkedIn',   color: '#0A66C2' },
   { id: 'tiktok',    label: 'TikTok',     color: '#FF0050' },
   { id: 'youtube',   label: 'YouTube',    color: '#FF0000' },
-  { id: 'threads',   label: 'Threads',    color: '#888' },
+  { id: 'threads',   label: 'Threads',    color: '#555' },
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023' },
 ]
 
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#a78bfa' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF' }
 
 const PLATFORM_ICONS = {
   instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
@@ -35,14 +35,14 @@ function PlatformIcon({ id, size = 14, color }) {
 
 function StatusBadge({ status }) {
   const map = {
-    active:     { bg: 'rgba(34,197,94,0.1)',  color: '#4ade80', dot: '#4ade80' },
-    expired:    { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', dot: '#fbbf24' },
-    inactive:   { bg: 'rgba(239,68,68,0.1)',  color: '#f87171', dot: '#f87171' },
-    published:  { bg: 'rgba(34,197,94,0.1)',  color: '#4ade80', dot: '#4ade80' },
-    scheduled:  { bg: 'rgba(96,165,250,0.1)', color: '#60a5fa', dot: '#60a5fa' },
-    draft:      { bg: 'rgba(255,255,255,0.05)',color: 'rgba(240,237,232,0.45)', dot: 'rgba(240,237,232,0.3)' },
-    failed:     { bg: 'rgba(239,68,68,0.1)',  color: '#f87171', dot: '#f87171' },
-    processing: { bg: 'rgba(167,139,250,0.12)',color: '#a78bfa', dot: '#a78bfa' },
+    active:     { bg: '#dcfce7', color: '#15803d', dot: '#22c55e' },
+    expired:    { bg: '#fef9c3', color: '#a16207', dot: '#eab308' },
+    inactive:   { bg: '#fee2e2', color: '#dc2626', dot: '#ef4444' },
+    published:  { bg: '#dcfce7', color: '#15803d', dot: '#22c55e' },
+    scheduled:  { bg: '#ede9fe', color: '#6d28d9', dot: '#7c3aed' },
+    draft:      { bg: '#f1f5f9', color: '#64748b', dot: '#94a3b8' },
+    failed:     { bg: '#fee2e2', color: '#dc2626', dot: '#ef4444' },
+    processing: { bg: '#f3e8ff', color: '#7c3aed', dot: '#a855f7' },
   }
   const st = map[status] || map.processing
   return (
@@ -52,7 +52,7 @@ function StatusBadge({ status }) {
       background: st.bg, color: st.color,
       letterSpacing: '0.05em', textTransform: 'uppercase', whiteSpace: 'nowrap',
     }}>
-      <span style={{ width: 4, height: 4, borderRadius: '50%', background: st.dot, flexShrink: 0 }} />
+      <span style={{ width: 5, height: 5, borderRadius: '50%', background: st.dot, flexShrink: 0 }} />
       {status}
     </span>
   )
@@ -60,10 +60,11 @@ function StatusBadge({ status }) {
 
 const StatIcon = ({ children, color }) => (
   <div style={{
-    width: 38, height: 38, borderRadius: 11,
-    background: color + '15',
+    width: 40, height: 40, borderRadius: 12,
+    background: color + '18',
+    border: `1.5px solid ${color}30`,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: 17, flexShrink: 0,
+    fontSize: 18, flexShrink: 0,
   }}>{children}</div>
 )
 
@@ -73,7 +74,6 @@ export default function OverviewPage() {
   const [posts, setPosts] = useState([])
   const [loadingProfiles, setLoadingProfiles] = useState(false)
   const [loadingPosts, setLoadingPosts] = useState(false)
-  const [hasLoaded, setHasLoaded] = useState(false)
 
   const fetchProfiles = useCallback(async (groupId) => {
     setLoadingProfiles(true)
@@ -91,15 +91,12 @@ export default function OverviewPage() {
     setLoadingPosts(false)
   }, [])
 
-  // Only fetch once when group first selected, not on every render
   useEffect(() => {
     if (!selectedGroup) return
     setProfiles([])
     setPosts([])
-    setHasLoaded(false)
     fetchProfiles(selectedGroup.id)
     fetchPosts(selectedGroup.id)
-    setHasLoaded(true)
   }, [selectedGroup?.id])
 
   const handleRefresh = () => {
@@ -112,76 +109,79 @@ export default function OverviewPage() {
 
   const connectedPlatforms = profiles.map(p => p.platform)
   const activeCount = profiles.filter(p => p.status === 'active').length
-  const publishedCount = posts.filter(p => p.status === 'published' || p.status === 'processed').length
 
   const stats = [
-    { label: 'Connected Profiles', value: profiles.length, icon: '◈', color: '#a78bfa', accent: '#7c3aed' },
-    { label: 'Active Accounts', value: activeCount, icon: '⚡', color: '#4ade80', accent: '#16a34a' },
-    { label: 'Total Posts', value: posts.length, icon: '▤', color: '#60a5fa', accent: '#2563eb' },
-    { label: 'Platforms Covered', value: connectedPlatforms.length, icon: '✦', color: '#fb923c', accent: '#ea580c' },
+    { label: 'Connected Profiles', value: profiles.length, icon: '◈', color: '#6C63FF', grad: 'linear-gradient(135deg, #6C63FF 0%, #A78BFA 100%)' },
+    { label: 'Active Accounts',    value: activeCount,      icon: '⚡', color: '#059669', grad: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
+    { label: 'Total Posts',        value: posts.length,     icon: '▤', color: '#dc2626', grad: 'linear-gradient(135deg, #f87171 0%, #dc2626 100%)' },
+    { label: 'Platforms Covered',  value: connectedPlatforms.length, icon: '✦', color: '#db2777', grad: 'linear-gradient(135deg, #f472b6 0%, #7c3aed 100%)' },
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28, background: '#f8f7ff', minHeight: '100%', padding: 2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0}100%{background-position:400% 0} }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
         .ov-stat { animation: fadeUp 0.4s ease both; }
-        .ov-stat:nth-child(2){animation-delay:0.06s}
-        .ov-stat:nth-child(3){animation-delay:0.12s}
-        .ov-stat:nth-child(4){animation-delay:0.18s}
-        .ov-profile:hover { transform:translateY(-1px); border-color:rgba(167,139,250,0.25) !important; }
-        .ov-profile { transition: transform 0.2s, border-color 0.2s; }
-        .ov-plat:hover { transform:scale(1.03); }
-        .ov-plat { transition: transform 0.15s, background 0.15s; }
-        .ov-post:hover { background:rgba(255,255,255,0.05) !important; }
-        .ov-post { transition: background 0.15s; }
-        .ov-skeleton { background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.03) 75%); background-size:400% 100%; animation:shimmer 2s ease infinite; border-radius:12px; }
+        .ov-stat:nth-child(2){animation-delay:0.07s}
+        .ov-stat:nth-child(3){animation-delay:0.14s}
+        .ov-stat:nth-child(4){animation-delay:0.21s}
+        .ov-profile:hover { transform:translateY(-2px); box-shadow: 0 6px 20px rgba(108,99,255,0.12); border-color: rgba(108,99,255,0.3) !important; }
+        .ov-profile { transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        .ov-plat:hover { transform:scale(1.04); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+        .ov-plat { transition: transform 0.15s, box-shadow 0.15s; }
+        .ov-post:hover { background: #f0edff !important; border-color: rgba(108,99,255,0.25) !important; }
+        .ov-post { transition: background 0.15s, border-color 0.15s; }
+        .ov-skeleton { background:linear-gradient(90deg,#f0edff 25%,#e8e4ff 50%,#f0edff 75%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; border-radius:12px; }
         .ov-dot-pulse { animation:pulse 2s ease infinite; }
-        .ov-refresh:hover { border-color:rgba(167,139,250,0.3) !important; color:rgba(167,139,250,0.8) !important; background:rgba(167,139,250,0.06) !important; }
+        .ov-refresh:hover { border-color: #6C63FF !important; color: #6C63FF !important; background: #f0edff !important; }
+        .ov-refresh { transition: all 0.18s; }
+        .ov-card { background: #ffffff; border: 1.5px solid #e8e4ff; border-radius: 18px; box-shadow: 0 2px 20px rgba(108,99,255,0.07); }
       `}</style>
 
-      {/* Header greeting */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: '#F0EDE8', letterSpacing: '-0.03em', margin: 0, fontFamily: "'Syne',sans-serif" }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1a1040', letterSpacing: '-0.03em', margin: 0 }}>
             Overview
           </h1>
-          <p style={{ fontSize: 13, color: 'rgba(240,237,232,0.35)', margin: '4px 0 0', fontWeight: 400 }}>
+          <p style={{ fontSize: 13, color: '#7c6fa0', margin: '4px 0 0', fontWeight: 500 }}>
             {selectedGroup.name} · {new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })}
           </p>
         </div>
         <button
           className="ov-refresh"
           onClick={handleRefresh}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 16px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:12, cursor:'pointer', fontFamily:'inherit', fontWeight:500, transition:'all 0.15s' }}
+          style={{ display:'flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:10, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
         >
-          <span style={{ fontSize:14 }}>↻</span> Refresh
+          <span style={{ fontSize:15 }}>↻</span> Refresh
         </button>
       </div>
 
       {/* Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14 }}>
-        {stats.map((stat, i) => (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(165px, 1fr))', gap: 14 }}>
+        {stats.map((stat) => (
           <div key={stat.label} className="ov-stat" style={{
-            background: 'rgba(255,255,255,0.025)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: 18, padding: '20px 22px',
+            background: '#ffffff',
+            border: '1.5px solid #e8e4ff',
+            boxShadow: '0 2px 16px rgba(108,99,255,0.07)',
+            padding: '22px 22px 18px',
+            borderRadius: 18,
             position: 'relative', overflow: 'hidden',
           }}>
-            <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:`linear-gradient(90deg, ${stat.color}, ${stat.accent}33)` }} />
+            <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background: stat.grad, borderRadius: '18px 18px 0 0' }} />
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
               <StatIcon color={stat.color}>{stat.icon}</StatIcon>
               {loadingProfiles ? (
-                <div className="ov-skeleton" style={{ width:40, height:32 }} />
+                <div className="ov-skeleton" style={{ width:42, height:34 }} />
               ) : (
-                <span style={{ fontSize:30, fontWeight:800, color:stat.color, letterSpacing:'-0.04em', lineHeight:1 }}>
+                <span style={{ fontSize:32, fontWeight:900, color: stat.color, letterSpacing:'-0.05em', lineHeight:1 }}>
                   {stat.value}
                 </span>
               )}
             </div>
-            <div style={{ fontSize:12, color:'rgba(240,237,232,0.38)', fontWeight:500 }}>{stat.label}</div>
+            <div style={{ fontSize:12, color:'#7c6fa0', fontWeight:600, letterSpacing:'0.01em' }}>{stat.label}</div>
           </div>
         ))}
       </div>
@@ -190,48 +190,46 @@ export default function OverviewPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 18 }}>
 
         {/* Connected Profiles */}
-        <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, overflow:'hidden' }}>
-          <div style={{ padding:'18px 20px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+        <div className="ov-card" style={{ overflow:'hidden' }}>
+          <div style={{ padding:'18px 20px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1.5px solid #f0edff' }}>
             <div>
-              <h2 style={{ fontSize:14, fontWeight:700, color:'#F0EDE8', margin:0 }}>Connected Profiles</h2>
-              {!loadingProfiles && <p style={{ fontSize:11, color:'rgba(240,237,232,0.3)', margin:'3px 0 0' }}>{activeCount} active · {profiles.length - activeCount} inactive</p>}
+              <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:0 }}>Connected Profiles</h2>
+              {!loadingProfiles && <p style={{ fontSize:12, color:'#9c8fc0', margin:'3px 0 0', fontWeight:500 }}>{activeCount} active · {profiles.length - activeCount} inactive</p>}
             </div>
-            <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-              {!loadingProfiles && profiles.length > 0 && (
-                <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 10px', borderRadius:100, background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.15)' }}>
-                  <span className="ov-dot-pulse" style={{ width:5, height:5, borderRadius:'50%', background:'#4ade80' }} />
-                  <span style={{ fontSize:10, fontWeight:700, color:'#4ade80', letterSpacing:'0.05em' }}>{activeCount} LIVE</span>
-                </div>
-              )}
-            </div>
+            {!loadingProfiles && profiles.length > 0 && (
+              <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:100, background:'#dcfce7', border:'1px solid #bbf7d0' }}>
+                <span className="ov-dot-pulse" style={{ width:6, height:6, borderRadius:'50%', background:'#22c55e' }} />
+                <span style={{ fontSize:10, fontWeight:800, color:'#15803d', letterSpacing:'0.05em' }}>{activeCount} LIVE</span>
+              </div>
+            )}
           </div>
           <div style={{ padding:'12px 14px', display:'flex', flexDirection:'column', gap:8 }}>
             {loadingProfiles ? (
-              [1,2,3].map(i => <div key={i} className="ov-skeleton" style={{ height:62 }} />)
+              [1,2,3].map(i => <div key={i} className="ov-skeleton" style={{ height:64 }} />)
             ) : profiles.length === 0 ? (
-              <div style={{ textAlign:'center', padding:'36px 24px' }}>
-                <div style={{ fontSize:36, marginBottom:10, opacity:0.15 }}>◈</div>
-                <p style={{ fontSize:13, color:'rgba(240,237,232,0.3)', margin:0 }}>No profiles connected yet</p>
-                <p style={{ fontSize:11, color:'rgba(240,237,232,0.18)', margin:'4px 0 0' }}>Connect your social accounts to get started</p>
+              <div style={{ textAlign:'center', padding:'40px 24px' }}>
+                <div style={{ fontSize:38, marginBottom:10, opacity:0.2 }}>◈</div>
+                <p style={{ fontSize:14, color:'#9c8fc0', margin:0, fontWeight:600 }}>No profiles connected yet</p>
+                <p style={{ fontSize:12, color:'#c4b8e0', margin:'4px 0 0' }}>Connect your social accounts to get started</p>
               </div>
             ) : profiles.map(profile => {
               const info = getPlatformInfo(profile.platform)
               return (
                 <div key={profile.id} className="ov-profile" style={{
                   display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
-                  borderRadius:13, background:'rgba(255,255,255,0.025)',
-                  border:'1px solid rgba(255,255,255,0.06)',
+                  borderRadius:13, background:'#faf9ff',
+                  border:'1.5px solid #ede9ff',
                 }}>
                   <div style={{
-                    width:38, height:38, borderRadius:11, flexShrink:0,
-                    background:info.color+'14', border:`1px solid ${info.color}28`,
+                    width:40, height:40, borderRadius:11, flexShrink:0,
+                    background:info.color+'15', border:`1.5px solid ${info.color}30`,
                     display:'flex', alignItems:'center', justifyContent:'center',
                   }}>
-                    <PlatformIcon id={profile.platform} size={15} color={info.color} />
+                    <PlatformIcon id={profile.platform} size={17} color={info.color} />
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:12, fontWeight:600, color:'#F0EDE8', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{info.label}</div>
-                    <div style={{ fontSize:11, color:'rgba(240,237,232,0.33)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:1 }}>{profile.name}</div>
+                    <div style={{ fontSize:13, fontWeight:700, color:'#1a1040', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{info.label}</div>
+                    <div style={{ fontSize:11, color:'#9c8fc0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:2, fontWeight:500 }}>{profile.name}</div>
                   </div>
                   <StatusBadge status={profile.status} />
                 </div>
@@ -240,24 +238,25 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Right column: Platform coverage + Recent Posts */}
+        {/* Right column */}
         <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
 
           {/* Platform Coverage */}
-          <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, padding:'18px 20px' }}>
-            <h2 style={{ fontSize:14, fontWeight:700, color:'#F0EDE8', margin:'0 0 14px' }}>Platform Coverage</h2>
+          <div className="ov-card" style={{ padding:'18px 20px' }}>
+            <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:'0 0 14px' }}>Platform Coverage</h2>
             <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
               {PLATFORMS.map(p => {
                 const connected = connectedPlatforms.includes(p.id)
                 return (
                   <div key={p.id} className="ov-plat" style={{
                     display:'flex', alignItems:'center', gap:7, padding:'6px 12px', borderRadius:100,
-                    border:`1px solid ${connected ? p.color+'35' : 'rgba(255,255,255,0.06)'}`,
-                    background: connected ? p.color+'0d' : 'rgba(255,255,255,0.015)',
+                    border:`1.5px solid ${connected ? p.color+'40' : '#e8e4f0'}`,
+                    background: connected ? p.color+'0f' : '#faf9ff',
+                    cursor: 'default',
                   }}>
-                    <span style={{ width:6, height:6, borderRadius:'50%', background: connected ? p.color : 'rgba(255,255,255,0.15)', flexShrink:0 }} />
-                    <span style={{ fontSize:11, fontWeight:600, color: connected ? '#F0EDE8' : 'rgba(240,237,232,0.25)' }}>{p.label}</span>
-                    {connected && <span style={{ fontSize:9, color:'#4ade80', fontWeight:700 }}>✓</span>}
+                    <span style={{ width:7, height:7, borderRadius:'50%', background: connected ? p.color : '#d1c8e8', flexShrink:0 }} />
+                    <span style={{ fontSize:12, fontWeight:700, color: connected ? '#1a1040' : '#b0a5cc' }}>{p.label}</span>
+                    {connected && <span style={{ fontSize:10, color:'#15803d', fontWeight:800 }}>✓</span>}
                   </div>
                 )
               })}
@@ -265,43 +264,43 @@ export default function OverviewPage() {
           </div>
 
           {/* Recent Posts */}
-          <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, overflow:'hidden', flex:1 }}>
-            <div style={{ padding:'16px 20px 12px', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <h2 style={{ fontSize:14, fontWeight:700, color:'#F0EDE8', margin:0 }}>Recent Posts</h2>
+          <div className="ov-card" style={{ overflow:'hidden', flex:1 }}>
+            <div style={{ padding:'16px 20px 12px', borderBottom:'1.5px solid #f0edff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:0 }}>Recent Posts</h2>
               {!loadingPosts && posts.length > 0 && (
-                <span style={{ fontSize:11, color:'rgba(240,237,232,0.28)' }}>{posts.length} shown</span>
+                <span style={{ fontSize:11, color:'#9c8fc0', fontWeight:600 }}>{posts.length} shown</span>
               )}
             </div>
-            <div style={{ padding:'10px 12px', display:'flex', flexDirection:'column', gap:6 }}>
+            <div style={{ padding:'10px 12px', display:'flex', flexDirection:'column', gap:7 }}>
               {loadingPosts ? (
-                [1,2,3].map(i => <div key={i} className="ov-skeleton" style={{ height:44 }} />)
+                [1,2,3].map(i => <div key={i} className="ov-skeleton" style={{ height:46 }} />)
               ) : posts.length === 0 ? (
-                <div style={{ textAlign:'center', padding:'28px 16px' }}>
-                  <div style={{ fontSize:28, opacity:0.15, marginBottom:8 }}>▤</div>
-                  <p style={{ fontSize:12, color:'rgba(240,237,232,0.28)', margin:0 }}>No posts yet</p>
+                <div style={{ textAlign:'center', padding:'32px 16px' }}>
+                  <div style={{ fontSize:30, opacity:0.2, marginBottom:8 }}>▤</div>
+                  <p style={{ fontSize:13, color:'#9c8fc0', margin:0, fontWeight:600 }}>No posts yet</p>
                 </div>
               ) : posts.map(post => {
                 const platforms = post.platforms || []
                 return (
                   <div key={post.id} className="ov-post" style={{
-                    padding:'10px 12px', borderRadius:11,
-                    background:'rgba(255,255,255,0.02)',
-                    border:'1px solid rgba(255,255,255,0.05)',
+                    padding:'10px 13px', borderRadius:11,
+                    background:'#faf9ff',
+                    border:'1.5px solid #ede9ff',
                     display:'flex', alignItems:'center', gap:10,
                   }}>
                     {platforms.length > 0 && (
-                      <div style={{ display:'flex', gap:-4, flexShrink:0 }}>
+                      <div style={{ display:'flex', flexShrink:0 }}>
                         {platforms.slice(0,3).map((pl,i) => {
                           const info = getPlatformInfo(pl.platform)
                           return (
-                            <div key={pl.platform} style={{ width:20, height:20, borderRadius:6, background:info.color+'18', border:`1px solid ${info.color}30`, display:'flex', alignItems:'center', justifyContent:'center', marginLeft: i>0?-4:0, position:'relative', zIndex:3-i }}>
-                              <PlatformIcon id={pl.platform} size={11} color={info.color} />
+                            <div key={pl.platform} style={{ width:22, height:22, borderRadius:6, background:info.color+'15', border:`1.5px solid ${info.color}30`, display:'flex', alignItems:'center', justifyContent:'center', marginLeft: i>0?-5:0, position:'relative', zIndex:3-i }}>
+                              <PlatformIcon id={pl.platform} size={12} color={info.color} />
                             </div>
                           )
                         })}
                       </div>
                     )}
-                    <p style={{ fontSize:12, color:'rgba(240,237,232,0.5)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', margin:0, flex:1 }}>
+                    <p style={{ fontSize:12, color:'#4a3f6b', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', margin:0, flex:1, fontWeight:500 }}>
                       {post.body || 'Media post'}
                     </p>
                     <StatusBadge status={post.status} />
@@ -314,17 +313,17 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      {/* Quick Insights bar */}
+      {/* Quick Insights */}
       {!loadingProfiles && !loadingPosts && (profiles.length > 0 || posts.length > 0) && (
-        <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
+        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
           {[
-            profiles.filter(p=>p.status==='active').length > 0 && { icon:'⚡', text:`${activeCount} profile${activeCount!==1?'s':''} ready to publish`, color:'#4ade80' },
-            posts.filter(p=>p.status==='scheduled').length > 0 && { icon:'⏰', text:`${posts.filter(p=>p.status==='scheduled').length} post${posts.filter(p=>p.status==='scheduled').length!==1?'s':''} scheduled`, color:'#60a5fa' },
-            posts.filter(p=>p.status==='draft').length > 0 && { icon:'◻', text:`${posts.filter(p=>p.status==='draft').length} draft${posts.filter(p=>p.status==='draft').length!==1?'s':''} waiting`, color:'rgba(240,237,232,0.4)' },
+            profiles.filter(p=>p.status==='active').length > 0 && { icon:'⚡', text:`${activeCount} profile${activeCount!==1?'s':''} ready to publish`, color:'#15803d', bg:'#dcfce7', border:'#bbf7d0' },
+            posts.filter(p=>p.status==='scheduled').length > 0 && { icon:'⏰', text:`${posts.filter(p=>p.status==='scheduled').length} post${posts.filter(p=>p.status==='scheduled').length!==1?'s':''} scheduled`, color:'#6d28d9', bg:'#ede9fe', border:'#ddd6fe' },
+            posts.filter(p=>p.status==='draft').length > 0 && { icon:'◻', text:`${posts.filter(p=>p.status==='draft').length} draft${posts.filter(p=>p.status==='draft').length!==1?'s':''} waiting`, color:'#64748b', bg:'#f1f5f9', border:'#e2e8f0' },
           ].filter(Boolean).map((insight, i) => (
-            <div key={i} style={{ display:'flex', alignItems:'center', gap:7, padding:'8px 14px', borderRadius:100, background:'rgba(255,255,255,0.025)', border:'1px solid rgba(255,255,255,0.07)' }}>
-              <span style={{ fontSize:12 }}>{insight.icon}</span>
-              <span style={{ fontSize:12, color:insight.color, fontWeight:500 }}>{insight.text}</span>
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'9px 16px', borderRadius:100, background: insight.bg, border:`1.5px solid ${insight.border}` }}>
+              <span style={{ fontSize:13 }}>{insight.icon}</span>
+              <span style={{ fontSize:13, color: insight.color, fontWeight:700 }}>{insight.text}</span>
             </div>
           ))}
         </div>
@@ -332,5 +331,3 @@ export default function OverviewPage() {
     </div>
   )
 }
-
-

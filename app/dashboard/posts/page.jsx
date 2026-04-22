@@ -14,7 +14,7 @@ const PLATFORMS = [
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023' },
 ]
 const PLACEMENT_PLATFORMS = ['facebook', 'linkedin', 'pinterest']
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#a78bfa' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF' }
 
 const ACCEPT = 'image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/mpeg'
 
@@ -53,13 +53,13 @@ const TIKTOK_PRIVACY = [
 ]
 
 const STATUS_CONFIG = {
-  published:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
-  processed:  { bg:'rgba(74,222,128,0.1)',   color:'#4ade80', border:'rgba(74,222,128,0.2)',   dot:'#4ade80',  calColor:'#16a34a' },
-  scheduled:  { bg:'rgba(96,165,250,0.1)',   color:'#60a5fa', border:'rgba(96,165,250,0.2)',   dot:'#60a5fa',  calColor:'#2563eb' },
-  pending:    { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
-  draft:      { bg:'rgba(255,255,255,0.05)', color:'rgba(240,237,232,0.45)', border:'rgba(255,255,255,0.08)', dot:'rgba(240,237,232,0.3)', calColor:'#52525b' },
-  failed:     { bg:'rgba(248,113,113,0.1)',  color:'#f87171', border:'rgba(248,113,113,0.2)',  dot:'#f87171',  calColor:'#dc2626' },
-  processing: { bg:'rgba(167,139,250,0.12)', color:'#a78bfa', border:'rgba(167,139,250,0.2)',  dot:'#a78bfa',  calColor:'#7c3aed' },
+  published:  { bg:'rgba(74,222,128,0.1)',   color:'#16a34a', border:'rgba(74,222,128,0.3)',   dot:'#4ade80',  calColor:'#16a34a' },
+  processed:  { bg:'rgba(74,222,128,0.1)',   color:'#16a34a', border:'rgba(74,222,128,0.3)',   dot:'#4ade80',  calColor:'#16a34a' },
+  scheduled:  { bg:'rgba(96,165,250,0.12)',  color:'#2563eb', border:'rgba(96,165,250,0.3)',   dot:'#60a5fa',  calColor:'#2563eb' },
+  pending:    { bg:'rgba(156,143,192,0.1)',  color:'#7c6fa0', border:'rgba(156,143,192,0.2)', dot:'#9c8fc0',  calColor:'#7c6fa0' },
+  draft:      { bg:'rgba(156,143,192,0.1)',  color:'#7c6fa0', border:'rgba(156,143,192,0.2)', dot:'#9c8fc0',  calColor:'#7c6fa0' },
+  failed:     { bg:'rgba(248,113,113,0.1)',  color:'#dc2626', border:'rgba(248,113,113,0.3)',  dot:'#f87171',  calColor:'#dc2626' },
+  processing: { bg:'rgba(108,99,255,0.1)',   color:'#6C63FF', border:'rgba(108,99,255,0.25)', dot:'#6C63FF',  calColor:'#6C63FF' },
 }
 
 function isPostEditable(post) {
@@ -108,39 +108,39 @@ function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
   const ds = displayStatus(post)
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:1100, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.15s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:420, background:'#0d0d1c', border:'1px solid rgba(248,113,113,0.22)', borderRadius:20, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
-        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:13, background:'linear-gradient(135deg,rgba(248,113,113,0.05),transparent)' }}>
-          <div style={{ width:38, height:38, borderRadius:12, background:'rgba(248,113,113,0.12)', border:'1px solid rgba(248,113,113,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17, flexShrink:0 }}>🗑</div>
+    <div style={{ position:'fixed', inset:0, zIndex:1100, background:'rgba(240,237,255,0.7)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.15s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:420, background:'#ffffff', border:'1.5px solid #fcd5d5', borderRadius:20, boxShadow:'0 40px 80px rgba(220,38,38,0.12)', overflow:'hidden' }}>
+        <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid #fce8e8', display:'flex', alignItems:'center', gap:13, background:'linear-gradient(135deg,#fff5f5,#ffffff)' }}>
+          <div style={{ width:38, height:38, borderRadius:12, background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17, flexShrink:0 }}>🗑</div>
           <div>
-            <h2 style={{ fontSize:15, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>Delete {ds === 'draft' ? 'Draft' : ds === 'scheduled' ? 'Scheduled Post' : 'Post'}</h2>
-            <div style={{ fontSize:11, color:'rgba(248,113,113,0.55)', marginTop:2 }}>This action cannot be undone</div>
+            <h2 style={{ fontSize:15, fontWeight:700, color:'#1a1040', margin:0 }}>Delete {ds === 'draft' ? 'Draft' : ds === 'scheduled' ? 'Scheduled Post' : 'Post'}</h2>
+            <div style={{ fontSize:11, color:'#dc2626', marginTop:2, fontWeight:500 }}>This action cannot be undone</div>
           </div>
         </div>
         <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:14 }}>
-          <div style={{ padding:'13px 15px', borderRadius:12, background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)' }}>
-            <p style={{ fontSize:13, color:'rgba(240,237,232,0.65)', margin:'0 0 8px', lineHeight:1.55 }}>
-              {post.body ? <>"{post.body.slice(0, 80)}{post.body.length > 80 ? '…' : ''}"</> : <em style={{ color:'rgba(240,237,232,0.3)' }}>Media-only post</em>}
+          <div style={{ padding:'13px 15px', borderRadius:12, background:'#faf9ff', border:'1.5px solid #e8e4ff' }}>
+            <p style={{ fontSize:13, color:'#4a3f6b', margin:'0 0 8px', lineHeight:1.55 }}>
+              {post.body ? <>"{post.body.slice(0, 80)}{post.body.length > 80 ? '…' : ''}"</> : <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
             </p>
             {post.scheduled_at && (
-              <div style={{ fontSize:11, color:'rgba(96,165,250,0.6)', display:'flex', alignItems:'center', gap:5 }}>
+              <div style={{ fontSize:11, color:'#2563eb', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
                 <span>⏰</span> Scheduled for {new Date(post.scheduled_at).toLocaleString()}
               </div>
             )}
           </div>
-          <p style={{ fontSize:13, color:'rgba(240,237,232,0.45)', margin:0, lineHeight:1.6 }}>
+          <p style={{ fontSize:13, color:'#7c6fa0', margin:0, lineHeight:1.6 }}>
             This will permanently delete this post from Postproxy. It will not be published.
           </p>
           {error && (
-            <div style={{ padding:'10px 13px', borderRadius:10, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:7 }}>
+            <div style={{ padding:'10px 13px', borderRadius:10, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:12, display:'flex', alignItems:'center', gap:7, fontWeight:500 }}>
               <span>⚠</span> {error}
             </div>
           )}
         </div>
         <div style={{ padding:'14px 24px 20px', display:'flex', gap:9, justifyContent:'flex-end' }}>
-          <button onClick={onClose} style={{ padding:'9px 18px', borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-          <button onClick={handleDelete} disabled={deleting} style={{ padding:'9px 22px', borderRadius:10, background:'linear-gradient(135deg,rgba(248,113,113,0.2),rgba(220,38,38,0.15))', border:'1px solid rgba(248,113,113,0.35)', color:'#f87171', fontSize:13, fontWeight:700, cursor:deleting?'not-allowed':'pointer', fontFamily:'inherit', opacity:deleting?0.6:1, display:'flex', alignItems:'center', gap:7 }}>
-            {deleting ? <><span style={{ width:12, height:12, border:'2px solid rgba(248,113,113,0.2)', borderTop:'2px solid #f87171', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Deleting…</> : '🗑 Delete'}
+          <button onClick={onClose} style={{ padding:'9px 18px', borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+          <button onClick={handleDelete} disabled={deleting} style={{ padding:'9px 22px', borderRadius:10, background:'linear-gradient(135deg,#fef2f2,#fee2e2)', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:13, fontWeight:700, cursor:deleting?'not-allowed':'pointer', fontFamily:'inherit', opacity:deleting?0.6:1, display:'flex', alignItems:'center', gap:7 }}>
+            {deleting ? <><span style={{ width:12, height:12, border:'2px solid #fcd5d5', borderTop:'2px solid #dc2626', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Deleting…</> : '🗑 Delete'}
           </button>
         </div>
       </div>
@@ -153,7 +153,7 @@ function StatusBadge({ status, isDraft }) {
   const st = STATUS_CONFIG[effectiveStatus] || STATUS_CONFIG.processing
   const label = effectiveStatus === 'pending' && !isDraft ? 'pending' : effectiveStatus
   return (
-    <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:100, background:st.bg, color:st.color, border:`1px solid ${st.border}`, letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
+    <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10, fontWeight:700, padding:'3px 9px', borderRadius:100, background:st.bg, color:st.color, border:`1.5px solid ${st.border}`, letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
       <span style={{ width:4, height:4, borderRadius:'50%', background:st.dot, flexShrink:0 }} />
       {label}
     </span>
@@ -163,9 +163,9 @@ function StatusBadge({ status, isDraft }) {
 function InputRow({ label, placeholder, value, onChange }) {
   return (
     <div>
-      <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(255,255,255,0.22)', marginBottom:5 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>{label.toUpperCase()}</div>
       <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-        style={{ width:'100%', padding:'8px 11px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, color:'#E8E4DF', fontSize:12, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
+        style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
     </div>
   )
 }
@@ -173,8 +173,8 @@ function InputRow({ label, placeholder, value, onChange }) {
 function CheckRow({ label, checked, onChange }) {
   return (
     <label style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer' }}>
-      <div onClick={() => onChange(!checked)} style={{ width:16, height:16, borderRadius:5, flexShrink:0, border:`2px solid ${checked ? '#a78bfa' : 'rgba(255,255,255,0.18)'}`, background: checked ? 'rgba(167,139,250,0.2)' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#a78bfa' }}>{checked ? '✓' : ''}</div>
-      <span style={{ fontSize:12, color:'rgba(240,237,232,0.45)' }}>{label}</span>
+      <div onClick={() => onChange(!checked)} style={{ width:16, height:16, borderRadius:5, flexShrink:0, border:`2px solid ${checked ? '#6C63FF' : '#c4b5fd'}`, background: checked ? '#ede9fe' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#6C63FF' }}>{checked ? '✓' : ''}</div>
+      <span style={{ fontSize:12, color:'#7c6fa0', fontWeight:500 }}>{label}</span>
     </label>
   )
 }
@@ -189,10 +189,10 @@ function PlatformParamsEditor({ platform, params, onChange }) {
     <div style={{ padding:'12px 14px', display:'flex', flexDirection:'column', gap:10 }}>
       {formats.length > 1 && (
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(255,255,255,0.22)', marginBottom:6 }}>FORMAT</div>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:6 }}>FORMAT</div>
           <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
             {formats.map(f => (
-              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{ padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600, background: currentFormat===f.value ? info.color+'18' : 'rgba(255,255,255,0.03)', border:`1px solid ${currentFormat===f.value ? info.color+'50' : 'rgba(255,255,255,0.08)'}`, color: currentFormat===f.value ? info.color : 'rgba(240,237,232,0.35)', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>{f.icon} {f.label}</button>
+              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{ padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600, background: currentFormat===f.value ? info.color+'18' : '#faf9ff', border:`1.5px solid ${currentFormat===f.value ? info.color+'60' : '#e2dcff'}`, color: currentFormat===f.value ? info.color : '#7c6fa0', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>{f.icon} {f.label}</button>
             ))}
           </div>
         </div>
@@ -206,8 +206,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
       {platform==='youtube' && (<>
         <InputRow label="Video Title" placeholder="My awesome video" value={params.title||''} onChange={v=>set('title',v)} />
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(255,255,255,0.22)', marginBottom:5 }}>PRIVACY</div>
-          <select value={params.privacy_status||'public'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, color:'#E8E4DF', fontSize:12, fontFamily:'inherit', outline:'none', colorScheme:'dark' }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>PRIVACY</div>
+          <select value={params.privacy_status||'public'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none' }}>
             <option value="public">Public</option>
             <option value="unlisted">Unlisted</option>
             <option value="private">Private</option>
@@ -218,8 +218,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
       </>)}
       {platform==='tiktok' && (<>
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(255,255,255,0.22)', marginBottom:5 }}>PRIVACY</div>
-          <select value={params.privacy_status||'PUBLIC_TO_EVERYONE'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:9, color:'#E8E4DF', fontSize:12, fontFamily:'inherit', outline:'none', colorScheme:'dark' }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>PRIVACY</div>
+          <select value={params.privacy_status||'PUBLIC_TO_EVERYONE'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none' }}>
             {TIKTOK_PRIVACY.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
         </div>
@@ -232,7 +232,7 @@ function PlatformParamsEditor({ platform, params, onChange }) {
         <InputRow label="Pin Title" placeholder="My pin title" value={params.title||''} onChange={v=>set('title',v)} />
         <InputRow label="Destination Link" placeholder="https://yoursite.com" value={params.destination_link||''} onChange={v=>set('destination_link',v)} />
       </>)}
-      {platform==='linkedin' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.2)', fontStyle:'italic' }}>Organization ID is set via profile placement above.</div>}
+      {platform==='linkedin' && <div style={{ fontSize:11, color:'#9c8fc0', fontStyle:'italic' }}>Organization ID is set via profile placement above.</div>}
     </div>
   )
 }
@@ -256,42 +256,42 @@ function MediaInput({ files, urls, onFilesChange, onUrlsChange, label='MEDIA' })
 
   return (
     <div>
-      <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:8 }}>{label}</label>
-      <div style={{ display:'flex', gap:4, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:9, padding:3, marginBottom:10, width:'fit-content' }}>
+      <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:8 }}>{label}</label>
+      <div style={{ display:'flex', gap:4, background:'#f8f7ff', border:'1.5px solid #e2dcff', borderRadius:9, padding:3, marginBottom:10, width:'fit-content' }}>
         {[{id:'upload',label:'⬆ Files'},{id:'url',label:'🔗 URL'}].map(t => (
-          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600, background: tab===t.id ? 'rgba(167,139,250,0.12)' : 'transparent', border: tab===t.id ? '1px solid rgba(167,139,250,0.25)' : '1px solid transparent', color: tab===t.id ? '#a78bfa' : 'rgba(240,237,232,0.3)', cursor:'pointer', fontFamily:'inherit' }}>{t.label}</button>
+          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600, background: tab===t.id ? '#ede9fe' : 'transparent', border: tab===t.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', color: tab===t.id ? '#6C63FF' : '#9c8fc0', cursor:'pointer', fontFamily:'inherit' }}>{t.label}</button>
         ))}
       </div>
       {tab==='upload' ? (<>
-        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{ border:`2px dashed ${dragging?'rgba(167,139,250,0.5)':'rgba(255,255,255,0.09)'}`, borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer', background:dragging?'rgba(167,139,250,0.06)':'rgba(255,255,255,0.015)', transition:'all 0.2s' }}>
+        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{ border:`2px dashed ${dragging?'#6C63FF':'#c4b5fd'}`, borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer', background:dragging?'#ede9fe':'#faf9ff', transition:'all 0.2s' }}>
           <input ref={inputRef} type="file" accept={ACCEPT} multiple onChange={handleFileInput} style={{ display:'none' }} />
-          <div style={{ fontSize:22, marginBottom:7, opacity:0.35 }}>🖼</div>
-          <div style={{ fontSize:12, color:'rgba(240,237,232,0.38)' }}>Drop files or click to browse</div>
-          <div style={{ fontSize:10, color:'rgba(255,255,255,0.18)', marginTop:3 }}>JPG, PNG, GIF, WEBP, MP4, MOV</div>
+          <div style={{ fontSize:22, marginBottom:7, opacity:0.5 }}>🖼</div>
+          <div style={{ fontSize:12, color:'#7c6fa0', fontWeight:500 }}>Drop files or click to browse</div>
+          <div style={{ fontSize:10, color:'#b0a5cc', marginTop:3 }}>JPG, PNG, GIF, WEBP, MP4, MOV</div>
         </div>
         {files.length > 0 && (
           <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginTop:10 }}>
             {files.map((file,i) => {
               const isVideo = file.type.startsWith('video/')
               return (
-                <div key={i} style={{ position:'relative', borderRadius:9, overflow:'hidden', border:'1px solid rgba(255,255,255,0.1)' }}>
+                <div key={i} style={{ position:'relative', borderRadius:9, overflow:'hidden', border:'1.5px solid #e2dcff' }}>
                   {isVideo ? (
-                    <div style={{ width:64, height:64, background:'rgba(255,255,255,0.05)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3 }}>
+                    <div style={{ width:64, height:64, background:'#f0edff', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3 }}>
                       <span style={{ fontSize:18 }}>▶</span>
-                      <span style={{ fontSize:8, color:'rgba(255,255,255,0.4)' }}>VIDEO</span>
+                      <span style={{ fontSize:8, color:'#9c8fc0', fontWeight:700 }}>VIDEO</span>
                     </div>
                   ) : (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width:64, height:64, objectFit:'cover', display:'block' }} />
                   )}
-                  <button type="button" onClick={()=>removeFile(i)} style={{ position:'absolute', top:2, right:2, width:15, height:15, borderRadius:'50%', background:'rgba(0,0,0,0.85)', border:'none', color:'#fff', fontSize:9, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+                  <button type="button" onClick={()=>removeFile(i)} style={{ position:'absolute', top:2, right:2, width:15, height:15, borderRadius:'50%', background:'rgba(26,16,64,0.75)', border:'none', color:'#fff', fontSize:9, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
                 </div>
               )
             })}
           </div>
         )}
       </>) : (<>
-        <textarea value={urls} onChange={e=>onUrlsChange(e.target.value)} placeholder={"https://example.com/image.jpg\nhttps://example.com/video.mp4"} rows={2} style={{ width:'100%', padding:'10px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, color:'#E8E4DF', fontSize:13, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
-        <p style={{ fontSize:11, color:'rgba(255,255,255,0.18)', marginTop:5 }}>One URL per line</p>
+        <textarea value={urls} onChange={e=>onUrlsChange(e.target.value)} placeholder={"https://example.com/image.jpg\nhttps://example.com/video.mp4"} rows={2} style={{ width:'100%', padding:'10px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:10, color:'#1a1040', fontSize:13, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+        <p style={{ fontSize:11, color:'#b0a5cc', marginTop:5 }}>One URL per line</p>
       </>)}
     </div>
   )
@@ -322,26 +322,26 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   const info = getPlatformInfo(profile.platform)
 
   if (loading) return (
-    <div style={{ padding:'10px 16px', fontSize:12, color:'rgba(240,237,232,0.25)', display:'flex', alignItems:'center', gap:6 }}>
-      <div style={{ width:10, height:10, border:'1.5px solid rgba(255,255,255,0.12)', borderTop:`1.5px solid ${info.color}`, borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
+    <div style={{ padding:'10px 16px', fontSize:12, color:'#9c8fc0', display:'flex', alignItems:'center', gap:6 }}>
+      <div style={{ width:10, height:10, border:'1.5px solid #e2dcff', borderTop:`1.5px solid ${info.color}`, borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
       Loading {label.toLowerCase()}s…
     </div>
   )
   if (!placements.length) {
-    if (profile.platform==='facebook') return <div style={{ padding:'10px 16px', fontSize:12, color:'#fbbf24' }}>⚠ No Pages found. Reconnect and grant Page access.</div>
-    if (profile.platform==='pinterest') return <div style={{ padding:'10px 16px', fontSize:12, color:'#f87171' }}>⚠ No boards found.</div>
+    if (profile.platform==='facebook') return <div style={{ padding:'10px 16px', fontSize:12, color:'#d97706', fontWeight:500 }}>⚠ No Pages found. Reconnect and grant Page access.</div>
+    if (profile.platform==='pinterest') return <div style={{ padding:'10px 16px', fontSize:12, color:'#dc2626', fontWeight:500 }}>⚠ No boards found.</div>
     return null
   }
   if (placements.length===1) return (
     <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:8, fontSize:12 }}>
-      <span style={{ color:'rgba(240,237,232,0.3)' }}>{label}:</span>
-      <span style={{ color:'#E8E4DF', fontWeight:600 }}>{placements[0].name}</span>
+      <span style={{ color:'#9c8fc0', fontWeight:500 }}>{label}:</span>
+      <span style={{ color:'#1a1040', fontWeight:600 }}>{placements[0].name}</span>
     </div>
   )
   return (
     <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:10 }}>
-      <span style={{ fontSize:12, color:'rgba(240,237,232,0.3)', flexShrink:0 }}>{label}:</span>
-      <select value={value??''} onChange={e=>onChange(e.target.value)} style={{ flex:1, padding:'7px 10px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, color:'#E8E4DF', fontSize:12, fontFamily:'inherit', outline:'none', cursor:'pointer', colorScheme:'dark' }}>
+      <span style={{ fontSize:12, color:'#9c8fc0', flexShrink:0, fontWeight:500 }}>{label}:</span>
+      <select value={value??''} onChange={e=>onChange(e.target.value)} style={{ flex:1, padding:'7px 10px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:8, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none', cursor:'pointer' }}>
         <option value="">— Select {label} —</option>
         {placements.map(pl => <option key={pl.id??'p'} value={pl.id!==null?pl.id:'__personal__'}>{pl.name}</option>)}
       </select>
@@ -349,14 +349,14 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   )
 }
 
-function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onToggle, placements, onPlacementChange, loadedPlacements, onPlacementLoaded, groupId, accentColor='#a78bfa', platformParams, onPlatformParamChange }) {
+function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onToggle, placements, onPlacementChange, loadedPlacements, onPlacementLoaded, groupId, accentColor='#6C63FF', platformParams, onPlatformParamChange }) {
   const [expandedParams, setExpandedParams] = useState({})
   const activeProfiles = profiles.filter(p => p.status==='active')
 
   return (
     <div>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
-        <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)' }}>
+        <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0' }}>
           POST TO {selectedProfileIds.length > 0 && <span style={{ color:accentColor, marginLeft:6 }}>{selectedProfileIds.length} selected</span>}
         </label>
         {activeProfiles.length > 1 && (
@@ -366,18 +366,18 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
             } else {
               activeProfiles.forEach(p => { if (!selectedProfileIds.includes(p.id)) onToggle(p.id) })
             }
-          }} style={{ background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', borderRadius:7, padding:'4px 12px', fontSize:11, color:'rgba(167,139,250,0.75)', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}>
+          }} style={{ background:'#ede9fe', border:'1.5px solid #c4b5fd', borderRadius:7, padding:'4px 12px', fontSize:11, color:'#6C63FF', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}>
             {selectedProfileIds.length===activeProfiles.length ? '✕ Deselect All' : '✓ Select All'}
           </button>
         )}
       </div>
       {loadingProfiles ? (
         <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
-          {[1,2].map(i => <div key={i} style={{ height:52, borderRadius:11, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.06)' }} />)}
+          {[1,2].map(i => <div key={i} style={{ height:52, borderRadius:11, background:'#f0edff', border:'1.5px solid #e2dcff' }} />)}
         </div>
       ) : profiles.length===0 ? (
-        <div style={{ padding:'16px', borderRadius:11, textAlign:'center', background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)' }}>
-          <p style={{ fontSize:13, color:'rgba(240,237,232,0.28)', margin:0 }}>No profiles connected</p>
+        <div style={{ padding:'16px', borderRadius:11, textAlign:'center', background:'#faf9ff', border:'1.5px solid #e2dcff' }}>
+          <p style={{ fontSize:13, color:'#9c8fc0', margin:0, fontWeight:500 }}>No profiles connected</p>
         </div>
       ) : (
         <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
@@ -389,39 +389,39 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
             const isExpanded = expandedParams[profile.id]
             const pp = (platformParams||{})[profile.id] || {}
             return (
-              <div key={profile.id} style={{ borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'45' : 'rgba(255,255,255,0.06)'}`, background: isSelected ? info.color+'07' : 'rgba(255,255,255,0.02)', overflow:'hidden', opacity:inactive?0.45:1, transition:'border-color 0.15s, background 0.15s' }}>
+              <div key={profile.id} style={{ borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'55' : '#e2dcff'}`, background: isSelected ? info.color+'08' : '#faf9ff', overflow:'hidden', opacity:inactive?0.5:1, transition:'border-color 0.15s, background 0.15s' }}>
                 <div onClick={() => !inactive && onToggle(profile.id)} style={{ display:'flex', alignItems:'center', gap:11, padding:'11px 13px', cursor:inactive?'not-allowed':'pointer' }}>
-                  <div style={{ width:19, height:19, borderRadius:6, flexShrink:0, border:`2px solid ${isSelected?info.color:'rgba(255,255,255,0.15)'}`, background:isSelected?info.color:'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#080810', fontWeight:900, transition:'all 0.15s' }}>{isSelected?'✓':''}</div>
-                  <div style={{ width:33, height:33, borderRadius:10, flexShrink:0, background:info.color+'14', border:`1px solid ${info.color}28`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:800, color:info.color }}>{info.label.slice(0,2).toUpperCase()}</div>
+                  <div style={{ width:19, height:19, borderRadius:6, flexShrink:0, border:`2px solid ${isSelected?info.color:'#c4b5fd'}`, background:isSelected?info.color:'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#ffffff', fontWeight:900, transition:'all 0.15s' }}>{isSelected?'✓':''}</div>
+                  <div style={{ width:33, height:33, borderRadius:10, flexShrink:0, background:info.color+'14', border:`1.5px solid ${info.color}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:800, color:info.color }}>{info.label.slice(0,2).toUpperCase()}</div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:12, fontWeight:600, color:'#E8E4DF', lineHeight:1.3 }}>{info.label}</div>
-                    <div style={{ fontSize:11, color:'rgba(240,237,232,0.32)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:1 }}>{profile.name}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:'#1a1040', lineHeight:1.3 }}>{info.label}</div>
+                    <div style={{ fontSize:11, color:'#9c8fc0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:1, fontWeight:500 }}>{profile.name}</div>
                   </div>
                   {isSelected && (() => {
                     const fmt = pp.format || PLATFORM_FORMATS[profile.platform]?.[0]?.value
                     const fmtLabel = PLATFORM_FORMATS[profile.platform]?.find(f => f.value===fmt)
                     return fmtLabel ? (
-                      <span style={{ fontSize:10, color:info.color, background:info.color+'12', border:`1px solid ${info.color}30`, padding:'2px 8px', borderRadius:6, fontWeight:600, flexShrink:0 }}>{fmtLabel.icon} {fmtLabel.label}</span>
+                      <span style={{ fontSize:10, color:info.color, background:info.color+'12', border:`1.5px solid ${info.color}30`, padding:'2px 8px', borderRadius:6, fontWeight:700, flexShrink:0 }}>{fmtLabel.icon} {fmtLabel.label}</span>
                     ) : null
                   })()}
-                  {inactive && <span style={{ fontSize:10, color:'#f87171', background:'rgba(248,113,113,0.1)', border:'1px solid rgba(248,113,113,0.2)', padding:'2px 7px', borderRadius:5 }}>Reconnect</span>}
+                  {inactive && <span style={{ fontSize:10, color:'#dc2626', background:'#fef2f2', border:'1.5px solid #fcd5d5', padding:'2px 7px', borderRadius:5, fontWeight:600 }}>Reconnect</span>}
                 </div>
                 {needsPlacement && (
-                  <div style={{ borderTop:`1px solid ${info.color}18`, background:`${info.color}04` }}>
+                  <div style={{ borderTop:`1px solid ${info.color}20`, background:`${info.color}04` }}>
                     <PlacementPicker profile={profile} groupId={groupId} value={placements[profile.id]} onChange={val=>onPlacementChange(profile.id,val)} onLoaded={(pid,list)=>onPlacementLoaded(pid,list)} />
                   </div>
                 )}
                 {isSelected && onPlatformParamChange && (
-                  <div style={{ borderTop:`1px solid ${info.color}18` }}>
+                  <div style={{ borderTop:`1px solid ${info.color}20` }}>
                     <button type="button" onClick={()=>setExpandedParams(p=>({...p,[profile.id]:!p[profile.id]}))} style={{ width:'100%', padding:'8px 13px', background:'transparent', border:'none', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', fontFamily:'inherit' }}>
-                      <span style={{ fontSize:11, fontWeight:600, color:isExpanded?info.color:'rgba(240,237,232,0.28)' }}>
+                      <span style={{ fontSize:11, fontWeight:600, color:isExpanded?info.color:'#9c8fc0' }}>
                         ⚙ Post Settings
                         {Object.keys(pp).length>0 && <span style={{ marginLeft:6, fontSize:10, color:info.color, background:info.color+'14', padding:'1px 6px', borderRadius:4 }}>{Object.keys(pp).length} set</span>}
                       </span>
-                      <span style={{ fontSize:11, color:'rgba(255,255,255,0.2)', transform:isExpanded?'rotate(180deg)':'none', transition:'transform 0.2s' }}>▾</span>
+                      <span style={{ fontSize:11, color:'#b0a5cc', transform:isExpanded?'rotate(180deg)':'none', transition:'transform 0.2s' }}>▾</span>
                     </button>
                     {isExpanded && (
-                      <div style={{ borderTop:`1px solid ${info.color}10`, background:`${info.color}03` }}>
+                      <div style={{ borderTop:`1px solid ${info.color}15`, background:`${info.color}03` }}>
                         <PlatformParamsEditor platform={profile.platform} params={pp} onChange={newPp=>onPlatformParamChange(profile.id,newPp)} />
                       </div>
                     )}
@@ -564,23 +564,23 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
   const dateLabel = new Date(date).toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:620, background:'#0d0d1c', border:'1px solid rgba(96,165,250,0.18)', borderRadius:24, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
-        <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,rgba(96,165,250,0.05),transparent)' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(240,237,255,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:620, background:'#ffffff', border:'1.5px solid #c4b5fd', borderRadius:24, boxShadow:'0 40px 80px rgba(108,99,255,0.15)', overflow:'hidden' }}>
+        <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:36, height:36, borderRadius:11, background:'rgba(96,165,250,0.12)', border:'1px solid rgba(96,165,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>⏰</div>
+            <div style={{ width:36, height:36, borderRadius:11, background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>⏰</div>
             <div>
-              <h2 style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>Schedule Post</h2>
-              <div style={{ fontSize:11, color:'rgba(96,165,250,0.65)', marginTop:2 }}>{dateLabel}</div>
+              <h2 style={{ fontSize:16, fontWeight:800, color:'#1a1040', margin:0 }}>Schedule Post</h2>
+              <div style={{ fontSize:11, color:'#6C63FF', marginTop:2, fontWeight:500 }}>{dateLabel}</div>
             </div>
           </div>
-          <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+          <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
         </div>
 
         <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
           <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CONTENT</label>
-            <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="What do you want to share?" rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, color:'#E8E4DF', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CONTENT</label>
+            <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="What do you want to share?" rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:12, color:'#1a1040', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
           </div>
 
           <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} />
@@ -596,7 +596,7 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
           />
 
           <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>DATE & TIME</label>
+            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>DATE & TIME</label>
             <div style={{ position:'relative' }}>
               <input
                 type="datetime-local"
@@ -608,38 +608,38 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
                   else { setError(''); setScheduledAt(val) }
                 }}
                 disabled={isDraft}
-                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:isDraft?'rgba(255,255,255,0.01)':'rgba(255,255,255,0.03)', border:`1px solid ${scheduledAt && isDateInPast(scheduledAt) && !isDraft ? 'rgba(248,113,113,0.4)' : 'rgba(255,255,255,0.08)'}`, borderRadius:12, color:isDraft?'rgba(240,237,232,0.22)':'#E8E4DF', fontSize:13, fontFamily:'inherit', colorScheme:'dark', outline:'none', cursor:isDraft?'not-allowed':'text', transition:'all 0.2s' }}
+                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:isDraft?'#f8f7ff':'#faf9ff', border:`1.5px solid ${scheduledAt && isDateInPast(scheduledAt) && !isDraft ? '#fcd5d5' : '#e2dcff'}`, borderRadius:12, color:isDraft?'#b0a5cc':'#1a1040', fontSize:13, fontFamily:'inherit', outline:'none', cursor:isDraft?'not-allowed':'text', transition:'all 0.2s' }}
               />
               {!isDraft && scheduledAt && !isDateInPast(scheduledAt) && (
                 <div style={{ marginTop:6, display:'flex', alignItems:'center', gap:5 }}>
-                  <span style={{ width:5, height:5, borderRadius:'50%', background:'#4ade80' }} />
-                  <span style={{ fontSize:11, color:'rgba(74,222,128,0.7)' }}>Scheduled for {new Date(scheduledAt).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
+                  <span style={{ width:5, height:5, borderRadius:'50%', background:'#16a34a' }} />
+                  <span style={{ fontSize:11, color:'#16a34a', fontWeight:500 }}>Scheduled for {new Date(scheduledAt).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div style={{ padding:'13px 16px', borderRadius:13, background:isDraft?'rgba(167,139,250,0.05)':'rgba(255,255,255,0.02)', border:`1px solid ${isDraft?'rgba(167,139,250,0.15)':'rgba(255,255,255,0.06)'}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, cursor:'pointer', transition:'all 0.2s' }} onClick={()=>setIsDraft(v=>!v)}>
+          <div style={{ padding:'13px 16px', borderRadius:13, background:isDraft?'#ede9fe':'#faf9ff', border:`1.5px solid ${isDraft?'#c4b5fd':'#e2dcff'}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, cursor:'pointer', transition:'all 0.2s' }} onClick={()=>setIsDraft(v=>!v)}>
             <div>
-              <div style={{ fontSize:12, fontWeight:600, color:isDraft?'rgba(167,139,250,0.8)':'rgba(255,255,255,0.4)', marginBottom:2 }}>Save as Draft</div>
-              <div style={{ fontSize:11, color:'rgba(255,255,255,0.2)' }}>Won't publish — edit and schedule later</div>
+              <div style={{ fontSize:12, fontWeight:700, color:isDraft?'#6C63FF':'#7c6fa0', marginBottom:2 }}>Save as Draft</div>
+              <div style={{ fontSize:11, color:'#b0a5cc', fontWeight:500 }}>Won't publish — edit and schedule later</div>
             </div>
-            <div style={{ width:38, height:22, borderRadius:100, background:isDraft?'rgba(167,139,250,0.3)':'rgba(255,255,255,0.08)', border:`1px solid ${isDraft?'rgba(167,139,250,0.5)':'rgba(255,255,255,0.12)'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
-              <div style={{ position:'absolute', top:3, left:isDraft?17:3, width:14, height:14, borderRadius:'50%', background:isDraft?'#a78bfa':'rgba(255,255,255,0.3)', transition:'all 0.2s' }} />
+            <div style={{ width:38, height:22, borderRadius:100, background:isDraft?'rgba(108,99,255,0.25)':'#e2dcff', border:`1.5px solid ${isDraft?'#6C63FF':'#c4b5fd'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
+              <div style={{ position:'absolute', top:3, left:isDraft?17:3, width:14, height:14, borderRadius:'50%', background:isDraft?'#6C63FF':'#b0a5cc', transition:'all 0.2s' }} />
             </div>
           </div>
 
           {error && (
-            <div style={{ padding:'11px 14px', borderRadius:11, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ padding:'11px 14px', borderRadius:11, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:12, display:'flex', alignItems:'center', gap:8, fontWeight:500 }}>
               <span style={{ fontSize:14 }}>⚠</span> {error}
             </div>
           )}
         </div>
 
-        <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', gap:10, justifyContent:'flex-end', background:'rgba(0,0,0,0.25)' }}>
-          <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-          <button onClick={handleSave} disabled={saving || (!isDraft && scheduledAt && isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: isDraft ? 'linear-gradient(135deg,rgba(167,139,250,0.2),rgba(139,92,246,0.12))' : scheduledAt ? 'linear-gradient(135deg,#4facfe,#00f2fe)' : 'linear-gradient(135deg,#4ade80,#16a34a)', border: isDraft ? '1px solid rgba(167,139,250,0.3)' : 'none', color: isDraft ? '#a78bfa' : '#08080F', fontSize:13, fontWeight:700, cursor:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s' }}>
-            {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(0,0,0,0.2)', borderTop:'2px solid rgba(0,0,0,0.7)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : isDraft ? '◻ Save Draft' : scheduledAt ? '⏰ Schedule Post' : '⚡ Publish Now'}
+        <div style={{ padding:'16px 24px', borderTop:'1px solid #ede9ff', display:'flex', gap:10, justifyContent:'flex-end', background:'#faf9ff' }}>
+          <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+          <button onClick={handleSave} disabled={saving || (!isDraft && scheduledAt && isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: isDraft ? 'linear-gradient(135deg,#ede9fe,#ddd6fe)' : scheduledAt ? 'linear-gradient(135deg,#6C63FF,#a78bfa)' : 'linear-gradient(135deg,#4ade80,#16a34a)', border: isDraft ? '1.5px solid #c4b5fd' : 'none', color: isDraft ? '#6C63FF' : '#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow: isDraft?'none':'0 4px 14px rgba(108,99,255,0.35)' }}>
+            {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #ffffff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : isDraft ? '◻ Save Draft' : scheduledAt ? '⏰ Schedule Post' : '⚡ Publish Now'}
           </button>
         </div>
       </div>
@@ -772,8 +772,6 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
     finally { setSaving(false) }
   }
 
-  const ds = displayStatus(post)
-
   return (
     <>
       {showDeleteConfirm && (
@@ -784,36 +782,36 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
           onDeleted={() => { setShowDeleteConfirm(false); onDelete() }}
         />
       )}
-      <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-        <div style={{ width:'100%', maxWidth:640, background:'#0d0d1c', border:'1px solid rgba(167,139,250,0.18)', borderRadius:24, boxShadow:'0 40px 100px rgba(0,0,0,0.8)', overflow:'hidden' }}>
-          <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,rgba(167,139,250,0.05),transparent)' }}>
+      <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(240,237,255,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+        <div style={{ width:'100%', maxWidth:640, background:'#ffffff', border:'1.5px solid #c4b5fd', borderRadius:24, boxShadow:'0 40px 80px rgba(108,99,255,0.15)', overflow:'hidden' }}>
+          <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
             <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{ width:36, height:36, borderRadius:11, background:'rgba(167,139,250,0.12)', border:'1px solid rgba(167,139,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
+              <div style={{ width:36, height:36, borderRadius:11, background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
               <div>
-                <h2 style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', margin:0, fontFamily:"'Syne',sans-serif" }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
+                <h2 style={{ fontSize:16, fontWeight:800, color:'#1a1040', margin:0 }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
                 <div style={{ marginTop:3 }}><StatusBadge status={post.status} isDraft={post.draft} /></div>
               </div>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding:'6px 13px', borderRadius:9, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'rgba(248,113,113,0.7)', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>🗑 Delete</button>
-              <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding:'6px 13px', borderRadius:9, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>🗑 Delete</button>
+              <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
             </div>
           </div>
 
           <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
             <div>
-              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CONTENT</label>
-              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:12, color:'#E8E4DF', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CONTENT</label>
+              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:12, color:'#1a1040', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
             </div>
 
             <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} label="MEDIA — replaces existing" />
 
             {post.media?.length > 0 && (
               <div>
-                <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
+                <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
                 <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                   {post.media.map((m,i) => (
-                    <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', display:'flex', alignItems:'center', gap:6 }}>
+                    <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'#faf9ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', display:'flex', alignItems:'center', gap:6, fontWeight:500 }}>
                       <span style={{ fontSize:12 }}>🖼</span>
                       <span>{m.content_type||'media'}</span>
                       <StatusBadge status={m.status} />
@@ -828,14 +826,14 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
               selectedProfileIds={selectedProfileIds} onToggle={toggleProfile}
               placements={placements} onPlacementChange={(pid,val)=>setPlacements(p=>({...p,[pid]:val}))}
               loadedPlacements={loadedPlacements} onPlacementLoaded={(pid,list)=>setLoadedPlacements(p=>({...p,[pid]:list}))}
-              groupId={groupId} accentColor="#a78bfa"
+              groupId={groupId} accentColor="#6C63FF"
               platformParams={platformParams}
               onPlatformParamChange={(pid,pp)=>setPlatformParams(p=>({...p,[pid]:pp}))}
             />
 
             <div>
-              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'rgba(255,255,255,0.28)', display:'block', marginBottom:7 }}>
-                SCHEDULE {isScheduled && post.scheduled_at && <span style={{ fontWeight:400, color:'rgba(255,255,255,0.18)', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>
+                SCHEDULE {isScheduled && post.scheduled_at && <span style={{ fontWeight:500, color:'#b0a5cc', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
               </label>
               <input
                 type="datetime-local"
@@ -847,33 +845,33 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
                   else { setError(prev => prev.includes('past') ? '' : prev); setScheduledAt(val) }
                 }}
                 disabled={publishNow}
-                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'rgba(255,255,255,0.01)':'rgba(255,255,255,0.03)', border:`1px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'rgba(248,113,113,0.4)':'rgba(255,255,255,0.08)'}`, borderRadius:12, color:publishNow?'rgba(240,237,232,0.22)':'#E8E4DF', fontSize:13, fontFamily:'inherit', colorScheme:'dark', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
+                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'#f8f7ff':'#faf9ff', border:`1.5px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'#fcd5d5':'#e2dcff'}`, borderRadius:12, color:publishNow?'#b0a5cc':'#1a1040', fontSize:13, fontFamily:'inherit', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
               />
             </div>
 
             {isDraft && (
-              <div style={{ padding:'13px 16px', borderRadius:13, background:'rgba(74,222,128,0.04)', border:'1px solid rgba(74,222,128,0.12)', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
+              <div style={{ padding:'13px 16px', borderRadius:13, background:'#f0fdf4', border:'1.5px solid #bbf7d0', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 }}>
                 <div>
-                  <div style={{ fontSize:12, fontWeight:600, color:'rgba(74,222,128,0.75)', marginBottom:2 }}>Publish after saving?</div>
-                  <div style={{ fontSize:11, color:'rgba(255,255,255,0.22)' }}>Will publish immediately to all selected platforms</div>
+                  <div style={{ fontSize:12, fontWeight:700, color:'#16a34a', marginBottom:2 }}>Publish after saving?</div>
+                  <div style={{ fontSize:11, color:'#86efac', fontWeight:500 }}>Will publish immediately to all selected platforms</div>
                 </div>
-                <div onClick={()=>setPublishNow(v=>!v)} style={{ width:38, height:22, borderRadius:100, cursor:'pointer', background:publishNow?'rgba(74,222,128,0.3)':'rgba(255,255,255,0.08)', border:`1px solid ${publishNow?'rgba(74,222,128,0.5)':'rgba(255,255,255,0.12)'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
-                  <div style={{ position:'absolute', top:3, left:publishNow?17:3, width:14, height:14, borderRadius:'50%', background:publishNow?'#4ade80':'rgba(255,255,255,0.3)', transition:'all 0.2s' }} />
+                <div onClick={()=>setPublishNow(v=>!v)} style={{ width:38, height:22, borderRadius:100, cursor:'pointer', background:publishNow?'rgba(22,163,74,0.25)':'#d1fae5', border:`1.5px solid ${publishNow?'#16a34a':'#86efac'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
+                  <div style={{ position:'absolute', top:3, left:publishNow?17:3, width:14, height:14, borderRadius:'50%', background:publishNow?'#16a34a':'#6ee7b7', transition:'all 0.2s' }} />
                 </div>
               </div>
             )}
 
             {error && (
-              <div style={{ padding:'11px 14px', borderRadius:11, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.2)', color:'#f87171', fontSize:12, display:'flex', alignItems:'center', gap:8 }}>
+              <div style={{ padding:'11px 14px', borderRadius:11, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:12, display:'flex', alignItems:'center', gap:8, fontWeight:500 }}>
                 <span style={{ fontSize:14 }}>⚠</span> {error}
               </div>
             )}
           </div>
 
-          <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', gap:10, justifyContent:'flex-end', background:'rgba(0,0,0,0.25)' }}>
-            <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.45)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#4facfe,#00f2fe)':'linear-gradient(135deg,#a78bfa,#7c3aed)', border:'none', color:'#08080F', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s' }}>
-              {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(0,0,0,0.2)', borderTop:'2px solid rgba(0,0,0,0.7)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : publishNow ? '⚡ Save & Publish' : scheduledAt ? '⏰ Save & Schedule' : '✓ Save Changes'}
+          <div style={{ padding:'16px 24px', borderTop:'1px solid #ede9ff', display:'flex', gap:10, justifyContent:'flex-end', background:'#faf9ff' }}>
+            <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#6C63FF,#a78bfa)':'linear-gradient(135deg,#a78bfa,#6C63FF)', border:'none', color:'#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow:'0 4px 14px rgba(108,99,255,0.35)' }}>
+              {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #ffffff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : publishNow ? '⚡ Save & Publish' : scheduledAt ? '⏰ Save & Schedule' : '✓ Save Changes'}
             </button>
           </div>
         </div>
@@ -885,50 +883,50 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
 function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }) {
   const label = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:900, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end', justifyContent:'center' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:640, maxHeight:'80vh', background:'#0d0d1c', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'22px 22px 0 0', overflow:'hidden', animation:'slideUp 0.22s ease', display:'flex', flexDirection:'column' }}>
-        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(255,215,0,0.02)' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:900, background:'rgba(240,237,255,0.6)', backdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end', justifyContent:'center' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:640, maxHeight:'80vh', background:'#ffffff', border:'1.5px solid #e2dcff', borderTop:'1.5px solid #c4b5fd', borderRadius:'22px 22px 0 0', overflow:'hidden', animation:'slideUp 0.22s ease', display:'flex', flexDirection:'column', boxShadow:'0 -8px 40px rgba(108,99,255,0.12)' }}>
+        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
           <div>
-            <div style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', fontFamily:"'Syne',sans-serif" }}>{label}</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.28)', marginTop:2 }}>
+            <div style={{ fontSize:16, fontWeight:800, color:'#1a1040' }}>{label}</div>
+            <div style={{ fontSize:12, color:'#9c8fc0', marginTop:2, fontWeight:500 }}>
               {posts.length} post{posts.length!==1?'s':''}
-              {isPast && <span style={{ marginLeft:8, fontSize:10, color:'#f87171', background:'rgba(248,113,113,0.1)', border:'1px solid rgba(248,113,113,0.2)', padding:'2px 7px', borderRadius:5, fontWeight:700 }}>PAST DATE</span>}
+              {isPast && <span style={{ marginLeft:8, fontSize:10, color:'#dc2626', background:'#fef2f2', border:'1.5px solid #fcd5d5', padding:'2px 7px', borderRadius:5, fontWeight:700 }}>PAST DATE</span>}
             </div>
           </div>
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
             {!isPast && (
-              <button onClick={()=>{onClose();onSchedule(date)}} style={{ padding:'7px 14px', borderRadius:9, fontSize:12, fontWeight:600, background:'rgba(96,165,250,0.1)', border:'1px solid rgba(96,165,250,0.22)', color:'#60a5fa', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>⏰ Schedule here</button>
+              <button onClick={()=>{onClose();onSchedule(date)}} style={{ padding:'7px 14px', borderRadius:9, fontSize:12, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>⏰ Schedule here</button>
             )}
             {isPast && posts.length === 0 && (
-              <span style={{ fontSize:11, color:'rgba(248,113,113,0.6)', fontStyle:'italic' }}>Can't schedule past dates</span>
+              <span style={{ fontSize:11, color:'#dc2626', fontStyle:'italic', fontWeight:500 }}>Can't schedule past dates</span>
             )}
-            <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.4)', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+            <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
           </div>
         </div>
         <div style={{ overflowY:'auto', flex:1, padding:'12px 16px', display:'flex', flexDirection:'column', gap:10 }}>
           {posts.length === 0 ? (
             <div style={{ textAlign:'center', padding:'44px 24px' }}>
-              <div style={{ fontSize:32, marginBottom:10, opacity:0.15 }}>📅</div>
-              <p style={{ fontSize:14, color:'rgba(240,237,232,0.28)', margin:'0 0 4px' }}>No posts on this day</p>
+              <div style={{ fontSize:32, marginBottom:10, opacity:0.25 }}>📅</div>
+              <p style={{ fontSize:14, color:'#7c6fa0', margin:'0 0 4px', fontWeight:600 }}>No posts on this day</p>
               {isPast
-                ? <p style={{ fontSize:12, color:'rgba(248,113,113,0.5)', margin:0 }}>Past dates cannot be scheduled</p>
-                : <p style={{ fontSize:12, color:'rgba(240,237,232,0.18)', margin:0 }}>Click "Schedule here" to create one</p>
+                ? <p style={{ fontSize:12, color:'#dc2626', margin:0, fontWeight:500 }}>Past dates cannot be scheduled</p>
+                : <p style={{ fontSize:12, color:'#b0a5cc', margin:0 }}>Click "Schedule here" to create one</p>
               }
             </div>
           ) : posts.map(post => {
             const canEdit = isPostEditable(post)
             return (
-              <div key={post.id} style={{ padding:'14px 16px', borderRadius:14, background:'rgba(255,255,255,0.025)', border:'1px solid rgba(255,255,255,0.06)' }}>
+              <div key={post.id} style={{ padding:'14px 16px', borderRadius:14, background:'#faf9ff', border:'1.5px solid #e8e4ff' }}>
                 <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:10 }}>
-                  <p style={{ fontSize:13, color:'#E8E4DF', margin:0, lineHeight:1.6, flex:1 }}>
-                    {post.body || <em style={{ color:'rgba(240,237,232,0.25)' }}>Media-only post</em>}
+                  <p style={{ fontSize:13, color:'#1a1040', margin:0, lineHeight:1.6, flex:1, fontWeight:500 }}>
+                    {post.body || <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
                   </p>
                   <div style={{ display:'flex', gap:7, alignItems:'center', flexShrink:0 }}>
                     <StatusBadge status={post.status} isDraft={post.draft} />
                     {canEdit && (
                       <>
-                        <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
-                        <button onClick={()=>onDelete(post)} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.18)', color:'rgba(248,113,113,0.7)', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
+                        <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={()=>onDelete(post)} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
                       </>
                     )}
                   </div>
@@ -938,15 +936,15 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }
                     {post.platforms.map(pl => {
                       const info = getPlatformInfo(pl.platform)
                       return (
-                        <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1px solid ${info.color}25` }}>
+                        <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1.5px solid ${info.color}30` }}>
                           <span style={{ width:5, height:5, borderRadius:'50%', background:info.color }} />
-                          <span style={{ fontSize:10, fontWeight:600, color:'rgba(240,237,232,0.55)' }}>{info.label}</span>
+                          <span style={{ fontSize:10, fontWeight:600, color:'#4a3f6b' }}>{info.label}</span>
                         </div>
                       )
                     })}
                   </div>
                 )}
-                {post.scheduled_at && <div style={{ marginTop:8, fontSize:11, color:'rgba(96,165,250,0.65)' }}>⏰ {new Date(post.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>}
+                {post.scheduled_at && <div style={{ marginTop:8, fontSize:11, color:'#2563eb', fontWeight:500 }}>⏰ {new Date(post.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>}
               </div>
             )
           })}
@@ -1001,27 +999,27 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
           isPast={isDayInPast(calYear, calMonth, dayPanel)}
         />
       )}
-      <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:20, overflow:'hidden' }}>
-        <div style={{ padding:'16px 22px', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(255,255,255,0.01)' }}>
-          <button onClick={prevMonth} disabled={!canGoPrev} style={{ width:34, height:34, borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:canGoPrev?'rgba(240,237,232,0.5)':'rgba(255,255,255,0.15)', cursor:canGoPrev?'pointer':'not-allowed', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
+      <div style={{ background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:20, overflow:'hidden', boxShadow:'0 2px 16px rgba(108,99,255,0.07)' }}>
+        <div style={{ padding:'16px 22px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
+          <button onClick={prevMonth} disabled={!canGoPrev} style={{ width:34, height:34, borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:canGoPrev?'#7c6fa0':'#c4b5fd', cursor:canGoPrev?'pointer':'not-allowed', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
           <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:16, fontWeight:700, color:'#F0EDE8', fontFamily:"'Syne',sans-serif" }}>{MONTH_NAMES[calMonth]} {calYear}</div>
-            <div style={{ fontSize:10, color:'rgba(255,255,255,0.25)', marginTop:2 }}>
+            <div style={{ fontSize:16, fontWeight:800, color:'#1a1040' }}>{MONTH_NAMES[calMonth]} {calYear}</div>
+            <div style={{ fontSize:10, color:'#9c8fc0', marginTop:2, fontWeight:600 }}>
               {posts.filter(p=>{ const d=p.scheduled_at?new Date(p.scheduled_at):null; return d && d.getMonth()===calMonth && d.getFullYear()===calYear }).length} posts this month
             </div>
           </div>
-          <button onClick={nextMonth} style={{ width:34, height:34, borderRadius:10, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(240,237,232,0.5)', cursor:'pointer', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
+          <button onClick={nextMonth} style={{ width:34, height:34, borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', cursor:'pointer', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderBottom:'1px solid rgba(255,255,255,0.04)', background:'rgba(255,255,255,0.01)' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderBottom:'1px solid #ede9ff', background:'#faf9ff' }}>
           {DAY_NAMES.map(d => (
-            <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:10, fontWeight:700, letterSpacing:'0.06em', color:'rgba(255,255,255,0.22)' }}>{d}</div>
+            <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:10, fontWeight:800, letterSpacing:'0.06em', color:'#b0a5cc' }}>{d}</div>
           ))}
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)' }}>
           {cells.map((day, idx) => {
-            if (!day) return <div key={`e-${idx}`} style={{ minHeight:82, borderRight:'1px solid rgba(255,255,255,0.03)', borderBottom:'1px solid rgba(255,255,255,0.03)' }} />
+            if (!day) return <div key={`e-${idx}`} style={{ minHeight:82, borderRight:'1px solid #f0edff', borderBottom:'1px solid #f0edff', background:'#fdfcff' }} />
             const key = `${calYear}-${calMonth}-${day}`
             const dayPosts = postsByDate[key] || []
             const isToday = today.getDate()===day && today.getMonth()===calMonth && today.getFullYear()===calYear
@@ -1032,15 +1030,15 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
                 key={day}
                 onClick={() => setDayPanel(day)}
                 className={past ? 'cal-day-past' : 'cal-day-hover'}
-                style={{ minHeight:82, padding:'8px 6px', borderRight:'1px solid rgba(255,255,255,0.03)', borderBottom:'1px solid rgba(255,255,255,0.03)', cursor:'pointer', background: isToday ? 'rgba(96,165,250,0.06)' : past ? 'rgba(0,0,0,0.15)' : 'transparent', position:'relative', transition:'background 0.15s', opacity: past && dayPosts.length===0 ? 0.45 : 1 }}
+                style={{ minHeight:82, padding:'8px 6px', borderRight:'1px solid #f0edff', borderBottom:'1px solid #f0edff', cursor:'pointer', background: isToday ? '#ede9fe' : past ? '#fdfcff' : '#ffffff', position:'relative', transition:'background 0.15s', opacity: past && dayPosts.length===0 ? 0.5 : 1 }}
               >
-                <div style={{ width:24, height:24, borderRadius:'50%', marginBottom:5, background: isToday ? 'rgba(96,165,250,0.22)' : 'transparent', border: isToday ? '1.5px solid rgba(96,165,250,0.45)' : '1.5px solid transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:isToday?700:500, color: isToday ? '#60a5fa' : past ? 'rgba(240,237,232,0.22)' : 'rgba(240,237,232,0.5)' }}>{day}</div>
+                <div style={{ width:24, height:24, borderRadius:'50%', marginBottom:5, background: isToday ? '#6C63FF' : 'transparent', border: isToday ? 'none' : '1.5px solid transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:isToday?800:500, color: isToday ? '#ffffff' : past ? '#c4b5fd' : '#4a3f6b' }}>{day}</div>
 
                 {past && dayPosts.length===0 && (
-                  <div style={{ position:'absolute', bottom:6, right:6, width:14, height:14, borderRadius:'50%', background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.15)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'rgba(248,113,113,0.4)' }}>✕</div>
+                  <div style={{ position:'absolute', bottom:6, right:6, width:14, height:14, borderRadius:'50%', background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'#dc2626' }}>✕</div>
                 )}
                 {!past && dayPosts.length===0 && (
-                  <div className="cal-add-hint" style={{ position:'absolute', bottom:6, right:6, width:16, height:16, borderRadius:'50%', background:'rgba(96,165,250,0.1)', border:'1px solid rgba(96,165,250,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:'rgba(96,165,250,0.5)', opacity:0, transition:'opacity 0.15s' }}>+</div>
+                  <div className="cal-add-hint" style={{ position:'absolute', bottom:6, right:6, width:16, height:16, borderRadius:'50%', background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:'#6C63FF', opacity:0, transition:'opacity 0.15s' }}>+</div>
                 )}
 
                 {dayPosts.slice(0,3).map((post,i) => {
@@ -1048,18 +1046,18 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
                   const cfg = STATUS_CONFIG[ds] || STATUS_CONFIG.processing
                   const short = (post.body||'Media').slice(0,16)
                   return (
-                    <div key={i} style={{ marginBottom:2, padding:'2px 5px', borderRadius:4, background:cfg.calColor+'1a', borderLeft:`2px solid ${cfg.calColor}`, fontSize:9, color:cfg.color, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', lineHeight:1.5 }}>
+                    <div key={i} style={{ marginBottom:2, padding:'2px 5px', borderRadius:4, background:cfg.calColor+'15', borderLeft:`2px solid ${cfg.calColor}`, fontSize:9, color:cfg.calColor, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', lineHeight:1.5, fontWeight:600 }}>
                       {short}{post.body?.length>16?'…':''}
                     </div>
                   )
                 })}
-                {dayPosts.length>3 && <div style={{ fontSize:9, color:'rgba(255,255,255,0.28)', paddingLeft:2, marginTop:1 }}>+{dayPosts.length-3} more</div>}
+                {dayPosts.length>3 && <div style={{ fontSize:9, color:'#9c8fc0', paddingLeft:2, marginTop:1, fontWeight:600 }}>+{dayPosts.length-3} more</div>}
               </div>
             )
           })}
         </div>
 
-        <div style={{ padding:'12px 22px', borderTop:'1px solid rgba(255,255,255,0.04)', display:'flex', gap:16, flexWrap:'wrap', alignItems:'center', background:'rgba(255,255,255,0.01)' }}>
+        <div style={{ padding:'12px 22px', borderTop:'1px solid #ede9ff', display:'flex', gap:16, flexWrap:'wrap', alignItems:'center', background:'#faf9ff' }}>
           {[
             { label:'Published', color:STATUS_CONFIG.published.calColor },
             { label:'Scheduled', color:STATUS_CONFIG.scheduled.calColor },
@@ -1067,15 +1065,15 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
             { label:'Failed',    color:STATUS_CONFIG.failed.calColor },
           ].map(l => (
             <div key={l.label} style={{ display:'flex', alignItems:'center', gap:6 }}>
-              <div style={{ width:8, height:8, borderRadius:2, background:l.color+'44', borderLeft:`2px solid ${l.color}` }} />
-              <span style={{ fontSize:10, color:'rgba(255,255,255,0.28)', fontWeight:600, letterSpacing:'0.04em' }}>{l.label}</span>
+              <div style={{ width:8, height:8, borderRadius:2, background:l.color+'25', borderLeft:`2px solid ${l.color}` }} />
+              <span style={{ fontSize:10, color:'#7c6fa0', fontWeight:700, letterSpacing:'0.04em' }}>{l.label}</span>
             </div>
           ))}
           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-            <div style={{ width:8, height:8, borderRadius:'50%', background:'rgba(248,113,113,0.08)', border:'1px solid rgba(248,113,113,0.25)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:6, color:'rgba(248,113,113,0.5)' }}>✕</div>
-            <span style={{ fontSize:10, color:'rgba(248,113,113,0.45)', fontWeight:600, letterSpacing:'0.04em' }}>Past (no scheduling)</span>
+            <div style={{ width:8, height:8, borderRadius:'50%', background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:6, color:'#dc2626' }}>✕</div>
+            <span style={{ fontSize:10, color:'#dc2626', fontWeight:700, letterSpacing:'0.04em', opacity:0.7 }}>Past (no scheduling)</span>
           </div>
-          <div style={{ marginLeft:'auto', fontSize:10, color:'rgba(255,255,255,0.15)', fontStyle:'italic' }}>Click any day to view or schedule</div>
+          <div style={{ marginLeft:'auto', fontSize:10, color:'#b0a5cc', fontStyle:'italic', fontWeight:500 }}>Click any day to view or schedule</div>
         </div>
       </div>
     </>
@@ -1097,7 +1095,7 @@ function ListView({ posts, onEdit, onDelete }) {
           {statuses.map(s => {
             const cnt = s==='all' ? normalizedPosts.length : normalizedPosts.filter(p=>p._displayStatus===s).length
             return (
-              <button key={s} onClick={()=>setFilter(s)} style={{ padding:'5px 13px', borderRadius:100, background:filter===s?'rgba(167,139,250,0.1)':'rgba(255,255,255,0.03)', border:`1px solid ${filter===s?'rgba(167,139,250,0.28)':'rgba(255,255,255,0.07)'}`, color:filter===s?'#a78bfa':'rgba(240,237,232,0.38)', fontSize:11, fontWeight:600, cursor:'pointer', fontFamily:'inherit', textTransform:'capitalize', letterSpacing:'0.02em' }}>
+              <button key={s} onClick={()=>setFilter(s)} style={{ padding:'5px 13px', borderRadius:100, background:filter===s?'#ede9fe':'#ffffff', border:`1.5px solid ${filter===s?'#c4b5fd':'#e2dcff'}`, color:filter===s?'#6C63FF':'#7c6fa0', fontSize:11, fontWeight:700, cursor:'pointer', fontFamily:'inherit', textTransform:'capitalize', letterSpacing:'0.02em', boxShadow:filter===s?'0 2px 8px rgba(108,99,255,0.1)':'none' }}>
                 {s==='all'?'All':s} <span style={{ opacity:0.6 }}>({cnt})</span>
               </button>
             )
@@ -1106,10 +1104,10 @@ function ListView({ posts, onEdit, onDelete }) {
       )}
       <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
         {filtered.length===0 ? (
-          <div style={{ textAlign:'center', padding:'56px 24px', background:'rgba(255,255,255,0.015)', border:'1px solid rgba(255,255,255,0.05)', borderRadius:18 }}>
+          <div style={{ textAlign:'center', padding:'56px 24px', background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:18, boxShadow:'0 2px 12px rgba(108,99,255,0.05)' }}>
             <div style={{ fontSize:36, marginBottom:12, opacity:0.2 }}>▤</div>
-            <p style={{ fontSize:15, fontWeight:600, color:'rgba(240,237,232,0.3)', marginBottom:4 }}>No posts</p>
-            <p style={{ fontSize:12, color:'rgba(240,237,232,0.18)' }}>Head to Compose to create your first post</p>
+            <p style={{ fontSize:15, fontWeight:700, color:'#7c6fa0', marginBottom:4 }}>No posts</p>
+            <p style={{ fontSize:12, color:'#b0a5cc' }}>Head to Compose to create your first post</p>
           </div>
         ) : filtered.map(post => {
           const isExp   = expanded===post.id
@@ -1117,30 +1115,30 @@ function ListView({ posts, onEdit, onDelete }) {
           const ds      = post._displayStatus
           const cfg     = STATUS_CONFIG[ds] || STATUS_CONFIG.processing
           return (
-            <div key={post.id} style={{ background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s' }}>
+            <div key={post.id} style={{ background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s, box-shadow 0.15s', boxShadow:'0 2px 8px rgba(108,99,255,0.04)' }} className="list-post-card">
               <div onClick={()=>setExpanded(isExp?null:post.id)} style={{ padding:'14px 18px', cursor:'pointer', display:'flex', flexDirection:'column', gap:10 }}>
                 <div style={{ display:'flex', alignItems:'flex-start', gap:12 }}>
                   <div style={{ width:3, borderRadius:3, alignSelf:'stretch', flexShrink:0, background:cfg.calColor, minHeight:36 }} />
                   <div style={{ flex:1, minWidth:0 }}>
-                    <p style={{ fontSize:13, color:'#E8E4DF', margin:0, lineHeight:1.6, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:isExp?'unset':2, WebkitBoxOrient:'vertical' }}>
-                      {post.body || <em style={{ color:'rgba(240,237,232,0.25)' }}>Media-only post</em>}
+                    <p style={{ fontSize:13, color:'#1a1040', margin:0, lineHeight:1.6, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:isExp?'unset':2, WebkitBoxOrient:'vertical', fontWeight:500 }}>
+                      {post.body || <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
                     </p>
-                    {post.media?.length>0 && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:5 }}><span style={{ fontSize:10, color:'rgba(255,255,255,0.28)' }}>🖼</span><span style={{ fontSize:10, color:'rgba(255,255,255,0.28)' }}>{post.media.length} media</span></div>}
+                    {post.media?.length>0 && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:5 }}><span style={{ fontSize:10, color:'#9c8fc0' }}>🖼</span><span style={{ fontSize:10, color:'#9c8fc0', fontWeight:500 }}>{post.media.length} media</span></div>}
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:7, flexShrink:0 }}>
                     <StatusBadge status={post.status} isDraft={post.draft} />
                     {canEdit && (
                       <>
-                        <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(167,139,250,0.07)', border:'1px solid rgba(167,139,250,0.18)', color:'rgba(167,139,250,0.7)', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
-                        <button onClick={e=>{e.stopPropagation();onDelete(post)}} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'rgba(248,113,113,0.07)', border:'1px solid rgba(248,113,113,0.18)', color:'rgba(248,113,113,0.7)', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
+                        <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={e=>{e.stopPropagation();onDelete(post)}} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
                       </>
                     )}
-                    <span style={{ fontSize:11, color:'rgba(240,237,232,0.2)', transform:isExp?'rotate(180deg)':'none', transition:'transform 0.2s', lineHeight:1 }}>▾</span>
+                    <span style={{ fontSize:11, color:'#b0a5cc', transform:isExp?'rotate(180deg)':'none', transition:'transform 0.2s', lineHeight:1 }}>▾</span>
                   </div>
                 </div>
                 {post.scheduled_at && (
                   <div style={{ paddingLeft:15 }}>
-                    <span style={{ fontSize:10, color:'rgba(96,165,250,0.65)', background:'rgba(96,165,250,0.07)', border:'1px solid rgba(96,165,250,0.15)', padding:'2px 9px', borderRadius:100, display:'inline-flex', alignItems:'center', gap:4 }}>
+                    <span style={{ fontSize:10, color:'#2563eb', background:'rgba(37,99,235,0.08)', border:'1.5px solid rgba(37,99,235,0.2)', padding:'2px 9px', borderRadius:100, display:'inline-flex', alignItems:'center', gap:4, fontWeight:600 }}>
                       ⏰ {new Date(post.scheduled_at).toLocaleString()}
                     </span>
                   </div>
@@ -1150,11 +1148,11 @@ function ListView({ posts, onEdit, onDelete }) {
                     {post.platforms.map(pl => {
                       const info = getPlatformInfo(pl.platform)
                       return (
-                        <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1px solid ${info.color}25` }}>
+                        <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1.5px solid ${info.color}30` }}>
                           <span style={{ width:4, height:4, borderRadius:'50%', background:info.color }} />
-                          <span style={{ fontSize:10, fontWeight:600, color:'rgba(240,237,232,0.55)' }}>{info.label}</span>
+                          <span style={{ fontSize:10, fontWeight:700, color:'#4a3f6b' }}>{info.label}</span>
                           <StatusBadge status={pl.status} />
-                          {pl.permalink && <a href={pl.permalink} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ color:'rgba(240,237,232,0.28)', textDecoration:'none', fontSize:11 }}>↗</a>}
+                          {pl.permalink && <a href={pl.permalink} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ color:'#6C63FF', textDecoration:'none', fontSize:11, fontWeight:600 }}>↗</a>}
                         </div>
                       )
                     })}
@@ -1162,14 +1160,14 @@ function ListView({ posts, onEdit, onDelete }) {
                 )}
               </div>
               {isExp && (
-                <div style={{ borderTop:'1px solid rgba(255,255,255,0.05)', padding:'12px 18px', background:'rgba(255,255,255,0.01)', display:'flex', gap:24, flexWrap:'wrap', animation:'fadeIn 0.15s ease' }}>
+                <div style={{ borderTop:'1px solid #ede9ff', padding:'12px 18px', background:'#faf9ff', display:'flex', gap:24, flexWrap:'wrap', animation:'fadeIn 0.15s ease' }}>
                   {[
                     { label:'STATUS',    content:<StatusBadge status={post.status} isDraft={post.draft} /> },
-                    post.scheduled_at && { label:'SCHEDULED', content:<span style={{ fontSize:12, color:'#60a5fa' }}>{new Date(post.scheduled_at).toLocaleString()}</span> },
-                    post.created_at   && { label:'CREATED',   content:<span style={{ fontSize:12, color:'rgba(240,237,232,0.38)' }}>{new Date(post.created_at).toLocaleString()}</span> },
+                    post.scheduled_at && { label:'SCHEDULED', content:<span style={{ fontSize:12, color:'#2563eb', fontWeight:600 }}>{new Date(post.scheduled_at).toLocaleString()}</span> },
+                    post.created_at   && { label:'CREATED',   content:<span style={{ fontSize:12, color:'#9c8fc0', fontWeight:500 }}>{new Date(post.created_at).toLocaleString()}</span> },
                   ].filter(Boolean).map((item,i) => (
                     <div key={i}>
-                      <div style={{ fontSize:9, fontWeight:700, letterSpacing:'0.12em', color:'rgba(240,237,232,0.2)', marginBottom:5 }}>{item.label}</div>
+                      <div style={{ fontSize:9, fontWeight:800, letterSpacing:'0.12em', color:'#c4b8e0', marginBottom:5 }}>{item.label}</div>
                       {item.content}
                     </div>
                   ))}
@@ -1200,7 +1198,6 @@ export default function PostsPage() {
     setLoading(false)
   }, [])
 
-  // Only fetch on group change (initial load per group), not on interval
   useEffect(() => {
     if (!selectedGroup) return
     setPosts([])
@@ -1219,20 +1216,22 @@ export default function PostsPage() {
   }
 
   return (
-    <div style={{ animation:'fadeIn 0.25s ease' }}>
+    <div style={{ animation:'fadeIn 0.25s ease', background:'#f8f7ff', minHeight:'100%', padding:2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0}100%{background-position:400% 0} }
         @keyframes fadeIn  { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
         @keyframes slideUp { from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { to{transform:rotate(360deg)} }
-        .sk { background:linear-gradient(90deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.03) 100%); background-size:400% 100%; animation:shimmer 2s ease infinite; }
-        .cal-day-hover:hover { background:rgba(96,165,250,0.04) !important; }
+        .sk { background:linear-gradient(90deg,#f0edff 0%,#e8e4ff 50%,#f0edff 100%); background-size:400% 100%; animation:shimmer 2s ease infinite; }
+        .cal-day-hover:hover { background:#f5f3ff !important; }
         .cal-day-hover:hover .cal-add-hint { opacity:1 !important; }
         .cal-day-past { cursor:pointer; }
-        .cal-day-past:hover { background:rgba(255,255,255,0.02) !important; }
+        .cal-day-past:hover { background:#fdfcff !important; }
         .vtab { transition:all 0.15s ease; }
-        .vtab:hover { color:rgba(167,139,250,0.8) !important; }
-        .refresh-btn-posts:hover { border-color:rgba(167,139,250,0.25) !important; color:rgba(167,139,250,0.7) !important; background:rgba(167,139,250,0.05) !important; }
+        .vtab:hover { color:#6C63FF !important; border-color:#c4b5fd !important; }
+        .refresh-btn-posts { transition: all 0.15s ease; }
+        .refresh-btn-posts:hover { border-color:#6C63FF !important; color:#6C63FF !important; background:#ede9fe !important; }
+        .list-post-card:hover { border-color:#c4b5fd !important; box-shadow:0 4px 16px rgba(108,99,255,0.1) !important; }
       `}</style>
 
       {editPost && (
@@ -1264,23 +1263,23 @@ export default function PostsPage() {
       <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:14 }}>
         <div>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:5 }}>
-            <div style={{ width:38, height:38, borderRadius:11, background:'linear-gradient(135deg,rgba(167,139,250,0.18),rgba(139,92,246,0.1))', border:'1px solid rgba(167,139,250,0.22)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17 }}>▤</div>
-            <h1 style={{ fontSize:26, fontWeight:700, color:'#F0EDE8', fontFamily:"'Syne',sans-serif", letterSpacing:'-0.03em', margin:0 }}>Posts</h1>
+            <div style={{ width:38, height:38, borderRadius:11, background:'linear-gradient(135deg,#ede9fe,#ddd6fe)', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17 }}>▤</div>
+            <h1 style={{ fontSize:26, fontWeight:900, color:'#1a1040', letterSpacing:'-0.03em', margin:0 }}>Posts</h1>
           </div>
-          <p style={{ fontSize:12, color:'rgba(240,237,232,0.3)', margin:0 }}>
-            {posts.length} posts in <span style={{ color:'rgba(167,139,250,0.6)', fontWeight:500 }}>{selectedGroup.name}</span>
+          <p style={{ fontSize:12, color:'#7c6fa0', margin:0, fontWeight:500 }}>
+            {posts.length} posts in <span style={{ color:'#6C63FF', fontWeight:700 }}>{selectedGroup.name}</span>
           </p>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ display:'flex', gap:3, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:11, padding:3 }}>
+          <div style={{ display:'flex', gap:3, background:'#ffffff', border:'1.5px solid #e2dcff', borderRadius:11, padding:3 }}>
             {[{id:'calendar',icon:'▦',label:'Calendar'},{id:'list',icon:'≡',label:'List'}].map(v => (
-              <button key={v.id} className="vtab" onClick={()=>setView(v.id)} style={{ padding:'7px 15px', borderRadius:8, fontSize:12, fontWeight:600, background:view===v.id?'rgba(167,139,250,0.12)':'transparent', border:view===v.id?'1px solid rgba(167,139,250,0.22)':'1px solid transparent', color:view===v.id?'#a78bfa':'rgba(240,237,232,0.32)', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}><span>{v.icon}</span> {v.label}</button>
+              <button key={v.id} className="vtab" onClick={()=>setView(v.id)} style={{ padding:'7px 15px', borderRadius:8, fontSize:12, fontWeight:700, background:view===v.id?'#ede9fe':'transparent', border:view===v.id?'1.5px solid #c4b5fd':'1.5px solid transparent', color:view===v.id?'#6C63FF':'#9c8fc0', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}><span>{v.icon}</span> {v.label}</button>
             ))}
           </div>
           <button
             className="refresh-btn-posts"
             onClick={()=>fetchPosts(selectedGroup.id)}
-            style={{ display:'flex', alignItems:'center', gap:5, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:11, padding:'9px 15px', fontSize:12, color:'rgba(240,237,232,0.38)', cursor:'pointer', fontFamily:'inherit', fontWeight:500, transition:'all 0.15s' }}
+            style={{ display:'flex', alignItems:'center', gap:5, background:'#ffffff', border:'1.5px solid #e2dcff', borderRadius:11, padding:'9px 15px', fontSize:12, color:'#7c6fa0', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
           >
             <span style={{ fontSize:13 }}>↻</span> Refresh
           </button>
@@ -1290,14 +1289,14 @@ export default function PostsPage() {
       {!loading && posts.length>0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:22 }}>
           {[
-            { label:'DRAFTS',    count:draftCount,     color:'rgba(240,237,232,0.42)', bg:'rgba(255,255,255,0.025)', border:'rgba(255,255,255,0.07)', bar:'#52525b' },
-            { label:'SCHEDULED', count:scheduledCount, color:'#60a5fa',               bg:'rgba(96,165,250,0.05)',   border:'rgba(96,165,250,0.14)',   bar:'#2563eb' },
-            { label:'PUBLISHED', count:publishedCount, color:'#4ade80',               bg:'rgba(74,222,128,0.05)',   border:'rgba(74,222,128,0.14)',   bar:'#16a34a' },
+            { label:'DRAFTS',    count:draftCount,     color:'#7c6fa0', bg:'#ffffff',   border:'#e2dcff', bar:'#9c8fc0',  grad:'linear-gradient(135deg,#9c8fc0,#7c6fa0)' },
+            { label:'SCHEDULED', count:scheduledCount, color:'#2563eb', bg:'#ffffff',   border:'#bfdbfe', bar:'#2563eb',  grad:'linear-gradient(135deg,#60a5fa,#2563eb)' },
+            { label:'PUBLISHED', count:publishedCount, color:'#16a34a', bg:'#ffffff',   border:'#bbf7d0', bar:'#16a34a',  grad:'linear-gradient(135deg,#4ade80,#16a34a)' },
           ].map(s => (
-            <div key={s.label} style={{ padding:'15px 18px', borderRadius:15, background:s.bg, border:`1px solid ${s.border}`, position:'relative', overflow:'hidden' }}>
-              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:2, background:s.bar+'44' }} />
-              <span style={{ fontSize:26, fontWeight:800, color:s.color, letterSpacing:'-0.04em', lineHeight:1, display:'block', marginBottom:5 }}>{s.count}</span>
-              <span style={{ fontSize:10, fontWeight:700, color:'rgba(240,237,232,0.25)', letterSpacing:'0.08em' }}>{s.label}</span>
+            <div key={s.label} style={{ padding:'20px 18px', borderRadius:15, background:s.bg, border:`1.5px solid ${s.border}`, position:'relative', overflow:'hidden', boxShadow:'0 2px 12px rgba(108,99,255,0.06)' }}>
+              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:s.grad, borderRadius:'15px 15px 0 0' }} />
+              <span style={{ fontSize:28, fontWeight:900, color:s.color, letterSpacing:'-0.04em', lineHeight:1, display:'block', marginBottom:6 }}>{s.count}</span>
+              <span style={{ fontSize:10, fontWeight:800, color:'#b0a5cc', letterSpacing:'0.08em' }}>{s.label}</span>
             </div>
           ))}
         </div>
@@ -1315,4 +1314,3 @@ export default function PostsPage() {
     </div>
   )
 }
-
