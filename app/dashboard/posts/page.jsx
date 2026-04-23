@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect, useContext, useCallback, useRef } from 'react'
@@ -14,7 +15,7 @@ const PLATFORMS = [
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023' },
 ]
 const PLACEMENT_PLATFORMS = ['facebook', 'linkedin', 'pinterest']
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#D97706' }
 
 const ACCEPT = 'image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/mpeg'
 
@@ -55,11 +56,11 @@ const TIKTOK_PRIVACY = [
 const STATUS_CONFIG = {
   published:  { bg:'rgba(74,222,128,0.1)',   color:'#16a34a', border:'rgba(74,222,128,0.3)',   dot:'#4ade80',  calColor:'#16a34a' },
   processed:  { bg:'rgba(74,222,128,0.1)',   color:'#16a34a', border:'rgba(74,222,128,0.3)',   dot:'#4ade80',  calColor:'#16a34a' },
-  scheduled:  { bg:'rgba(96,165,250,0.12)',  color:'#2563eb', border:'rgba(96,165,250,0.3)',   dot:'#60a5fa',  calColor:'#2563eb' },
-  pending:    { bg:'rgba(156,143,192,0.1)',  color:'#7c6fa0', border:'rgba(156,143,192,0.2)', dot:'#9c8fc0',  calColor:'#7c6fa0' },
-  draft:      { bg:'rgba(156,143,192,0.1)',  color:'#7c6fa0', border:'rgba(156,143,192,0.2)', dot:'#9c8fc0',  calColor:'#7c6fa0' },
+  scheduled:  { bg:'rgba(245,158,11,0.12)',  color:'#B45309', border:'rgba(245,158,11,0.3)',   dot:'#F59E0B',  calColor:'#D97706' },
+  pending:    { bg:'rgba(217,119,6,0.1)',    color:'#B45309', border:'rgba(217,119,6,0.2)',    dot:'#D97706',  calColor:'#B45309' },
+  draft:      { bg:'rgba(217,119,6,0.1)',    color:'#B45309', border:'rgba(217,119,6,0.2)',    dot:'#D97706',  calColor:'#B45309' },
   failed:     { bg:'rgba(248,113,113,0.1)',  color:'#dc2626', border:'rgba(248,113,113,0.3)',  dot:'#f87171',  calColor:'#dc2626' },
-  processing: { bg:'rgba(108,99,255,0.1)',   color:'#6C63FF', border:'rgba(108,99,255,0.25)', dot:'#6C63FF',  calColor:'#6C63FF' },
+  processing: { bg:'rgba(217,119,6,0.1)',    color:'#D97706', border:'rgba(217,119,6,0.25)',   dot:'#D97706',  calColor:'#D97706' },
 }
 
 function isPostEditable(post) {
@@ -108,27 +109,27 @@ function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
   const ds = displayStatus(post)
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:1100, background:'rgba(240,237,255,0.7)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.15s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+    <div style={{ position:'fixed', inset:0, zIndex:1100, background:'rgba(255,251,240,0.7)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.15s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div style={{ width:'100%', maxWidth:420, background:'#ffffff', border:'1.5px solid #fcd5d5', borderRadius:20, boxShadow:'0 40px 80px rgba(220,38,38,0.12)', overflow:'hidden' }}>
         <div style={{ padding:'22px 24px 18px', borderBottom:'1px solid #fce8e8', display:'flex', alignItems:'center', gap:13, background:'linear-gradient(135deg,#fff5f5,#ffffff)' }}>
           <div style={{ width:38, height:38, borderRadius:12, background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17, flexShrink:0 }}>🗑</div>
           <div>
-            <h2 style={{ fontSize:15, fontWeight:700, color:'#1a1040', margin:0 }}>Delete {ds === 'draft' ? 'Draft' : ds === 'scheduled' ? 'Scheduled Post' : 'Post'}</h2>
+            <h2 style={{ fontSize:15, fontWeight:700, color:'#1C1200', margin:0 }}>Delete {ds === 'draft' ? 'Draft' : ds === 'scheduled' ? 'Scheduled Post' : 'Post'}</h2>
             <div style={{ fontSize:11, color:'#dc2626', marginTop:2, fontWeight:500 }}>This action cannot be undone</div>
           </div>
         </div>
         <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:14 }}>
-          <div style={{ padding:'13px 15px', borderRadius:12, background:'#faf9ff', border:'1.5px solid #e8e4ff' }}>
-            <p style={{ fontSize:13, color:'#4a3f6b', margin:'0 0 8px', lineHeight:1.55 }}>
-              {post.body ? <>"{post.body.slice(0, 80)}{post.body.length > 80 ? '…' : ''}"</> : <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
+          <div style={{ padding:'13px 15px', borderRadius:12, background:'#FFFBF0', border:'1.5px solid #FDE68A' }}>
+            <p style={{ fontSize:13, color:'#1C1200', margin:'0 0 8px', lineHeight:1.55 }}>
+              {post.body ? <>"{post.body.slice(0, 80)}{post.body.length > 80 ? '…' : ''}"</> : <em style={{ color:'#D97706' }}>Media-only post</em>}
             </p>
             {post.scheduled_at && (
-              <div style={{ fontSize:11, color:'#2563eb', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
+              <div style={{ fontSize:11, color:'#D97706', display:'flex', alignItems:'center', gap:5, fontWeight:500 }}>
                 <span>⏰</span> Scheduled for {new Date(post.scheduled_at).toLocaleString()}
               </div>
             )}
           </div>
-          <p style={{ fontSize:13, color:'#7c6fa0', margin:0, lineHeight:1.6 }}>
+          <p style={{ fontSize:13, color:'#B45309', margin:0, lineHeight:1.6 }}>
             This will permanently delete this post from Postproxy. It will not be published.
           </p>
           {error && (
@@ -138,7 +139,7 @@ function DeleteConfirmModal({ post, groupId, onClose, onDeleted }) {
           )}
         </div>
         <div style={{ padding:'14px 24px 20px', display:'flex', gap:9, justifyContent:'flex-end' }}>
-          <button onClick={onClose} style={{ padding:'9px 18px', borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+          <button onClick={onClose} style={{ padding:'9px 18px', borderRadius:10, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
           <button onClick={handleDelete} disabled={deleting} style={{ padding:'9px 22px', borderRadius:10, background:'linear-gradient(135deg,#fef2f2,#fee2e2)', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:13, fontWeight:700, cursor:deleting?'not-allowed':'pointer', fontFamily:'inherit', opacity:deleting?0.6:1, display:'flex', alignItems:'center', gap:7 }}>
             {deleting ? <><span style={{ width:12, height:12, border:'2px solid #fcd5d5', borderTop:'2px solid #dc2626', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Deleting…</> : '🗑 Delete'}
           </button>
@@ -163,9 +164,9 @@ function StatusBadge({ status, isDraft }) {
 function InputRow({ label, placeholder, value, onChange }) {
   return (
     <div>
-      <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#B45309', marginBottom:5 }}>{label.toUpperCase()}</div>
       <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-        style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
+        style={{ width:'100%', padding:'8px 11px', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:9, color:'#1C1200', fontSize:12, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
     </div>
   )
 }
@@ -173,8 +174,8 @@ function InputRow({ label, placeholder, value, onChange }) {
 function CheckRow({ label, checked, onChange }) {
   return (
     <label style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer' }}>
-      <div onClick={() => onChange(!checked)} style={{ width:16, height:16, borderRadius:5, flexShrink:0, border:`2px solid ${checked ? '#6C63FF' : '#c4b5fd'}`, background: checked ? '#ede9fe' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#6C63FF' }}>{checked ? '✓' : ''}</div>
-      <span style={{ fontSize:12, color:'#7c6fa0', fontWeight:500 }}>{label}</span>
+      <div onClick={() => onChange(!checked)} style={{ width:16, height:16, borderRadius:5, flexShrink:0, border:`2px solid ${checked ? '#D97706' : '#FCD34D'}`, background: checked ? '#FEF3C7' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#D97706' }}>{checked ? '✓' : ''}</div>
+      <span style={{ fontSize:12, color:'#B45309', fontWeight:500 }}>{label}</span>
     </label>
   )
 }
@@ -189,10 +190,10 @@ function PlatformParamsEditor({ platform, params, onChange }) {
     <div style={{ padding:'12px 14px', display:'flex', flexDirection:'column', gap:10 }}>
       {formats.length > 1 && (
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:6 }}>FORMAT</div>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#B45309', marginBottom:6 }}>FORMAT</div>
           <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
             {formats.map(f => (
-              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{ padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600, background: currentFormat===f.value ? info.color+'18' : '#faf9ff', border:`1.5px solid ${currentFormat===f.value ? info.color+'60' : '#e2dcff'}`, color: currentFormat===f.value ? info.color : '#7c6fa0', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>{f.icon} {f.label}</button>
+              <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{ padding:'5px 12px', borderRadius:8, fontSize:11, fontWeight:600, background: currentFormat===f.value ? info.color+'18' : '#FFFBF0', border:`1.5px solid ${currentFormat===f.value ? info.color+'60' : '#FDE68A'}`, color: currentFormat===f.value ? info.color : '#B45309', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:4 }}>{f.icon} {f.label}</button>
             ))}
           </div>
         </div>
@@ -206,8 +207,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
       {platform==='youtube' && (<>
         <InputRow label="Video Title" placeholder="My awesome video" value={params.title||''} onChange={v=>set('title',v)} />
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>PRIVACY</div>
-          <select value={params.privacy_status||'public'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none' }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#B45309', marginBottom:5 }}>PRIVACY</div>
+          <select value={params.privacy_status||'public'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:9, color:'#1C1200', fontSize:12, fontFamily:'inherit', outline:'none' }}>
             <option value="public">Public</option>
             <option value="unlisted">Unlisted</option>
             <option value="private">Private</option>
@@ -218,8 +219,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
       </>)}
       {platform==='tiktok' && (<>
         <div>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#9c8fc0', marginBottom:5 }}>PRIVACY</div>
-          <select value={params.privacy_status||'PUBLIC_TO_EVERYONE'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:9, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none' }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'#B45309', marginBottom:5 }}>PRIVACY</div>
+          <select value={params.privacy_status||'PUBLIC_TO_EVERYONE'} onChange={e=>set('privacy_status',e.target.value)} style={{ width:'100%', padding:'8px 11px', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:9, color:'#1C1200', fontSize:12, fontFamily:'inherit', outline:'none' }}>
             {TIKTOK_PRIVACY.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
         </div>
@@ -232,7 +233,7 @@ function PlatformParamsEditor({ platform, params, onChange }) {
         <InputRow label="Pin Title" placeholder="My pin title" value={params.title||''} onChange={v=>set('title',v)} />
         <InputRow label="Destination Link" placeholder="https://yoursite.com" value={params.destination_link||''} onChange={v=>set('destination_link',v)} />
       </>)}
-      {platform==='linkedin' && <div style={{ fontSize:11, color:'#9c8fc0', fontStyle:'italic' }}>Organization ID is set via profile placement above.</div>}
+      {platform==='linkedin' && <div style={{ fontSize:11, color:'#B45309', fontStyle:'italic' }}>Organization ID is set via profile placement above.</div>}
     </div>
   )
 }
@@ -256,42 +257,42 @@ function MediaInput({ files, urls, onFilesChange, onUrlsChange, label='MEDIA' })
 
   return (
     <div>
-      <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:8 }}>{label}</label>
-      <div style={{ display:'flex', gap:4, background:'#f8f7ff', border:'1.5px solid #e2dcff', borderRadius:9, padding:3, marginBottom:10, width:'fit-content' }}>
+      <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:8 }}>{label}</label>
+      <div style={{ display:'flex', gap:4, background:'#FEF3C7', border:'1.5px solid #FDE68A', borderRadius:9, padding:3, marginBottom:10, width:'fit-content' }}>
         {[{id:'upload',label:'⬆ Files'},{id:'url',label:'🔗 URL'}].map(t => (
-          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600, background: tab===t.id ? '#ede9fe' : 'transparent', border: tab===t.id ? '1.5px solid #c4b5fd' : '1.5px solid transparent', color: tab===t.id ? '#6C63FF' : '#9c8fc0', cursor:'pointer', fontFamily:'inherit' }}>{t.label}</button>
+          <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{ padding:'5px 13px', borderRadius:6, fontSize:11, fontWeight:600, background: tab===t.id ? '#ffffff' : 'transparent', border: tab===t.id ? '1.5px solid #FCD34D' : '1.5px solid transparent', color: tab===t.id ? '#D97706' : '#B45309', cursor:'pointer', fontFamily:'inherit' }}>{t.label}</button>
         ))}
       </div>
       {tab==='upload' ? (<>
-        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{ border:`2px dashed ${dragging?'#6C63FF':'#c4b5fd'}`, borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer', background:dragging?'#ede9fe':'#faf9ff', transition:'all 0.2s' }}>
+        <div onDragOver={e=>{e.preventDefault();setDragging(true)}} onDragLeave={()=>setDragging(false)} onDrop={handleDrop} onClick={()=>inputRef.current?.click()} style={{ border:`2px dashed ${dragging?'#D97706':'#FCD34D'}`, borderRadius:12, padding:'20px 16px', textAlign:'center', cursor:'pointer', background:dragging?'#FEF3C7':'#FFFBF0', transition:'all 0.2s' }}>
           <input ref={inputRef} type="file" accept={ACCEPT} multiple onChange={handleFileInput} style={{ display:'none' }} />
           <div style={{ fontSize:22, marginBottom:7, opacity:0.5 }}>🖼</div>
-          <div style={{ fontSize:12, color:'#7c6fa0', fontWeight:500 }}>Drop files or click to browse</div>
-          <div style={{ fontSize:10, color:'#b0a5cc', marginTop:3 }}>JPG, PNG, GIF, WEBP, MP4, MOV</div>
+          <div style={{ fontSize:12, color:'#B45309', fontWeight:500 }}>Drop files or click to browse</div>
+          <div style={{ fontSize:10, color:'#D97706', marginTop:3 }}>JPG, PNG, GIF, WEBP, MP4, MOV</div>
         </div>
         {files.length > 0 && (
           <div style={{ display:'flex', gap:7, flexWrap:'wrap', marginTop:10 }}>
             {files.map((file,i) => {
               const isVideo = file.type.startsWith('video/')
               return (
-                <div key={i} style={{ position:'relative', borderRadius:9, overflow:'hidden', border:'1.5px solid #e2dcff' }}>
+                <div key={i} style={{ position:'relative', borderRadius:9, overflow:'hidden', border:'1.5px solid #FDE68A' }}>
                   {isVideo ? (
-                    <div style={{ width:64, height:64, background:'#f0edff', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3 }}>
+                    <div style={{ width:64, height:64, background:'#FEF3C7', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3 }}>
                       <span style={{ fontSize:18 }}>▶</span>
-                      <span style={{ fontSize:8, color:'#9c8fc0', fontWeight:700 }}>VIDEO</span>
+                      <span style={{ fontSize:8, color:'#B45309', fontWeight:700 }}>VIDEO</span>
                     </div>
                   ) : (
                     <img src={URL.createObjectURL(file)} alt="" style={{ width:64, height:64, objectFit:'cover', display:'block' }} />
                   )}
-                  <button type="button" onClick={()=>removeFile(i)} style={{ position:'absolute', top:2, right:2, width:15, height:15, borderRadius:'50%', background:'rgba(26,16,64,0.75)', border:'none', color:'#fff', fontSize:9, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+                  <button type="button" onClick={()=>removeFile(i)} style={{ position:'absolute', top:2, right:2, width:15, height:15, borderRadius:'50%', background:'rgba(28,18,0,0.75)', border:'none', color:'#fff', fontSize:9, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
                 </div>
               )
             })}
           </div>
         )}
       </>) : (<>
-        <textarea value={urls} onChange={e=>onUrlsChange(e.target.value)} placeholder={"https://example.com/image.jpg\nhttps://example.com/video.mp4"} rows={2} style={{ width:'100%', padding:'10px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:10, color:'#1a1040', fontSize:13, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
-        <p style={{ fontSize:11, color:'#b0a5cc', marginTop:5 }}>One URL per line</p>
+        <textarea value={urls} onChange={e=>onUrlsChange(e.target.value)} placeholder={"https://example.com/image.jpg\nhttps://example.com/video.mp4"} rows={2} style={{ width:'100%', padding:'10px 14px', boxSizing:'border-box', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:10, color:'#1C1200', fontSize:13, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+        <p style={{ fontSize:11, color:'#D97706', marginTop:5 }}>One URL per line</p>
       </>)}
     </div>
   )
@@ -322,8 +323,8 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   const info = getPlatformInfo(profile.platform)
 
   if (loading) return (
-    <div style={{ padding:'10px 16px', fontSize:12, color:'#9c8fc0', display:'flex', alignItems:'center', gap:6 }}>
-      <div style={{ width:10, height:10, border:'1.5px solid #e2dcff', borderTop:`1.5px solid ${info.color}`, borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
+    <div style={{ padding:'10px 16px', fontSize:12, color:'#B45309', display:'flex', alignItems:'center', gap:6 }}>
+      <div style={{ width:10, height:10, border:'1.5px solid #FDE68A', borderTop:`1.5px solid ${info.color}`, borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
       Loading {label.toLowerCase()}s…
     </div>
   )
@@ -334,14 +335,14 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   }
   if (placements.length===1) return (
     <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:8, fontSize:12 }}>
-      <span style={{ color:'#9c8fc0', fontWeight:500 }}>{label}:</span>
-      <span style={{ color:'#1a1040', fontWeight:600 }}>{placements[0].name}</span>
+      <span style={{ color:'#B45309', fontWeight:500 }}>{label}:</span>
+      <span style={{ color:'#1C1200', fontWeight:600 }}>{placements[0].name}</span>
     </div>
   )
   return (
     <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:10 }}>
-      <span style={{ fontSize:12, color:'#9c8fc0', flexShrink:0, fontWeight:500 }}>{label}:</span>
-      <select value={value??''} onChange={e=>onChange(e.target.value)} style={{ flex:1, padding:'7px 10px', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:8, color:'#1a1040', fontSize:12, fontFamily:'inherit', outline:'none', cursor:'pointer' }}>
+      <span style={{ fontSize:12, color:'#B45309', flexShrink:0, fontWeight:500 }}>{label}:</span>
+      <select value={value??''} onChange={e=>onChange(e.target.value)} style={{ flex:1, padding:'7px 10px', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:8, color:'#1C1200', fontSize:12, fontFamily:'inherit', outline:'none', cursor:'pointer' }}>
         <option value="">— Select {label} —</option>
         {placements.map(pl => <option key={pl.id??'p'} value={pl.id!==null?pl.id:'__personal__'}>{pl.name}</option>)}
       </select>
@@ -349,15 +350,15 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   )
 }
 
-function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onToggle, placements, onPlacementChange, loadedPlacements, onPlacementLoaded, groupId, accentColor='#6C63FF', platformParams, onPlatformParamChange }) {
+function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onToggle, placements, onPlacementChange, loadedPlacements, onPlacementLoaded, groupId, platformParams, onPlatformParamChange }) {
   const [expandedParams, setExpandedParams] = useState({})
   const activeProfiles = profiles.filter(p => p.status==='active')
 
   return (
     <div>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
-        <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0' }}>
-          POST TO {selectedProfileIds.length > 0 && <span style={{ color:accentColor, marginLeft:6 }}>{selectedProfileIds.length} selected</span>}
+        <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309' }}>
+          POST TO {selectedProfileIds.length > 0 && <span style={{ color:'#D97706', marginLeft:6 }}>{selectedProfileIds.length} selected</span>}
         </label>
         {activeProfiles.length > 1 && (
           <button type="button" onClick={() => {
@@ -366,18 +367,18 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
             } else {
               activeProfiles.forEach(p => { if (!selectedProfileIds.includes(p.id)) onToggle(p.id) })
             }
-          }} style={{ background:'#ede9fe', border:'1.5px solid #c4b5fd', borderRadius:7, padding:'4px 12px', fontSize:11, color:'#6C63FF', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}>
+          }} style={{ background:'#FEF3C7', border:'1.5px solid #FCD34D', borderRadius:7, padding:'4px 12px', fontSize:11, color:'#B45309', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}>
             {selectedProfileIds.length===activeProfiles.length ? '✕ Deselect All' : '✓ Select All'}
           </button>
         )}
       </div>
       {loadingProfiles ? (
         <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
-          {[1,2].map(i => <div key={i} style={{ height:52, borderRadius:11, background:'#f0edff', border:'1.5px solid #e2dcff' }} />)}
+          {[1,2].map(i => <div key={i} style={{ height:52, borderRadius:11, background:'#FEF3C7', border:'1.5px solid #FDE68A' }} />)}
         </div>
       ) : profiles.length===0 ? (
-        <div style={{ padding:'16px', borderRadius:11, textAlign:'center', background:'#faf9ff', border:'1.5px solid #e2dcff' }}>
-          <p style={{ fontSize:13, color:'#9c8fc0', margin:0, fontWeight:500 }}>No profiles connected</p>
+        <div style={{ padding:'16px', borderRadius:11, textAlign:'center', background:'#FFFBF0', border:'1.5px solid #FDE68A' }}>
+          <p style={{ fontSize:13, color:'#B45309', margin:0, fontWeight:500 }}>No profiles connected</p>
         </div>
       ) : (
         <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
@@ -389,13 +390,13 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
             const isExpanded = expandedParams[profile.id]
             const pp = (platformParams||{})[profile.id] || {}
             return (
-              <div key={profile.id} style={{ borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'55' : '#e2dcff'}`, background: isSelected ? info.color+'08' : '#faf9ff', overflow:'hidden', opacity:inactive?0.5:1, transition:'border-color 0.15s, background 0.15s' }}>
+              <div key={profile.id} style={{ borderRadius:12, border:`1.5px solid ${isSelected ? info.color+'55' : '#FDE68A'}`, background: isSelected ? info.color+'08' : '#FFFBF0', overflow:'hidden', opacity:inactive?0.5:1, transition:'border-color 0.15s, background 0.15s' }}>
                 <div onClick={() => !inactive && onToggle(profile.id)} style={{ display:'flex', alignItems:'center', gap:11, padding:'11px 13px', cursor:inactive?'not-allowed':'pointer' }}>
-                  <div style={{ width:19, height:19, borderRadius:6, flexShrink:0, border:`2px solid ${isSelected?info.color:'#c4b5fd'}`, background:isSelected?info.color:'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#ffffff', fontWeight:900, transition:'all 0.15s' }}>{isSelected?'✓':''}</div>
+                  <div style={{ width:19, height:19, borderRadius:6, flexShrink:0, border:`2px solid ${isSelected?info.color:'#FCD34D'}`, background:isSelected?info.color:'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, color:'#ffffff', fontWeight:900, transition:'all 0.15s' }}>{isSelected?'✓':''}</div>
                   <div style={{ width:33, height:33, borderRadius:10, flexShrink:0, background:info.color+'14', border:`1.5px solid ${info.color}30`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:800, color:info.color }}>{info.label.slice(0,2).toUpperCase()}</div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:12, fontWeight:700, color:'#1a1040', lineHeight:1.3 }}>{info.label}</div>
-                    <div style={{ fontSize:11, color:'#9c8fc0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:1, fontWeight:500 }}>{profile.name}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:'#1C1200', lineHeight:1.3 }}>{info.label}</div>
+                    <div style={{ fontSize:11, color:'#B45309', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:1, fontWeight:500 }}>{profile.name}</div>
                   </div>
                   {isSelected && (() => {
                     const fmt = pp.format || PLATFORM_FORMATS[profile.platform]?.[0]?.value
@@ -414,11 +415,11 @@ function ProfileSelector({ profiles, loadingProfiles, selectedProfileIds, onTogg
                 {isSelected && onPlatformParamChange && (
                   <div style={{ borderTop:`1px solid ${info.color}20` }}>
                     <button type="button" onClick={()=>setExpandedParams(p=>({...p,[profile.id]:!p[profile.id]}))} style={{ width:'100%', padding:'8px 13px', background:'transparent', border:'none', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', fontFamily:'inherit' }}>
-                      <span style={{ fontSize:11, fontWeight:600, color:isExpanded?info.color:'#9c8fc0' }}>
+                      <span style={{ fontSize:11, fontWeight:600, color:isExpanded?info.color:'#B45309' }}>
                         ⚙ Post Settings
                         {Object.keys(pp).length>0 && <span style={{ marginLeft:6, fontSize:10, color:info.color, background:info.color+'14', padding:'1px 6px', borderRadius:4 }}>{Object.keys(pp).length} set</span>}
                       </span>
-                      <span style={{ fontSize:11, color:'#b0a5cc', transform:isExpanded?'rotate(180deg)':'none', transition:'transform 0.2s' }}>▾</span>
+                      <span style={{ fontSize:11, color:'#D97706', transform:isExpanded?'rotate(180deg)':'none', transition:'transform 0.2s' }}>▾</span>
                     </button>
                     {isExpanded && (
                       <div style={{ borderTop:`1px solid ${info.color}15`, background:`${info.color}03` }}>
@@ -564,23 +565,23 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
   const dateLabel = new Date(date).toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
 
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(240,237,255,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:620, background:'#ffffff', border:'1.5px solid #c4b5fd', borderRadius:24, boxShadow:'0 40px 80px rgba(108,99,255,0.15)', overflow:'hidden' }}>
-        <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(255,251,240,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:620, background:'#ffffff', border:'1.5px solid #FCD34D', borderRadius:24, boxShadow:'0 40px 80px rgba(217,119,6,0.15)', overflow:'hidden' }}>
+        <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #FEF3C7', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#FFFBF0,#ffffff)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:36, height:36, borderRadius:11, background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>⏰</div>
+            <div style={{ width:36, height:36, borderRadius:11, background:'#FEF3C7', border:'1.5px solid #FCD34D', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>⏰</div>
             <div>
-              <h2 style={{ fontSize:16, fontWeight:800, color:'#1a1040', margin:0 }}>Schedule Post</h2>
-              <div style={{ fontSize:11, color:'#6C63FF', marginTop:2, fontWeight:500 }}>{dateLabel}</div>
+              <h2 style={{ fontSize:16, fontWeight:800, color:'#1C1200', margin:0 }}>Schedule Post</h2>
+              <div style={{ fontSize:11, color:'#D97706', marginTop:2, fontWeight:500 }}>{dateLabel}</div>
             </div>
           </div>
-          <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+          <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
         </div>
 
         <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
           <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CONTENT</label>
-            <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="What do you want to share?" rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:12, color:'#1a1040', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:7 }}>CONTENT</label>
+            <textarea value={body} onChange={e=>setBody(e.target.value)} placeholder="What do you want to share?" rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:12, color:'#1C1200', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
           </div>
 
           <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} />
@@ -596,7 +597,7 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
           />
 
           <div>
-            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>DATE & TIME</label>
+            <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:7 }}>DATE & TIME</label>
             <div style={{ position:'relative' }}>
               <input
                 type="datetime-local"
@@ -608,7 +609,7 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
                   else { setError(''); setScheduledAt(val) }
                 }}
                 disabled={isDraft}
-                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:isDraft?'#f8f7ff':'#faf9ff', border:`1.5px solid ${scheduledAt && isDateInPast(scheduledAt) && !isDraft ? '#fcd5d5' : '#e2dcff'}`, borderRadius:12, color:isDraft?'#b0a5cc':'#1a1040', fontSize:13, fontFamily:'inherit', outline:'none', cursor:isDraft?'not-allowed':'text', transition:'all 0.2s' }}
+                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:isDraft?'#FEF3C7':'#FFFBF0', border:`1.5px solid ${scheduledAt && isDateInPast(scheduledAt) && !isDraft ? '#fcd5d5' : '#FDE68A'}`, borderRadius:12, color:isDraft?'#D97706':'#1C1200', fontSize:13, fontFamily:'inherit', outline:'none', cursor:isDraft?'not-allowed':'text', transition:'all 0.2s' }}
               />
               {!isDraft && scheduledAt && !isDateInPast(scheduledAt) && (
                 <div style={{ marginTop:6, display:'flex', alignItems:'center', gap:5 }}>
@@ -619,13 +620,13 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
             </div>
           </div>
 
-          <div style={{ padding:'13px 16px', borderRadius:13, background:isDraft?'#ede9fe':'#faf9ff', border:`1.5px solid ${isDraft?'#c4b5fd':'#e2dcff'}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, cursor:'pointer', transition:'all 0.2s' }} onClick={()=>setIsDraft(v=>!v)}>
+          <div style={{ padding:'13px 16px', borderRadius:13, background:isDraft?'#FEF3C7':'#FFFBF0', border:`1.5px solid ${isDraft?'#FCD34D':'#FDE68A'}`, display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, cursor:'pointer', transition:'all 0.2s' }} onClick={()=>setIsDraft(v=>!v)}>
             <div>
-              <div style={{ fontSize:12, fontWeight:700, color:isDraft?'#6C63FF':'#7c6fa0', marginBottom:2 }}>Save as Draft</div>
-              <div style={{ fontSize:11, color:'#b0a5cc', fontWeight:500 }}>Won't publish — edit and schedule later</div>
+              <div style={{ fontSize:12, fontWeight:700, color:isDraft?'#D97706':'#B45309', marginBottom:2 }}>Save as Draft</div>
+              <div style={{ fontSize:11, color:'#D97706', fontWeight:500 }}>Won't publish — edit and schedule later</div>
             </div>
-            <div style={{ width:38, height:22, borderRadius:100, background:isDraft?'rgba(108,99,255,0.25)':'#e2dcff', border:`1.5px solid ${isDraft?'#6C63FF':'#c4b5fd'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
-              <div style={{ position:'absolute', top:3, left:isDraft?17:3, width:14, height:14, borderRadius:'50%', background:isDraft?'#6C63FF':'#b0a5cc', transition:'all 0.2s' }} />
+            <div style={{ width:38, height:22, borderRadius:100, background:isDraft?'rgba(217,119,6,0.25)':'#FEF3C7', border:`1.5px solid ${isDraft?'#D97706':'#FCD34D'}`, position:'relative', transition:'all 0.2s', flexShrink:0 }}>
+              <div style={{ position:'absolute', top:3, left:isDraft?17:3, width:14, height:14, borderRadius:'50%', background:isDraft?'#D97706':'#FCD34D', transition:'all 0.2s' }} />
             </div>
           </div>
 
@@ -636,9 +637,9 @@ function ScheduleModal({ date, groupId, onClose, onSaved }) {
           )}
         </div>
 
-        <div style={{ padding:'16px 24px', borderTop:'1px solid #ede9ff', display:'flex', gap:10, justifyContent:'flex-end', background:'#faf9ff' }}>
-          <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-          <button onClick={handleSave} disabled={saving || (!isDraft && scheduledAt && isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: isDraft ? 'linear-gradient(135deg,#ede9fe,#ddd6fe)' : scheduledAt ? 'linear-gradient(135deg,#6C63FF,#a78bfa)' : 'linear-gradient(135deg,#4ade80,#16a34a)', border: isDraft ? '1.5px solid #c4b5fd' : 'none', color: isDraft ? '#6C63FF' : '#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow: isDraft?'none':'0 4px 14px rgba(108,99,255,0.35)' }}>
+        <div style={{ padding:'16px 24px', borderTop:'1px solid #FEF3C7', display:'flex', gap:10, justifyContent:'flex-end', background:'#FFFBF0' }}>
+          <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+          <button onClick={handleSave} disabled={saving || (!isDraft && scheduledAt && isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: isDraft ? 'linear-gradient(135deg,#FEF3C7,#FDE68A)' : scheduledAt ? 'linear-gradient(135deg,#D97706,#B45309)' : 'linear-gradient(135deg,#4ade80,#16a34a)', border: isDraft ? '1.5px solid #FCD34D' : 'none', color: isDraft ? '#B45309' : '#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!isDraft&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow: isDraft?'none':'0 4px 14px rgba(217,119,6,0.35)' }}>
             {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #ffffff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : isDraft ? '◻ Save Draft' : scheduledAt ? '⏰ Schedule Post' : '⚡ Publish Now'}
           </button>
         </div>
@@ -782,36 +783,36 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
           onDeleted={() => { setShowDeleteConfirm(false); onDelete() }}
         />
       )}
-      <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(240,237,255,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-        <div style={{ width:'100%', maxWidth:640, background:'#ffffff', border:'1.5px solid #c4b5fd', borderRadius:24, boxShadow:'0 40px 80px rgba(108,99,255,0.15)', overflow:'hidden' }}>
-          <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
+      <div style={{ position:'fixed', inset:0, zIndex:1000, background:'rgba(255,251,240,0.75)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, animation:'fadeIn 0.18s ease' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+        <div style={{ width:'100%', maxWidth:640, background:'#ffffff', border:'1.5px solid #FCD34D', borderRadius:24, boxShadow:'0 40px 80px rgba(217,119,6,0.15)', overflow:'hidden' }}>
+          <div style={{ padding:'20px 24px 18px', borderBottom:'1px solid #FEF3C7', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#FFFBF0,#ffffff)' }}>
             <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{ width:36, height:36, borderRadius:11, background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
+              <div style={{ width:36, height:36, borderRadius:11, background:'#FEF3C7', border:'1.5px solid #FCD34D', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15 }}>✎</div>
               <div>
-                <h2 style={{ fontSize:16, fontWeight:800, color:'#1a1040', margin:0 }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
+                <h2 style={{ fontSize:16, fontWeight:800, color:'#1C1200', margin:0 }}>{isDraft?'Edit Draft':'Edit Scheduled Post'}</h2>
                 <div style={{ marginTop:3 }}><StatusBadge status={post.status} isDraft={post.draft} /></div>
               </div>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               <button onClick={() => setShowDeleteConfirm(true)} style={{ padding:'6px 13px', borderRadius:9, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>🗑 Delete</button>
-              <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+              <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
             </div>
           </div>
 
           <div style={{ padding:'20px 24px', maxHeight:'72vh', overflowY:'auto', display:'flex', flexDirection:'column', gap:18 }}>
             <div>
-              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CONTENT</label>
-              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#faf9ff', border:'1.5px solid #e2dcff', borderRadius:12, color:'#1a1040', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:7 }}>CONTENT</label>
+              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={5} style={{ width:'100%', padding:'12px 14px', boxSizing:'border-box', background:'#FFFBF0', border:'1.5px solid #FDE68A', borderRadius:12, color:'#1C1200', fontSize:14, fontFamily:'inherit', lineHeight:1.6, outline:'none', resize:'vertical' }} />
             </div>
 
             <MediaInput files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} label="MEDIA — replaces existing" />
 
             {post.media?.length > 0 && (
               <div>
-                <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
+                <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:7 }}>CURRENT MEDIA</label>
                 <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                   {post.media.map((m,i) => (
-                    <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'#faf9ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', display:'flex', alignItems:'center', gap:6, fontWeight:500 }}>
+                    <div key={i} style={{ padding:'6px 12px', borderRadius:8, fontSize:11, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', display:'flex', alignItems:'center', gap:6, fontWeight:500 }}>
                       <span style={{ fontSize:12 }}>🖼</span>
                       <span>{m.content_type||'media'}</span>
                       <StatusBadge status={m.status} />
@@ -826,14 +827,14 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
               selectedProfileIds={selectedProfileIds} onToggle={toggleProfile}
               placements={placements} onPlacementChange={(pid,val)=>setPlacements(p=>({...p,[pid]:val}))}
               loadedPlacements={loadedPlacements} onPlacementLoaded={(pid,list)=>setLoadedPlacements(p=>({...p,[pid]:list}))}
-              groupId={groupId} accentColor="#6C63FF"
+              groupId={groupId}
               platformParams={platformParams}
               onPlatformParamChange={(pid,pp)=>setPlatformParams(p=>({...p,[pid]:pp}))}
             />
 
             <div>
-              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#9c8fc0', display:'block', marginBottom:7 }}>
-                SCHEDULE {isScheduled && post.scheduled_at && <span style={{ fontWeight:500, color:'#b0a5cc', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
+              <label style={{ fontSize:10, fontWeight:700, letterSpacing:'0.1em', color:'#B45309', display:'block', marginBottom:7 }}>
+                SCHEDULE {isScheduled && post.scheduled_at && <span style={{ fontWeight:500, color:'#D97706', fontSize:10 }}>— current: {new Date(post.scheduled_at).toLocaleString()}</span>}
               </label>
               <input
                 type="datetime-local"
@@ -845,7 +846,7 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
                   else { setError(prev => prev.includes('past') ? '' : prev); setScheduledAt(val) }
                 }}
                 disabled={publishNow}
-                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'#f8f7ff':'#faf9ff', border:`1.5px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'#fcd5d5':'#e2dcff'}`, borderRadius:12, color:publishNow?'#b0a5cc':'#1a1040', fontSize:13, fontFamily:'inherit', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
+                style={{ width:'100%', padding:'11px 14px', boxSizing:'border-box', background:publishNow?'#FEF3C7':'#FFFBF0', border:`1.5px solid ${scheduledAt&&isDateInPast(scheduledAt)&&!publishNow?'#fcd5d5':'#FDE68A'}`, borderRadius:12, color:publishNow?'#D97706':'#1C1200', fontSize:13, fontFamily:'inherit', outline:'none', cursor:publishNow?'not-allowed':'text', transition:'all 0.2s' }}
               />
             </div>
 
@@ -868,9 +869,9 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
             )}
           </div>
 
-          <div style={{ padding:'16px 24px', borderTop:'1px solid #ede9ff', display:'flex', gap:10, justifyContent:'flex-end', background:'#faf9ff' }}>
-            <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
-            <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#6C63FF,#a78bfa)':'linear-gradient(135deg,#a78bfa,#6C63FF)', border:'none', color:'#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow:'0 4px 14px rgba(108,99,255,0.35)' }}>
+          <div style={{ padding:'16px 24px', borderTop:'1px solid #FEF3C7', display:'flex', gap:10, justifyContent:'flex-end', background:'#FFFBF0' }}>
+            <button onClick={onClose} style={{ padding:'10px 20px', borderRadius:11, background:'#ffffff', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Cancel</button>
+            <button onClick={handleSave} disabled={saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt))} style={{ padding:'10px 26px', borderRadius:11, background: publishNow?'linear-gradient(135deg,#4ade80,#16a34a)':scheduledAt?'linear-gradient(135deg,#D97706,#B45309)':'linear-gradient(135deg,#F59E0B,#D97706)', border:'none', color:'#ffffff', fontSize:13, fontWeight:700, cursor:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?'not-allowed':'pointer', fontFamily:'inherit', opacity:(saving||(!publishNow&&scheduledAt&&isDateInPast(scheduledAt)))?0.5:1, display:'flex', alignItems:'center', gap:7, transition:'opacity 0.2s', boxShadow:'0 4px 14px rgba(217,119,6,0.35)' }}>
               {saving ? <><span style={{ width:13, height:13, border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #ffffff', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} /> Saving…</> : publishNow ? '⚡ Save & Publish' : scheduledAt ? '⏰ Save & Schedule' : '✓ Save Changes'}
             </button>
           </div>
@@ -883,49 +884,49 @@ function EditModal({ post, groupId, onClose, onSaved, onDelete }) {
 function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }) {
   const label = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:900, background:'rgba(240,237,255,0.6)', backdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end', justifyContent:'center' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div style={{ width:'100%', maxWidth:640, maxHeight:'80vh', background:'#ffffff', border:'1.5px solid #e2dcff', borderTop:'1.5px solid #c4b5fd', borderRadius:'22px 22px 0 0', overflow:'hidden', animation:'slideUp 0.22s ease', display:'flex', flexDirection:'column', boxShadow:'0 -8px 40px rgba(108,99,255,0.12)' }}>
-        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:900, background:'rgba(255,251,240,0.6)', backdropFilter:'blur(10px)', display:'flex', alignItems:'flex-end', justifyContent:'center' }} onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{ width:'100%', maxWidth:640, maxHeight:'80vh', background:'#ffffff', border:'1.5px solid #FDE68A', borderTop:'1.5px solid #FCD34D', borderRadius:'22px 22px 0 0', overflow:'hidden', animation:'slideUp 0.22s ease', display:'flex', flexDirection:'column', boxShadow:'0 -8px 40px rgba(217,119,6,0.12)' }}>
+        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid #FEF3C7', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#FFFBF0,#ffffff)' }}>
           <div>
-            <div style={{ fontSize:16, fontWeight:800, color:'#1a1040' }}>{label}</div>
-            <div style={{ fontSize:12, color:'#9c8fc0', marginTop:2, fontWeight:500 }}>
+            <div style={{ fontSize:16, fontWeight:800, color:'#1C1200' }}>{label}</div>
+            <div style={{ fontSize:12, color:'#B45309', marginTop:2, fontWeight:500 }}>
               {posts.length} post{posts.length!==1?'s':''}
               {isPast && <span style={{ marginLeft:8, fontSize:10, color:'#dc2626', background:'#fef2f2', border:'1.5px solid #fcd5d5', padding:'2px 7px', borderRadius:5, fontWeight:700 }}>PAST DATE</span>}
             </div>
           </div>
           <div style={{ display:'flex', gap:8, alignItems:'center' }}>
             {!isPast && (
-              <button onClick={()=>{onClose();onSchedule(date)}} style={{ padding:'7px 14px', borderRadius:9, fontSize:12, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>⏰ Schedule here</button>
+              <button onClick={()=>{onClose();onSchedule(date)}} style={{ padding:'7px 14px', borderRadius:9, fontSize:12, fontWeight:600, background:'#FEF3C7', border:'1.5px solid #FCD34D', color:'#D97706', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}>⏰ Schedule here</button>
             )}
             {isPast && posts.length === 0 && (
               <span style={{ fontSize:11, color:'#dc2626', fontStyle:'italic', fontWeight:500 }}>Can't schedule past dates</span>
             )}
-            <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+            <button onClick={onClose} style={{ width:30, height:30, borderRadius:9, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:14, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
           </div>
         </div>
         <div style={{ overflowY:'auto', flex:1, padding:'12px 16px', display:'flex', flexDirection:'column', gap:10 }}>
           {posts.length === 0 ? (
             <div style={{ textAlign:'center', padding:'44px 24px' }}>
               <div style={{ fontSize:32, marginBottom:10, opacity:0.25 }}>📅</div>
-              <p style={{ fontSize:14, color:'#7c6fa0', margin:'0 0 4px', fontWeight:600 }}>No posts on this day</p>
+              <p style={{ fontSize:14, color:'#B45309', margin:'0 0 4px', fontWeight:600 }}>No posts on this day</p>
               {isPast
                 ? <p style={{ fontSize:12, color:'#dc2626', margin:0, fontWeight:500 }}>Past dates cannot be scheduled</p>
-                : <p style={{ fontSize:12, color:'#b0a5cc', margin:0 }}>Click "Schedule here" to create one</p>
+                : <p style={{ fontSize:12, color:'#D97706', margin:0 }}>Click "Schedule here" to create one</p>
               }
             </div>
           ) : posts.map(post => {
             const canEdit = isPostEditable(post)
             return (
-              <div key={post.id} style={{ padding:'14px 16px', borderRadius:14, background:'#faf9ff', border:'1.5px solid #e8e4ff' }}>
+              <div key={post.id} style={{ padding:'14px 16px', borderRadius:14, background:'#FFFBF0', border:'1.5px solid #FEF3C7' }}>
                 <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:10 }}>
-                  <p style={{ fontSize:13, color:'#1a1040', margin:0, lineHeight:1.6, flex:1, fontWeight:500 }}>
-                    {post.body || <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
+                  <p style={{ fontSize:13, color:'#1C1200', margin:0, lineHeight:1.6, flex:1, fontWeight:500 }}>
+                    {post.body || <em style={{ color:'#D97706' }}>Media-only post</em>}
                   </p>
                   <div style={{ display:'flex', gap:7, alignItems:'center', flexShrink:0 }}>
                     <StatusBadge status={post.status} isDraft={post.draft} />
                     {canEdit && (
                       <>
-                        <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={()=>{onEdit(post);onClose()}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#FEF3C7', border:'1.5px solid #FCD34D', color:'#D97706', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
                         <button onClick={()=>onDelete(post)} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
                       </>
                     )}
@@ -938,13 +939,13 @@ function DayPanel({ date, posts, onClose, onEdit, onSchedule, onDelete, isPast }
                       return (
                         <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1.5px solid ${info.color}30` }}>
                           <span style={{ width:5, height:5, borderRadius:'50%', background:info.color }} />
-                          <span style={{ fontSize:10, fontWeight:600, color:'#4a3f6b' }}>{info.label}</span>
+                          <span style={{ fontSize:10, fontWeight:600, color:'#1C1200' }}>{info.label}</span>
                         </div>
                       )
                     })}
                   </div>
                 )}
-                {post.scheduled_at && <div style={{ marginTop:8, fontSize:11, color:'#2563eb', fontWeight:500 }}>⏰ {new Date(post.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>}
+                {post.scheduled_at && <div style={{ marginTop:8, fontSize:11, color:'#D97706', fontWeight:500 }}>⏰ {new Date(post.scheduled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>}
               </div>
             )
           })}
@@ -999,27 +1000,27 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
           isPast={isDayInPast(calYear, calMonth, dayPanel)}
         />
       )}
-      <div style={{ background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:20, overflow:'hidden', boxShadow:'0 2px 16px rgba(108,99,255,0.07)' }}>
-        <div style={{ padding:'16px 22px', borderBottom:'1px solid #ede9ff', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#faf9ff,#ffffff)' }}>
-          <button onClick={prevMonth} disabled={!canGoPrev} style={{ width:34, height:34, borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:canGoPrev?'#7c6fa0':'#c4b5fd', cursor:canGoPrev?'pointer':'not-allowed', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
+      <div style={{ background:'#ffffff', border:'1.5px solid #FDE68A', borderRadius:20, overflow:'hidden', boxShadow:'0 2px 16px rgba(217,119,6,0.07)' }}>
+        <div style={{ padding:'16px 22px', borderBottom:'1px solid #FEF3C7', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(135deg,#FFFBF0,#ffffff)' }}>
+          <button onClick={prevMonth} disabled={!canGoPrev} style={{ width:34, height:34, borderRadius:10, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:canGoPrev?'#B45309':'#FCD34D', cursor:canGoPrev?'pointer':'not-allowed', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>‹</button>
           <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:16, fontWeight:800, color:'#1a1040' }}>{MONTH_NAMES[calMonth]} {calYear}</div>
-            <div style={{ fontSize:10, color:'#9c8fc0', marginTop:2, fontWeight:600 }}>
+            <div style={{ fontSize:16, fontWeight:800, color:'#1C1200' }}>{MONTH_NAMES[calMonth]} {calYear}</div>
+            <div style={{ fontSize:10, color:'#B45309', marginTop:2, fontWeight:600 }}>
               {posts.filter(p=>{ const d=p.scheduled_at?new Date(p.scheduled_at):null; return d && d.getMonth()===calMonth && d.getFullYear()===calYear }).length} posts this month
             </div>
           </div>
-          <button onClick={nextMonth} style={{ width:34, height:34, borderRadius:10, background:'#f8f7ff', border:'1.5px solid #e2dcff', color:'#7c6fa0', cursor:'pointer', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
+          <button onClick={nextMonth} style={{ width:34, height:34, borderRadius:10, background:'#FFFBF0', border:'1.5px solid #FDE68A', color:'#B45309', cursor:'pointer', fontSize:15, display:'flex', alignItems:'center', justifyContent:'center' }}>›</button>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderBottom:'1px solid #ede9ff', background:'#faf9ff' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', borderBottom:'1px solid #FEF3C7', background:'#FFFBF0' }}>
           {DAY_NAMES.map(d => (
-            <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:10, fontWeight:800, letterSpacing:'0.06em', color:'#b0a5cc' }}>{d}</div>
+            <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:10, fontWeight:800, letterSpacing:'0.06em', color:'#D97706' }}>{d}</div>
           ))}
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)' }}>
           {cells.map((day, idx) => {
-            if (!day) return <div key={`e-${idx}`} style={{ minHeight:82, borderRight:'1px solid #f0edff', borderBottom:'1px solid #f0edff', background:'#fdfcff' }} />
+            if (!day) return <div key={`e-${idx}`} style={{ minHeight:82, borderRight:'1px solid #FEF3C7', borderBottom:'1px solid #FEF3C7', background:'#FFFDF5' }} />
             const key = `${calYear}-${calMonth}-${day}`
             const dayPosts = postsByDate[key] || []
             const isToday = today.getDate()===day && today.getMonth()===calMonth && today.getFullYear()===calYear
@@ -1030,15 +1031,15 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
                 key={day}
                 onClick={() => setDayPanel(day)}
                 className={past ? 'cal-day-past' : 'cal-day-hover'}
-                style={{ minHeight:82, padding:'8px 6px', borderRight:'1px solid #f0edff', borderBottom:'1px solid #f0edff', cursor:'pointer', background: isToday ? '#ede9fe' : past ? '#fdfcff' : '#ffffff', position:'relative', transition:'background 0.15s', opacity: past && dayPosts.length===0 ? 0.5 : 1 }}
+                style={{ minHeight:82, padding:'8px 6px', borderRight:'1px solid #FEF3C7', borderBottom:'1px solid #FEF3C7', cursor:'pointer', background: isToday ? '#FEF3C7' : past ? '#FFFDF5' : '#ffffff', position:'relative', transition:'background 0.15s', opacity: past && dayPosts.length===0 ? 0.5 : 1 }}
               >
-                <div style={{ width:24, height:24, borderRadius:'50%', marginBottom:5, background: isToday ? '#6C63FF' : 'transparent', border: isToday ? 'none' : '1.5px solid transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:isToday?800:500, color: isToday ? '#ffffff' : past ? '#c4b5fd' : '#4a3f6b' }}>{day}</div>
+                <div style={{ width:24, height:24, borderRadius:'50%', marginBottom:5, background: isToday ? '#D97706' : 'transparent', border: isToday ? 'none' : '1.5px solid transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:isToday?800:500, color: isToday ? '#ffffff' : past ? '#FCD34D' : '#1C1200' }}>{day}</div>
 
                 {past && dayPosts.length===0 && (
                   <div style={{ position:'absolute', bottom:6, right:6, width:14, height:14, borderRadius:'50%', background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'#dc2626' }}>✕</div>
                 )}
                 {!past && dayPosts.length===0 && (
-                  <div className="cal-add-hint" style={{ position:'absolute', bottom:6, right:6, width:16, height:16, borderRadius:'50%', background:'#ede9fe', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:'#6C63FF', opacity:0, transition:'opacity 0.15s' }}>+</div>
+                  <div className="cal-add-hint" style={{ position:'absolute', bottom:6, right:6, width:16, height:16, borderRadius:'50%', background:'#FEF3C7', border:'1.5px solid #FCD34D', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, color:'#D97706', opacity:0, transition:'opacity 0.15s' }}>+</div>
                 )}
 
                 {dayPosts.slice(0,3).map((post,i) => {
@@ -1051,13 +1052,13 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
                     </div>
                   )
                 })}
-                {dayPosts.length>3 && <div style={{ fontSize:9, color:'#9c8fc0', paddingLeft:2, marginTop:1, fontWeight:600 }}>+{dayPosts.length-3} more</div>}
+                {dayPosts.length>3 && <div style={{ fontSize:9, color:'#B45309', paddingLeft:2, marginTop:1, fontWeight:600 }}>+{dayPosts.length-3} more</div>}
               </div>
             )
           })}
         </div>
 
-        <div style={{ padding:'12px 22px', borderTop:'1px solid #ede9ff', display:'flex', gap:16, flexWrap:'wrap', alignItems:'center', background:'#faf9ff' }}>
+        <div style={{ padding:'12px 22px', borderTop:'1px solid #FEF3C7', display:'flex', gap:16, flexWrap:'wrap', alignItems:'center', background:'#FFFBF0' }}>
           {[
             { label:'Published', color:STATUS_CONFIG.published.calColor },
             { label:'Scheduled', color:STATUS_CONFIG.scheduled.calColor },
@@ -1066,14 +1067,14 @@ function CalendarView({ posts, onEdit, onSchedule, onDelete }) {
           ].map(l => (
             <div key={l.label} style={{ display:'flex', alignItems:'center', gap:6 }}>
               <div style={{ width:8, height:8, borderRadius:2, background:l.color+'25', borderLeft:`2px solid ${l.color}` }} />
-              <span style={{ fontSize:10, color:'#7c6fa0', fontWeight:700, letterSpacing:'0.04em' }}>{l.label}</span>
+              <span style={{ fontSize:10, color:'#B45309', fontWeight:700, letterSpacing:'0.04em' }}>{l.label}</span>
             </div>
           ))}
           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
             <div style={{ width:8, height:8, borderRadius:'50%', background:'#fef2f2', border:'1.5px solid #fcd5d5', display:'flex', alignItems:'center', justifyContent:'center', fontSize:6, color:'#dc2626' }}>✕</div>
             <span style={{ fontSize:10, color:'#dc2626', fontWeight:700, letterSpacing:'0.04em', opacity:0.7 }}>Past (no scheduling)</span>
           </div>
-          <div style={{ marginLeft:'auto', fontSize:10, color:'#b0a5cc', fontStyle:'italic', fontWeight:500 }}>Click any day to view or schedule</div>
+          <div style={{ marginLeft:'auto', fontSize:10, color:'#D97706', fontStyle:'italic', fontWeight:500 }}>Click any day to view or schedule</div>
         </div>
       </div>
     </>
@@ -1095,7 +1096,7 @@ function ListView({ posts, onEdit, onDelete }) {
           {statuses.map(s => {
             const cnt = s==='all' ? normalizedPosts.length : normalizedPosts.filter(p=>p._displayStatus===s).length
             return (
-              <button key={s} onClick={()=>setFilter(s)} style={{ padding:'5px 13px', borderRadius:100, background:filter===s?'#ede9fe':'#ffffff', border:`1.5px solid ${filter===s?'#c4b5fd':'#e2dcff'}`, color:filter===s?'#6C63FF':'#7c6fa0', fontSize:11, fontWeight:700, cursor:'pointer', fontFamily:'inherit', textTransform:'capitalize', letterSpacing:'0.02em', boxShadow:filter===s?'0 2px 8px rgba(108,99,255,0.1)':'none' }}>
+              <button key={s} onClick={()=>setFilter(s)} style={{ padding:'5px 13px', borderRadius:100, background:filter===s?'#FEF3C7':'#ffffff', border:`1.5px solid ${filter===s?'#FCD34D':'#FDE68A'}`, color:filter===s?'#D97706':'#B45309', fontSize:11, fontWeight:700, cursor:'pointer', fontFamily:'inherit', textTransform:'capitalize', letterSpacing:'0.02em', boxShadow:filter===s?'0 2px 8px rgba(217,119,6,0.1)':'none' }}>
                 {s==='all'?'All':s} <span style={{ opacity:0.6 }}>({cnt})</span>
               </button>
             )
@@ -1104,10 +1105,10 @@ function ListView({ posts, onEdit, onDelete }) {
       )}
       <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
         {filtered.length===0 ? (
-          <div style={{ textAlign:'center', padding:'56px 24px', background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:18, boxShadow:'0 2px 12px rgba(108,99,255,0.05)' }}>
+          <div style={{ textAlign:'center', padding:'56px 24px', background:'#ffffff', border:'1.5px solid #FDE68A', borderRadius:18, boxShadow:'0 2px 12px rgba(217,119,6,0.05)' }}>
             <div style={{ fontSize:36, marginBottom:12, opacity:0.2 }}>▤</div>
-            <p style={{ fontSize:15, fontWeight:700, color:'#7c6fa0', marginBottom:4 }}>No posts</p>
-            <p style={{ fontSize:12, color:'#b0a5cc' }}>Head to Compose to create your first post</p>
+            <p style={{ fontSize:15, fontWeight:700, color:'#B45309', marginBottom:4 }}>No posts</p>
+            <p style={{ fontSize:12, color:'#D97706' }}>Head to Compose to create your first post</p>
           </div>
         ) : filtered.map(post => {
           const isExp   = expanded===post.id
@@ -1115,30 +1116,30 @@ function ListView({ posts, onEdit, onDelete }) {
           const ds      = post._displayStatus
           const cfg     = STATUS_CONFIG[ds] || STATUS_CONFIG.processing
           return (
-            <div key={post.id} style={{ background:'#ffffff', border:'1.5px solid #e8e4ff', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s, box-shadow 0.15s', boxShadow:'0 2px 8px rgba(108,99,255,0.04)' }} className="list-post-card">
+            <div key={post.id} style={{ background:'#ffffff', border:'1.5px solid #FDE68A', borderRadius:14, overflow:'hidden', transition:'border-color 0.15s, box-shadow 0.15s', boxShadow:'0 2px 8px rgba(217,119,6,0.04)' }} className="list-post-card">
               <div onClick={()=>setExpanded(isExp?null:post.id)} style={{ padding:'14px 18px', cursor:'pointer', display:'flex', flexDirection:'column', gap:10 }}>
                 <div style={{ display:'flex', alignItems:'flex-start', gap:12 }}>
                   <div style={{ width:3, borderRadius:3, alignSelf:'stretch', flexShrink:0, background:cfg.calColor, minHeight:36 }} />
                   <div style={{ flex:1, minWidth:0 }}>
-                    <p style={{ fontSize:13, color:'#1a1040', margin:0, lineHeight:1.6, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:isExp?'unset':2, WebkitBoxOrient:'vertical', fontWeight:500 }}>
-                      {post.body || <em style={{ color:'#b0a5cc' }}>Media-only post</em>}
+                    <p style={{ fontSize:13, color:'#1C1200', margin:0, lineHeight:1.6, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:isExp?'unset':2, WebkitBoxOrient:'vertical', fontWeight:500 }}>
+                      {post.body || <em style={{ color:'#D97706' }}>Media-only post</em>}
                     </p>
-                    {post.media?.length>0 && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:5 }}><span style={{ fontSize:10, color:'#9c8fc0' }}>🖼</span><span style={{ fontSize:10, color:'#9c8fc0', fontWeight:500 }}>{post.media.length} media</span></div>}
+                    {post.media?.length>0 && <div style={{ display:'flex', alignItems:'center', gap:5, marginTop:5 }}><span style={{ fontSize:10, color:'#B45309' }}>🖼</span><span style={{ fontSize:10, color:'#B45309', fontWeight:500 }}>{post.media.length} media</span></div>}
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:7, flexShrink:0 }}>
                     <StatusBadge status={post.status} isDraft={post.draft} />
                     {canEdit && (
                       <>
-                        <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#ede9fe', border:'1.5px solid #c4b5fd', color:'#6C63FF', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
+                        <button onClick={e=>{e.stopPropagation();onEdit(post)}} style={{ padding:'4px 10px', borderRadius:7, fontSize:11, fontWeight:600, background:'#FEF3C7', border:'1.5px solid #FCD34D', color:'#D97706', cursor:'pointer', fontFamily:'inherit' }}>Edit</button>
                         <button onClick={e=>{e.stopPropagation();onDelete(post)}} style={{ padding:'4px 9px', borderRadius:7, fontSize:11, fontWeight:600, background:'#fef2f2', border:'1.5px solid #fcd5d5', color:'#dc2626', cursor:'pointer', fontFamily:'inherit' }}>🗑</button>
                       </>
                     )}
-                    <span style={{ fontSize:11, color:'#b0a5cc', transform:isExp?'rotate(180deg)':'none', transition:'transform 0.2s', lineHeight:1 }}>▾</span>
+                    <span style={{ fontSize:11, color:'#D97706', transform:isExp?'rotate(180deg)':'none', transition:'transform 0.2s', lineHeight:1 }}>▾</span>
                   </div>
                 </div>
                 {post.scheduled_at && (
                   <div style={{ paddingLeft:15 }}>
-                    <span style={{ fontSize:10, color:'#2563eb', background:'rgba(37,99,235,0.08)', border:'1.5px solid rgba(37,99,235,0.2)', padding:'2px 9px', borderRadius:100, display:'inline-flex', alignItems:'center', gap:4, fontWeight:600 }}>
+                    <span style={{ fontSize:10, color:'#D97706', background:'rgba(217,119,6,0.08)', border:'1.5px solid rgba(217,119,6,0.2)', padding:'2px 9px', borderRadius:100, display:'inline-flex', alignItems:'center', gap:4, fontWeight:600 }}>
                       ⏰ {new Date(post.scheduled_at).toLocaleString()}
                     </span>
                   </div>
@@ -1150,9 +1151,9 @@ function ListView({ posts, onEdit, onDelete }) {
                       return (
                         <div key={pl.platform} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'3px 9px', borderRadius:100, background:info.color+'0d', border:`1.5px solid ${info.color}30` }}>
                           <span style={{ width:4, height:4, borderRadius:'50%', background:info.color }} />
-                          <span style={{ fontSize:10, fontWeight:700, color:'#4a3f6b' }}>{info.label}</span>
+                          <span style={{ fontSize:10, fontWeight:700, color:'#1C1200' }}>{info.label}</span>
                           <StatusBadge status={pl.status} />
-                          {pl.permalink && <a href={pl.permalink} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ color:'#6C63FF', textDecoration:'none', fontSize:11, fontWeight:600 }}>↗</a>}
+                          {pl.permalink && <a href={pl.permalink} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()} style={{ color:'#D97706', textDecoration:'none', fontSize:11, fontWeight:600 }}>↗</a>}
                         </div>
                       )
                     })}
@@ -1160,14 +1161,14 @@ function ListView({ posts, onEdit, onDelete }) {
                 )}
               </div>
               {isExp && (
-                <div style={{ borderTop:'1px solid #ede9ff', padding:'12px 18px', background:'#faf9ff', display:'flex', gap:24, flexWrap:'wrap', animation:'fadeIn 0.15s ease' }}>
+                <div style={{ borderTop:'1px solid #FEF3C7', padding:'12px 18px', background:'#FFFBF0', display:'flex', gap:24, flexWrap:'wrap', animation:'fadeIn 0.15s ease' }}>
                   {[
                     { label:'STATUS',    content:<StatusBadge status={post.status} isDraft={post.draft} /> },
-                    post.scheduled_at && { label:'SCHEDULED', content:<span style={{ fontSize:12, color:'#2563eb', fontWeight:600 }}>{new Date(post.scheduled_at).toLocaleString()}</span> },
-                    post.created_at   && { label:'CREATED',   content:<span style={{ fontSize:12, color:'#9c8fc0', fontWeight:500 }}>{new Date(post.created_at).toLocaleString()}</span> },
+                    post.scheduled_at && { label:'SCHEDULED', content:<span style={{ fontSize:12, color:'#D97706', fontWeight:600 }}>{new Date(post.scheduled_at).toLocaleString()}</span> },
+                    post.created_at   && { label:'CREATED',   content:<span style={{ fontSize:12, color:'#B45309', fontWeight:500 }}>{new Date(post.created_at).toLocaleString()}</span> },
                   ].filter(Boolean).map((item,i) => (
                     <div key={i}>
-                      <div style={{ fontSize:9, fontWeight:800, letterSpacing:'0.12em', color:'#c4b8e0', marginBottom:5 }}>{item.label}</div>
+                      <div style={{ fontSize:9, fontWeight:800, letterSpacing:'0.12em', color:'#D97706', marginBottom:5 }}>{item.label}</div>
                       {item.content}
                     </div>
                   ))}
@@ -1216,22 +1217,22 @@ export default function PostsPage() {
   }
 
   return (
-    <div style={{ animation:'fadeIn 0.25s ease', background:'#f8f7ff', minHeight:'100%', padding:2 }}>
+    <div style={{ animation:'fadeIn 0.25s ease', background:'#FFFBF0', minHeight:'100%', padding:2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0}100%{background-position:400% 0} }
         @keyframes fadeIn  { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)} }
         @keyframes slideUp { from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { to{transform:rotate(360deg)} }
-        .sk { background:linear-gradient(90deg,#f0edff 0%,#e8e4ff 50%,#f0edff 100%); background-size:400% 100%; animation:shimmer 2s ease infinite; }
-        .cal-day-hover:hover { background:#f5f3ff !important; }
+        .sk { background:linear-gradient(90deg,#FEF3C7 0%,#FDE68A 50%,#FEF3C7 100%); background-size:400% 100%; animation:shimmer 2s ease infinite; }
+        .cal-day-hover:hover { background:#FFFBEB !important; }
         .cal-day-hover:hover .cal-add-hint { opacity:1 !important; }
         .cal-day-past { cursor:pointer; }
-        .cal-day-past:hover { background:#fdfcff !important; }
+        .cal-day-past:hover { background:#FFFDF5 !important; }
         .vtab { transition:all 0.15s ease; }
-        .vtab:hover { color:#6C63FF !important; border-color:#c4b5fd !important; }
+        .vtab:hover { color:#D97706 !important; border-color:#FCD34D !important; }
         .refresh-btn-posts { transition: all 0.15s ease; }
-        .refresh-btn-posts:hover { border-color:#6C63FF !important; color:#6C63FF !important; background:#ede9fe !important; }
-        .list-post-card:hover { border-color:#c4b5fd !important; box-shadow:0 4px 16px rgba(108,99,255,0.1) !important; }
+        .refresh-btn-posts:hover { border-color:#D97706 !important; color:#D97706 !important; background:#FEF3C7 !important; }
+        .list-post-card:hover { border-color:#FCD34D !important; box-shadow:0 4px 16px rgba(217,119,6,0.1) !important; }
       `}</style>
 
       {editPost && (
@@ -1263,23 +1264,23 @@ export default function PostsPage() {
       <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:14 }}>
         <div>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:5 }}>
-            <div style={{ width:38, height:38, borderRadius:11, background:'linear-gradient(135deg,#ede9fe,#ddd6fe)', border:'1.5px solid #c4b5fd', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17 }}>▤</div>
-            <h1 style={{ fontSize:26, fontWeight:900, color:'#1a1040', letterSpacing:'-0.03em', margin:0 }}>Posts</h1>
+            <div style={{ width:38, height:38, borderRadius:11, background:'linear-gradient(135deg,#FEF3C7,#FDE68A)', border:'1.5px solid #FCD34D', display:'flex', alignItems:'center', justifyContent:'center', fontSize:17 }}>▤</div>
+            <h1 style={{ fontSize:26, fontWeight:900, color:'#1C1200', letterSpacing:'-0.03em', margin:0 }}>Posts</h1>
           </div>
-          <p style={{ fontSize:12, color:'#7c6fa0', margin:0, fontWeight:500 }}>
-            {posts.length} posts in <span style={{ color:'#6C63FF', fontWeight:700 }}>{selectedGroup.name}</span>
+          <p style={{ fontSize:12, color:'#B45309', margin:0, fontWeight:500 }}>
+            {posts.length} posts in <span style={{ color:'#D97706', fontWeight:700 }}>{selectedGroup.name}</span>
           </p>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ display:'flex', gap:3, background:'#ffffff', border:'1.5px solid #e2dcff', borderRadius:11, padding:3 }}>
+          <div style={{ display:'flex', gap:3, background:'#ffffff', border:'1.5px solid #FDE68A', borderRadius:11, padding:3 }}>
             {[{id:'calendar',icon:'▦',label:'Calendar'},{id:'list',icon:'≡',label:'List'}].map(v => (
-              <button key={v.id} className="vtab" onClick={()=>setView(v.id)} style={{ padding:'7px 15px', borderRadius:8, fontSize:12, fontWeight:700, background:view===v.id?'#ede9fe':'transparent', border:view===v.id?'1.5px solid #c4b5fd':'1.5px solid transparent', color:view===v.id?'#6C63FF':'#9c8fc0', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}><span>{v.icon}</span> {v.label}</button>
+              <button key={v.id} className="vtab" onClick={()=>setView(v.id)} style={{ padding:'7px 15px', borderRadius:8, fontSize:12, fontWeight:700, background:view===v.id?'#FEF3C7':'transparent', border:view===v.id?'1.5px solid #FCD34D':'1.5px solid transparent', color:view===v.id?'#D97706':'#B45309', cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', gap:5 }}><span>{v.icon}</span> {v.label}</button>
             ))}
           </div>
           <button
             className="refresh-btn-posts"
             onClick={()=>fetchPosts(selectedGroup.id)}
-            style={{ display:'flex', alignItems:'center', gap:5, background:'#ffffff', border:'1.5px solid #e2dcff', borderRadius:11, padding:'9px 15px', fontSize:12, color:'#7c6fa0', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
+            style={{ display:'flex', alignItems:'center', gap:5, background:'#ffffff', border:'1.5px solid #FDE68A', borderRadius:11, padding:'9px 15px', fontSize:12, color:'#B45309', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
           >
             <span style={{ fontSize:13 }}>↻</span> Refresh
           </button>
@@ -1289,14 +1290,14 @@ export default function PostsPage() {
       {!loading && posts.length>0 && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:22 }}>
           {[
-            { label:'DRAFTS',    count:draftCount,     color:'#7c6fa0', bg:'#ffffff',   border:'#e2dcff', bar:'#9c8fc0',  grad:'linear-gradient(135deg,#9c8fc0,#7c6fa0)' },
-            { label:'SCHEDULED', count:scheduledCount, color:'#2563eb', bg:'#ffffff',   border:'#bfdbfe', bar:'#2563eb',  grad:'linear-gradient(135deg,#60a5fa,#2563eb)' },
-            { label:'PUBLISHED', count:publishedCount, color:'#16a34a', bg:'#ffffff',   border:'#bbf7d0', bar:'#16a34a',  grad:'linear-gradient(135deg,#4ade80,#16a34a)' },
+            { label:'DRAFTS',    count:draftCount,     color:'#B45309', bg:'#ffffff', border:'#FDE68A', grad:'linear-gradient(135deg,#D97706,#B45309)' },
+            { label:'SCHEDULED', count:scheduledCount, color:'#D97706', bg:'#ffffff', border:'#FCD34D', grad:'linear-gradient(135deg,#F59E0B,#D97706)' },
+            { label:'PUBLISHED', count:publishedCount, color:'#16a34a', bg:'#ffffff', border:'#bbf7d0', grad:'linear-gradient(135deg,#4ade80,#16a34a)' },
           ].map(s => (
-            <div key={s.label} style={{ padding:'20px 18px', borderRadius:15, background:s.bg, border:`1.5px solid ${s.border}`, position:'relative', overflow:'hidden', boxShadow:'0 2px 12px rgba(108,99,255,0.06)' }}>
+            <div key={s.label} style={{ padding:'20px 18px', borderRadius:15, background:s.bg, border:`1.5px solid ${s.border}`, position:'relative', overflow:'hidden', boxShadow:'0 2px 12px rgba(217,119,6,0.06)' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:s.grad, borderRadius:'15px 15px 0 0' }} />
               <span style={{ fontSize:28, fontWeight:900, color:s.color, letterSpacing:'-0.04em', lineHeight:1, display:'block', marginBottom:6 }}>{s.count}</span>
-              <span style={{ fontSize:10, fontWeight:800, color:'#b0a5cc', letterSpacing:'0.08em' }}>{s.label}</span>
+              <span style={{ fontSize:10, fontWeight:800, color:'#D97706', letterSpacing:'0.08em' }}>{s.label}</span>
             </div>
           ))}
         </div>

@@ -14,7 +14,7 @@ const PLATFORMS = [
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023' },
 ]
 
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#D97706' }
 
 const PLATFORM_ICONS = {
   instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`,
@@ -39,10 +39,10 @@ function StatusBadge({ status }) {
     expired:    { bg: '#fef9c3', color: '#a16207', dot: '#eab308' },
     inactive:   { bg: '#fee2e2', color: '#dc2626', dot: '#ef4444' },
     published:  { bg: '#dcfce7', color: '#15803d', dot: '#22c55e' },
-    scheduled:  { bg: '#ede9fe', color: '#6d28d9', dot: '#7c3aed' },
+    scheduled:  { bg: '#FFFBEB', color: '#D97706', dot: '#F59E0B' },
     draft:      { bg: '#f1f5f9', color: '#64748b', dot: '#94a3b8' },
     failed:     { bg: '#fee2e2', color: '#dc2626', dot: '#ef4444' },
-    processing: { bg: '#f3e8ff', color: '#7c3aed', dot: '#a855f7' },
+    processing: { bg: '#FEF3C7', color: '#B45309', dot: '#D97706' },
   }
   const st = map[status] || map.processing
   return (
@@ -111,14 +111,14 @@ export default function OverviewPage() {
   const activeCount = profiles.filter(p => p.status === 'active').length
 
   const stats = [
-    { label: 'Connected Profiles', value: profiles.length, icon: '◈', color: '#6C63FF', grad: 'linear-gradient(135deg, #6C63FF 0%, #A78BFA 100%)' },
-    { label: 'Active Accounts',    value: activeCount,      icon: '⚡', color: '#059669', grad: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
-    { label: 'Total Posts',        value: posts.length,     icon: '▤', color: '#dc2626', grad: 'linear-gradient(135deg, #f87171 0%, #dc2626 100%)' },
-    { label: 'Platforms Covered',  value: connectedPlatforms.length, icon: '✦', color: '#db2777', grad: 'linear-gradient(135deg, #f472b6 0%, #7c3aed 100%)' },
+    { label: 'Connected Profiles', value: profiles.length,             icon: '◈', color: '#D97706', grad: 'linear-gradient(135deg, #D97706 0%, #F59E0B 100%)' },
+    { label: 'Active Accounts',    value: activeCount,                 icon: '⚡', color: '#059669', grad: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' },
+    { label: 'Total Posts',        value: posts.length,                icon: '▤', color: '#B45309', grad: 'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)' },
+    { label: 'Platforms Covered',  value: connectedPlatforms.length,   icon: '✦', color: '#92400E', grad: 'linear-gradient(135deg, #D97706 0%, #92400E 100%)' },
   ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 28, background: '#f8f7ff', minHeight: '100%', padding: 2 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 28, background: '#FFFBF0', minHeight: '100%', padding: 2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0}100%{background-position:400% 0} }
         @keyframes fadeUp { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
@@ -127,33 +127,33 @@ export default function OverviewPage() {
         .ov-stat:nth-child(2){animation-delay:0.07s}
         .ov-stat:nth-child(3){animation-delay:0.14s}
         .ov-stat:nth-child(4){animation-delay:0.21s}
-        .ov-profile:hover { transform:translateY(-2px); box-shadow: 0 6px 20px rgba(108,99,255,0.12); border-color: rgba(108,99,255,0.3) !important; }
+        .ov-profile:hover { transform:translateY(-2px); box-shadow: 0 6px 20px rgba(217,119,6,0.12); border-color: rgba(217,119,6,0.3) !important; }
         .ov-profile { transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
         .ov-plat:hover { transform:scale(1.04); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
         .ov-plat { transition: transform 0.15s, box-shadow 0.15s; }
-        .ov-post:hover { background: #f0edff !important; border-color: rgba(108,99,255,0.25) !important; }
+        .ov-post:hover { background: #FEF3C7 !important; border-color: rgba(217,119,6,0.25) !important; }
         .ov-post { transition: background 0.15s, border-color 0.15s; }
-        .ov-skeleton { background:linear-gradient(90deg,#f0edff 25%,#e8e4ff 50%,#f0edff 75%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; border-radius:12px; }
+        .ov-skeleton { background:linear-gradient(90deg,#FEF3C7 25%,#FDE68A 50%,#FEF3C7 75%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; border-radius:12px; }
         .ov-dot-pulse { animation:pulse 2s ease infinite; }
-        .ov-refresh:hover { border-color: #6C63FF !important; color: #6C63FF !important; background: #f0edff !important; }
+        .ov-refresh:hover { border-color: #D97706 !important; color: #D97706 !important; background: #FFFBEB !important; }
         .ov-refresh { transition: all 0.18s; }
-        .ov-card { background: #ffffff; border: 1.5px solid #e8e4ff; border-radius: 18px; box-shadow: 0 2px 20px rgba(108,99,255,0.07); }
+        .ov-card { background: #ffffff; border: 1.5px solid #FDE68A; border-radius: 18px; box-shadow: 0 2px 20px rgba(217,119,6,0.07); }
       `}</style>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1a1040', letterSpacing: '-0.03em', margin: 0 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1C1200', letterSpacing: '-0.03em', margin: 0, fontFamily: "'Bricolage Grotesque', sans-serif" }}>
             Overview
           </h1>
-          <p style={{ fontSize: 13, color: '#7c6fa0', margin: '4px 0 0', fontWeight: 500 }}>
+          <p style={{ fontSize: 13, color: '#92400E', margin: '4px 0 0', fontWeight: 500 }}>
             {selectedGroup.name} · {new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' })}
           </p>
         </div>
         <button
           className="ov-refresh"
           onClick={handleRefresh}
-          style={{ display:'flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:10, background:'#ffffff', border:'1.5px solid #e2dcff', color:'#7c6fa0', fontSize:13, cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
+          style={{ display:'flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:10, background:'#ffffff', border:'1.5px solid #FDE68A', color:'#B45309', fontSize:13, cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
         >
           <span style={{ fontSize:15 }}>↻</span> Refresh
         </button>
@@ -164,8 +164,8 @@ export default function OverviewPage() {
         {stats.map((stat) => (
           <div key={stat.label} className="ov-stat" style={{
             background: '#ffffff',
-            border: '1.5px solid #e8e4ff',
-            boxShadow: '0 2px 16px rgba(108,99,255,0.07)',
+            border: '1.5px solid #FDE68A',
+            boxShadow: '0 2px 16px rgba(217,119,6,0.07)',
             padding: '22px 22px 18px',
             borderRadius: 18,
             position: 'relative', overflow: 'hidden',
@@ -181,7 +181,7 @@ export default function OverviewPage() {
                 </span>
               )}
             </div>
-            <div style={{ fontSize:12, color:'#7c6fa0', fontWeight:600, letterSpacing:'0.01em' }}>{stat.label}</div>
+            <div style={{ fontSize:12, color:'#92400E', fontWeight:600, letterSpacing:'0.01em' }}>{stat.label}</div>
           </div>
         ))}
       </div>
@@ -191,10 +191,10 @@ export default function OverviewPage() {
 
         {/* Connected Profiles */}
         <div className="ov-card" style={{ overflow:'hidden' }}>
-          <div style={{ padding:'18px 20px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1.5px solid #f0edff' }}>
+          <div style={{ padding:'18px 20px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1.5px solid #FEF3C7' }}>
             <div>
-              <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:0 }}>Connected Profiles</h2>
-              {!loadingProfiles && <p style={{ fontSize:12, color:'#9c8fc0', margin:'3px 0 0', fontWeight:500 }}>{activeCount} active · {profiles.length - activeCount} inactive</p>}
+              <h2 style={{ fontSize:15, fontWeight:800, color:'#1C1200', margin:0, fontFamily:"'Bricolage Grotesque', sans-serif" }}>Connected Profiles</h2>
+              {!loadingProfiles && <p style={{ fontSize:12, color:'#B45309', margin:'3px 0 0', fontWeight:500 }}>{activeCount} active · {profiles.length - activeCount} inactive</p>}
             </div>
             {!loadingProfiles && profiles.length > 0 && (
               <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:100, background:'#dcfce7', border:'1px solid #bbf7d0' }}>
@@ -209,16 +209,16 @@ export default function OverviewPage() {
             ) : profiles.length === 0 ? (
               <div style={{ textAlign:'center', padding:'40px 24px' }}>
                 <div style={{ fontSize:38, marginBottom:10, opacity:0.2 }}>◈</div>
-                <p style={{ fontSize:14, color:'#9c8fc0', margin:0, fontWeight:600 }}>No profiles connected yet</p>
-                <p style={{ fontSize:12, color:'#c4b8e0', margin:'4px 0 0' }}>Connect your social accounts to get started</p>
+                <p style={{ fontSize:14, color:'#B45309', margin:0, fontWeight:600 }}>No profiles connected yet</p>
+                <p style={{ fontSize:12, color:'#D97706', margin:'4px 0 0', opacity:0.6 }}>Connect your social accounts to get started</p>
               </div>
             ) : profiles.map(profile => {
               const info = getPlatformInfo(profile.platform)
               return (
                 <div key={profile.id} className="ov-profile" style={{
                   display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
-                  borderRadius:13, background:'#faf9ff',
-                  border:'1.5px solid #ede9ff',
+                  borderRadius:13, background:'#FFFBF0',
+                  border:'1.5px solid #FEF3C7',
                 }}>
                   <div style={{
                     width:40, height:40, borderRadius:11, flexShrink:0,
@@ -228,8 +228,8 @@ export default function OverviewPage() {
                     <PlatformIcon id={profile.platform} size={17} color={info.color} />
                   </div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:13, fontWeight:700, color:'#1a1040', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{info.label}</div>
-                    <div style={{ fontSize:11, color:'#9c8fc0', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:2, fontWeight:500 }}>{profile.name}</div>
+                    <div style={{ fontSize:13, fontWeight:700, color:'#1C1200', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{info.label}</div>
+                    <div style={{ fontSize:11, color:'#B45309', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginTop:2, fontWeight:500 }}>{profile.name}</div>
                   </div>
                   <StatusBadge status={profile.status} />
                 </div>
@@ -243,19 +243,19 @@ export default function OverviewPage() {
 
           {/* Platform Coverage */}
           <div className="ov-card" style={{ padding:'18px 20px' }}>
-            <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:'0 0 14px' }}>Platform Coverage</h2>
+            <h2 style={{ fontSize:15, fontWeight:800, color:'#1C1200', margin:'0 0 14px', fontFamily:"'Bricolage Grotesque', sans-serif" }}>Platform Coverage</h2>
             <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
               {PLATFORMS.map(p => {
                 const connected = connectedPlatforms.includes(p.id)
                 return (
                   <div key={p.id} className="ov-plat" style={{
                     display:'flex', alignItems:'center', gap:7, padding:'6px 12px', borderRadius:100,
-                    border:`1.5px solid ${connected ? p.color+'40' : '#e8e4f0'}`,
-                    background: connected ? p.color+'0f' : '#faf9ff',
+                    border:`1.5px solid ${connected ? p.color+'40' : '#FDE68A'}`,
+                    background: connected ? p.color+'0f' : '#FFFBF0',
                     cursor: 'default',
                   }}>
-                    <span style={{ width:7, height:7, borderRadius:'50%', background: connected ? p.color : '#d1c8e8', flexShrink:0 }} />
-                    <span style={{ fontSize:12, fontWeight:700, color: connected ? '#1a1040' : '#b0a5cc' }}>{p.label}</span>
+                    <span style={{ width:7, height:7, borderRadius:'50%', background: connected ? p.color : '#FCD34D', flexShrink:0 }} />
+                    <span style={{ fontSize:12, fontWeight:700, color: connected ? '#1C1200' : '#B45309', opacity: connected ? 1 : 0.6 }}>{p.label}</span>
                     {connected && <span style={{ fontSize:10, color:'#15803d', fontWeight:800 }}>✓</span>}
                   </div>
                 )
@@ -265,10 +265,10 @@ export default function OverviewPage() {
 
           {/* Recent Posts */}
           <div className="ov-card" style={{ overflow:'hidden', flex:1 }}>
-            <div style={{ padding:'16px 20px 12px', borderBottom:'1.5px solid #f0edff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <h2 style={{ fontSize:15, fontWeight:800, color:'#1a1040', margin:0 }}>Recent Posts</h2>
+            <div style={{ padding:'16px 20px 12px', borderBottom:'1.5px solid #FEF3C7', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <h2 style={{ fontSize:15, fontWeight:800, color:'#1C1200', margin:0, fontFamily:"'Bricolage Grotesque', sans-serif" }}>Recent Posts</h2>
               {!loadingPosts && posts.length > 0 && (
-                <span style={{ fontSize:11, color:'#9c8fc0', fontWeight:600 }}>{posts.length} shown</span>
+                <span style={{ fontSize:11, color:'#B45309', fontWeight:600 }}>{posts.length} shown</span>
               )}
             </div>
             <div style={{ padding:'10px 12px', display:'flex', flexDirection:'column', gap:7 }}>
@@ -277,15 +277,15 @@ export default function OverviewPage() {
               ) : posts.length === 0 ? (
                 <div style={{ textAlign:'center', padding:'32px 16px' }}>
                   <div style={{ fontSize:30, opacity:0.2, marginBottom:8 }}>▤</div>
-                  <p style={{ fontSize:13, color:'#9c8fc0', margin:0, fontWeight:600 }}>No posts yet</p>
+                  <p style={{ fontSize:13, color:'#B45309', margin:0, fontWeight:600 }}>No posts yet</p>
                 </div>
               ) : posts.map(post => {
                 const platforms = post.platforms || []
                 return (
                   <div key={post.id} className="ov-post" style={{
                     padding:'10px 13px', borderRadius:11,
-                    background:'#faf9ff',
-                    border:'1.5px solid #ede9ff',
+                    background:'#FFFBF0',
+                    border:'1.5px solid #FEF3C7',
                     display:'flex', alignItems:'center', gap:10,
                   }}>
                     {platforms.length > 0 && (
@@ -300,7 +300,7 @@ export default function OverviewPage() {
                         })}
                       </div>
                     )}
-                    <p style={{ fontSize:12, color:'#4a3f6b', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', margin:0, flex:1, fontWeight:500 }}>
+                    <p style={{ fontSize:12, color:'#1C1200', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', margin:0, flex:1, fontWeight:500 }}>
                       {post.body || 'Media post'}
                     </p>
                     <StatusBadge status={post.status} />
@@ -309,7 +309,6 @@ export default function OverviewPage() {
               })}
             </div>
           </div>
-
         </div>
       </div>
 
@@ -318,8 +317,8 @@ export default function OverviewPage() {
         <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
           {[
             profiles.filter(p=>p.status==='active').length > 0 && { icon:'⚡', text:`${activeCount} profile${activeCount!==1?'s':''} ready to publish`, color:'#15803d', bg:'#dcfce7', border:'#bbf7d0' },
-            posts.filter(p=>p.status==='scheduled').length > 0 && { icon:'⏰', text:`${posts.filter(p=>p.status==='scheduled').length} post${posts.filter(p=>p.status==='scheduled').length!==1?'s':''} scheduled`, color:'#6d28d9', bg:'#ede9fe', border:'#ddd6fe' },
-            posts.filter(p=>p.status==='draft').length > 0 && { icon:'◻', text:`${posts.filter(p=>p.status==='draft').length} draft${posts.filter(p=>p.status==='draft').length!==1?'s':''} waiting`, color:'#64748b', bg:'#f1f5f9', border:'#e2e8f0' },
+            posts.filter(p=>p.status==='scheduled').length > 0 && { icon:'⏰', text:`${posts.filter(p=>p.status==='scheduled').length} post${posts.filter(p=>p.status==='scheduled').length!==1?'s':''} scheduled`, color:'#B45309', bg:'#FEF3C7', border:'#FDE68A' },
+            posts.filter(p=>p.status==='draft').length > 0 && { icon:'◻', text:`${posts.filter(p=>p.status==='draft').length} draft${posts.filter(p=>p.status==='draft').length!==1?'s':''} waiting`, color:'#92400E', bg:'#FFFBEB', border:'#FDE68A' },
           ].filter(Boolean).map((insight, i) => (
             <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'9px 16px', borderRadius:100, background: insight.bg, border:`1.5px solid ${insight.border}` }}>
               <span style={{ fontSize:13 }}>{insight.icon}</span>

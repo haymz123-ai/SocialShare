@@ -1,5 +1,7 @@
 // app/page.js  (or pages/index.js)
 // app/page.js
+
+
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -17,8 +19,8 @@ const features = [
     icon: "🗓️",
     title: "Smart Scheduling",
     desc: "AI picks the perfect posting time per platform based on your audience's live activity patterns.",
-    accent: "#7C3AED",
-    light: "#F5F3FF",
+    accent: "#D97706",
+    light: "#FFFBEB",
     tag: "AI-Powered",
     stat: "3× more reach",
     visual: "schedule",
@@ -28,8 +30,8 @@ const features = [
     icon: "✍️",
     title: "Content Studio",
     desc: "Write once, adapt for every platform automatically — captions, hashtags, and formats included.",
-    accent: "#DB2777",
-    light: "#FDF2F8",
+    accent: "#F59E0B",
+    light: "#FEF3C7",
     tag: "Multi-platform",
     stat: "6 platforms",
     visual: "studio",
@@ -39,8 +41,8 @@ const features = [
     icon: "📊",
     title: "Unified Analytics",
     desc: "One dashboard to track reach, engagement, and growth across all your social channels in real time.",
-    accent: "#059669",
-    light: "#ECFDF5",
+    accent: "#B45309",
+    light: "#FEF9EE",
     tag: "Real-time",
     stat: "+84% insight",
     visual: "analytics",
@@ -55,7 +57,7 @@ const plans = [
     period: "/mo",
     desc: "For creators just getting started",
     features: ["3 Social Accounts", "8 Scheduled Posts/mo", "Basic Analytics", "Email Support"],
-    accent: "#7C3AED",
+    accent: "#D97706",
     popular: false,
   },
   {
@@ -64,7 +66,7 @@ const plans = [
     period: "/mo",
     desc: "For growing brands and agencies",
     features: ["15 Social Accounts", "Unlimited Posts", "Advanced Analytics", "AI Caption Writer", "Team Collaboration", "Priority Support"],
-    accent: "#DB2777",
+    accent: "#F59E0B",
     popular: true,
   },
   {
@@ -73,7 +75,7 @@ const plans = [
     period: "/mo",
     desc: "For large teams and enterprises",
     features: ["Unlimited Accounts", "Unlimited Posts", "White-label Reports", "Custom AI Training", "Dedicated Manager", "API Access"],
-    accent: "#059669",
+    accent: "#B45309",
     popular: false,
   },
 ];
@@ -83,7 +85,7 @@ const testimonials = [
     name: "Aria Singh",
     role: "Content Creator, 500K followers",
     avatar: "AS",
-    color: "#7C3AED",
+    color: "#D97706",
     text: "I went from spending 3 hours a day on social to just 20 minutes. The AI scheduling is genuinely magical.",
     stars: 5,
   },
@@ -91,7 +93,7 @@ const testimonials = [
     name: "Marcus Lee",
     role: "Marketing Director, TechFlow",
     avatar: "ML",
-    color: "#DB2777",
+    color: "#F59E0B",
     text: "Our engagement across LinkedIn and Instagram doubled in 6 weeks. The analytics finally make sense.",
     stars: 5,
   },
@@ -99,17 +101,17 @@ const testimonials = [
     name: "Priya Nair",
     role: "Social Media Manager",
     avatar: "PN",
-    color: "#059669",
+    color: "#B45309",
     text: "Managing 8 clients used to be chaos. Now everything is organized, scheduled, and beautiful.",
     stars: 5,
   },
 ];
 
 const stats = [
-  { value: "2.4M+", label: "Posts Scheduled", icon: "📅", color: "#7C3AED" },
-  { value: "48K+", label: "Happy Users", icon: "😊", color: "#DB2777" },
-  { value: "12+", label: "Platforms", icon: "🌐", color: "#059669" },
-  { value: "99.9%", label: "Uptime", icon: "⚡", color: "#D97706" },
+  { value: "2.4M+", label: "Posts Scheduled", icon: "📅", color: "#D97706" },
+  { value: "48K+", label: "Happy Users", icon: "😊", color: "#F59E0B" },
+  { value: "12+", label: "Platforms", icon: "🌐", color: "#B45309" },
+  { value: "99.9%", label: "Uptime", icon: "⚡", color: "#92400E" },
 ];
 
 const howItWorks = [
@@ -118,34 +120,33 @@ const howItWorks = [
     title: "Connect Your Accounts",
     desc: "Link all your social media profiles in one click. Social Share Bay handles the OAuth securely.",
     icon: "🔌",
-    color: "#7C3AED",
+    color: "#D97706",
   },
   {
     step: "02",
     title: "Create Your Content",
     desc: "Use our AI-powered studio to write and adapt content for every platform at once.",
     icon: "✨",
-    color: "#DB2777",
+    color: "#F59E0B",
   },
   {
     step: "03",
     title: "Schedule & Automate",
     desc: "Set it and forget it. AI picks the best times; your content goes live automatically.",
     icon: "🚀",
-    color: "#059669",
+    color: "#B45309",
   },
   {
     step: "04",
     title: "Track & Optimize",
     desc: "Monitor performance across all channels and double down on what's working.",
     icon: "📈",
-    color: "#D97706",
+    color: "#92400E",
   },
 ];
 
 const logos = ["Shopify", "Notion", "Figma", "Slack", "HubSpot", "Stripe", "Webflow", "Canva"];
 
-// ── Scheduling Section Data ──
 const scheduledPosts = [
   { id: 1, platform: "Instagram", icon: "📸", color: "#E1306C", time: "9:00 AM", day: "Mon", content: "New collection drop! 🔥", img: "🌅", status: "live", engagement: "4.2K" },
   { id: 2, platform: "Twitter", icon: "🐦", color: "#1DA1F2", time: "10:30 AM", day: "Mon", content: "Hot take: consistency beats virality every time 🧵", img: "💬", status: "scheduled", engagement: "—" },
@@ -220,7 +221,7 @@ function AIVisual({ accent }) {
 
 function CollabVisual({ accent }) {
   const members = ["AK", "SM", "PR", "JD"];
-  const colors = ["#7C3AED", "#DB2777", "#059669", "#D97706"];
+  const colors = ["#D97706", "#F59E0B", "#B45309", "#92400E"];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex" }}>
@@ -264,7 +265,6 @@ function FeatureVisual({ visual, accent }) {
   return null;
 }
 
-// ── NEW: Scheduling Showcase Component ──
 function SchedulingShowcase() {
   const [activePost, setActivePost] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -289,29 +289,9 @@ function SchedulingShowcase() {
   };
 
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "2rem",
-      alignItems: "stretch",
-    }}>
-      {/* Left: Calendar Grid */}
-      <div style={{
-        background: "white",
-        borderRadius: 24,
-        border: "1px solid #E5E7EB",
-        overflow: "hidden",
-        boxShadow: "0 8px 40px rgba(0,0,0,0.06)",
-      }}>
-        {/* Header */}
-        <div style={{
-          padding: "1.25rem 1.5rem",
-          borderBottom: "1px solid #F3F4F6",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          background: "linear-gradient(135deg, #FAFAFA, #F5F3FF)",
-        }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", alignItems: "stretch" }}>
+      <div style={{ background: "white", borderRadius: 24, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 8px 40px rgba(0,0,0,0.06)" }}>
+        <div style={{ padding: "1.25rem 1.5rem", borderBottom: "1px solid #F3F4F6", display: "flex", alignItems: "center", justifyContent: "space-between", background: "linear-gradient(135deg, #FFFBEB, #FEF3C7)" }}>
           <div>
             <div style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 800, fontSize: "1rem", color: "#0D0D14", letterSpacing: "-0.02em" }}>April 2025</div>
             <div style={{ fontSize: "0.72rem", color: "#9CA3AF", fontWeight: 500, marginTop: 2 }}>12 posts scheduled this week</div>
@@ -321,51 +301,20 @@ function SchedulingShowcase() {
             <button style={{ width: 32, height: 32, borderRadius: 10, border: "1px solid #E5E7EB", background: "white", cursor: "pointer", fontSize: "0.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>▶</button>
           </div>
         </div>
-
-        {/* Day labels */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0.75rem 1rem 0.25rem", gap: 4 }}>
           {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
             <div key={i} style={{ textAlign: "center", fontSize: "0.65rem", fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em" }}>{d}</div>
           ))}
         </div>
-
-        {/* Calendar days */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0.25rem 1rem 1rem", gap: 4 }}>
           {Array.from({ length: 35 }, (_, i) => {
             const day = i - 1;
             const postsOnDay = [3, 7, 10, 14, 17, 20, 22, 24, 27].includes(day);
             const multiPost = [7, 14, 22].includes(day);
             const isToday = day === 14;
-            const dotColors = ["#7C3AED", "#DB2777", "#059669", "#1DA1F2"];
+            const dotColors = ["#D97706", "#F59E0B", "#B45309", "#92400E"];
             return (
-              <div
-                key={i}
-                onClick={() => postsOnDay && setDragOver(day)}
-                style={{
-                  aspectRatio: "1",
-                  borderRadius: 10,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.72rem",
-                  fontWeight: isToday ? 800 : postsOnDay ? 600 : 400,
-                  color: isToday ? "white" : day <= 0 || day > 30 ? "#D1D5DB" : postsOnDay ? "#0D0D14" : "#6B7280",
-                  background: isToday
-                    ? "linear-gradient(135deg, #7C3AED, #DB2777)"
-                    : dragOver === day
-                    ? "#F5F3FF"
-                    : postsOnDay
-                    ? "#FAFAFA"
-                    : "transparent",
-                  border: isToday ? "none" : dragOver === day ? "1.5px dashed #7C3AED" : postsOnDay ? "1px solid #F3F4F6" : "none",
-                  cursor: postsOnDay ? "pointer" : "default",
-                  transition: "all 0.2s",
-                  position: "relative",
-                  gap: 2,
-                  boxShadow: isToday ? "0 4px 16px rgba(124,58,237,0.3)" : "none",
-                }}
-              >
+              <div key={i} onClick={() => postsOnDay && setDragOver(day)} style={{ aspectRatio: "1", borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: isToday ? 800 : postsOnDay ? 600 : 400, color: isToday ? "white" : day <= 0 || day > 30 ? "#D1D5DB" : postsOnDay ? "#0D0D14" : "#6B7280", background: isToday ? "linear-gradient(135deg, #D97706, #F59E0B)" : dragOver === day ? "#FFFBEB" : postsOnDay ? "#FAFAFA" : "transparent", border: isToday ? "none" : dragOver === day ? "1.5px dashed #D97706" : postsOnDay ? "1px solid #F3F4F6" : "none", cursor: postsOnDay ? "pointer" : "default", transition: "all 0.2s", position: "relative", gap: 2, boxShadow: isToday ? "0 4px 16px rgba(217,119,6,0.3)" : "none" }}>
                 <span>{day > 0 && day <= 30 ? day : ""}</span>
                 {postsOnDay && day > 0 && !isToday && (
                   <div style={{ display: "flex", gap: 2 }}>
@@ -378,27 +327,11 @@ function SchedulingShowcase() {
             );
           })}
         </div>
-
-        {/* Upcoming posts strip */}
         <div style={{ borderTop: "1px solid #F3F4F6", padding: "0.875rem 1.25rem" }}>
           <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#9CA3AF", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Upcoming Today</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {scheduledPosts.slice(0, 3).map((p, i) => (
-              <div
-                key={p.id}
-                onClick={() => setActivePost(i)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "7px 10px",
-                  borderRadius: 10,
-                  background: activePost === i ? `${p.color}10` : "#FAFAFA",
-                  border: `1px solid ${activePost === i ? p.color + "30" : "#F3F4F6"}`,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
+              <div key={p.id} onClick={() => setActivePost(i)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 10, background: activePost === i ? `${p.color}10` : "#FAFAFA", border: `1px solid ${activePost === i ? p.color + "30" : "#F3F4F6"}`, cursor: "pointer", transition: "all 0.2s" }}>
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: p.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.85rem", flexShrink: 0 }}>{p.icon}</div>
                 <div style={{ flex: 1, overflow: "hidden" }}>
                   <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#0D0D14", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.content}</div>
@@ -411,28 +344,9 @@ function SchedulingShowcase() {
         </div>
       </div>
 
-      {/* Right: AI Time Picker + Post Preview */}
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-        {/* Post Preview Card */}
-        <div style={{
-          background: "white",
-          borderRadius: 20,
-          border: "1px solid #E5E7EB",
-          overflow: "hidden",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-          flex: 1,
-          opacity: animating ? 0 : 1,
-          transform: animating ? "translateY(8px)" : "translateY(0)",
-          transition: "opacity 0.3s, transform 0.3s",
-        }}>
-          {/* Platform bar */}
-          <div style={{
-            padding: "0.875rem 1.25rem",
-            background: post.color,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}>
+        <div style={{ background: "white", borderRadius: 20, border: "1px solid #E5E7EB", overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.05)", flex: 1, opacity: animating ? 0 : 1, transform: animating ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.3s, transform 0.3s" }}>
+          <div style={{ padding: "0.875rem 1.25rem", background: post.color, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: "1.1rem" }}>{post.icon}</span>
               <div>
@@ -440,32 +354,12 @@ function SchedulingShowcase() {
                 <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.7)" }}>{post.day} · {post.time}</div>
               </div>
             </div>
-            <div style={{
-              background: "rgba(255,255,255,0.2)",
-              borderRadius: 20,
-              padding: "3px 10px",
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              color: "white",
-              backdropFilter: "blur(8px)",
-            }}>
+            <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: 20, padding: "3px 10px", fontSize: "0.65rem", fontWeight: 700, color: "white", backdropFilter: "blur(8px)" }}>
               {post.status === "live" ? "🟢 Live" : "⏳ Scheduled"}
             </div>
           </div>
-
-          {/* Content */}
           <div style={{ padding: "1.25rem" }}>
-            <div style={{
-              height: 80,
-              borderRadius: 14,
-              background: `linear-gradient(135deg, ${post.color}15, ${post.color}08)`,
-              border: `1px solid ${post.color}20`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "2.5rem",
-              marginBottom: "1rem",
-            }}>{post.img}</div>
+            <div style={{ height: 80, borderRadius: 14, background: `linear-gradient(135deg, ${post.color}15, ${post.color}08)`, border: `1px solid ${post.color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2.5rem", marginBottom: "1rem" }}>{post.img}</div>
             <div style={{ fontSize: "0.88rem", color: "#0D0D14", fontWeight: 500, lineHeight: 1.6, marginBottom: "0.875rem" }}>{post.content}</div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: "0.875rem" }}>
               {["#trending", "#brand", "#viral"].map(tag => (
@@ -474,44 +368,14 @@ function SchedulingShowcase() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ fontSize: "0.72rem", color: "#9CA3AF" }}>Est. reach: <strong style={{ color: "#0D0D14" }}>{post.engagement === "—" ? "~8.4K" : post.engagement}</strong></div>
-              <button
-                onClick={handleNext}
-                style={{
-                  background: post.color,
-                  color: "white",
-                  border: "none",
-                  borderRadius: 10,
-                  padding: "5px 12px",
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  transition: "opacity 0.2s",
-                }}
-              >Next Post →</button>
+              <button onClick={handleNext} style={{ background: post.color, color: "white", border: "none", borderRadius: 10, padding: "5px 12px", fontSize: "0.72rem", fontWeight: 700, cursor: "pointer", transition: "opacity 0.2s" }}>Next Post →</button>
             </div>
           </div>
         </div>
 
-        {/* AI Time Optimizer */}
-        <div style={{
-          background: "white",
-          borderRadius: 20,
-          border: "1px solid #E5E7EB",
-          padding: "1.25rem",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-        }}>
+        <div style={{ background: "white", borderRadius: 20, border: "1px solid #E5E7EB", padding: "1.25rem", boxShadow: "0 4px 20px rgba(0,0,0,0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "1rem" }}>
-            <div style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: "linear-gradient(135deg, #7C3AED, #DB2777)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.9rem",
-              flexShrink: 0,
-            }}>✨</div>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: "linear-gradient(135deg, #D97706, #F59E0B)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.9rem", flexShrink: 0 }}>✨</div>
             <div>
               <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0D0D14" }}>AI Best Times</div>
               <div style={{ fontSize: "0.65rem", color: "#9CA3AF" }}>Based on your audience activity</div>
@@ -520,44 +384,13 @@ function SchedulingShowcase() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {aiTimes.map((t, i) => (
               <div key={t.time} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: i === 0 ? "#22C55E" : i === 1 ? "#7C3AED" : i === 2 ? "#F59E0B" : "#D1D5DB",
-                  flexShrink: 0,
-                }} />
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: i === 0 ? "#22C55E" : i === 1 ? "#D97706" : i === 2 ? "#F59E0B" : "#D1D5DB", flexShrink: 0 }} />
                 <span style={{ fontSize: "0.72rem", color: "#6B7280", fontFamily: "monospace", minWidth: 60 }}>{t.time}</span>
                 <div style={{ flex: 1, height: 6, borderRadius: 3, background: "#F3F4F6", overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%",
-                    width: `${t.score}%`,
-                    borderRadius: 3,
-                    background: i === 0
-                      ? "linear-gradient(90deg, #22C55E, #86EFAC)"
-                      : i === 1
-                      ? "linear-gradient(90deg, #7C3AED, #A78BFA)"
-                      : i === 2
-                      ? "linear-gradient(90deg, #F59E0B, #FCD34D)"
-                      : "#E5E7EB",
-                    transition: "width 1s ease",
-                  }} />
+                  <div style={{ height: "100%", width: `${t.score}%`, borderRadius: 3, background: i === 0 ? "linear-gradient(90deg, #22C55E, #86EFAC)" : i === 1 ? "linear-gradient(90deg, #D97706, #FCD34D)" : i === 2 ? "linear-gradient(90deg, #F59E0B, #FDE68A)" : "#E5E7EB", transition: "width 1s ease" }} />
                 </div>
-                <span style={{
-                  fontSize: "0.65rem",
-                  fontWeight: 700,
-                  color: i === 0 ? "#22C55E" : i === 1 ? "#7C3AED" : i === 2 ? "#F59E0B" : "#9CA3AF",
-                  minWidth: 28,
-                  textAlign: "right",
-                }}>{t.score}%</span>
-                <span style={{
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  padding: "1px 6px",
-                  borderRadius: 4,
-                  background: i === 0 ? "#DCFCE7" : i === 1 ? "#F5F3FF" : i === 2 ? "#FEF3C7" : "#F3F4F6",
-                  color: i === 0 ? "#16A34A" : i === 1 ? "#7C3AED" : i === 2 ? "#D97706" : "#9CA3AF",
-                }}>{t.label}</span>
+                <span style={{ fontSize: "0.65rem", fontWeight: 700, color: i === 0 ? "#22C55E" : i === 1 ? "#D97706" : i === 2 ? "#F59E0B" : "#9CA3AF", minWidth: 28, textAlign: "right" }}>{t.score}%</span>
+                <span style={{ fontSize: "0.6rem", fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: i === 0 ? "#DCFCE7" : i === 1 ? "#FFFBEB" : i === 2 ? "#FEF3C7" : "#F3F4F6", color: i === 0 ? "#16A34A" : i === 1 ? "#D97706" : i === 2 ? "#B45309" : "#9CA3AF" }}>{t.label}</span>
               </div>
             ))}
           </div>
@@ -567,36 +400,18 @@ function SchedulingShowcase() {
   );
 }
 
-// ── NEW: Live Queue Strip ──
 function QueueStrip() {
   const [offset, setOffset] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setOffset(o => (o + 1) % (scheduledPosts.length * 120)), 30);
     return () => clearInterval(id);
   }, []);
-
   const items = [...scheduledPosts, ...scheduledPosts, ...scheduledPosts];
-
   return (
     <div style={{ overflow: "hidden", position: "relative" }}>
       <div style={{ display: "flex", gap: 12, transition: "none" }}>
         {items.map((p, i) => (
-          <div
-            key={i}
-            style={{
-              flexShrink: 0,
-              background: "white",
-              border: `1.5px solid ${p.color}25`,
-              borderRadius: 16,
-              padding: "0.875rem 1.125rem",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              minWidth: 220,
-              boxShadow: `0 4px 16px ${p.color}10`,
-              transition: "transform 0.2s",
-            }}
-          >
+          <div key={i} style={{ flexShrink: 0, background: "white", border: `1.5px solid ${p.color}25`, borderRadius: 16, padding: "0.875rem 1.125rem", display: "flex", alignItems: "center", gap: 10, minWidth: 220, boxShadow: `0 4px 16px ${p.color}10`, transition: "transform 0.2s" }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: `${p.color}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>{p.icon}</div>
             <div style={{ flex: 1, overflow: "hidden" }}>
               <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0D0D14", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.platform}</div>
@@ -644,10 +459,7 @@ export default function Home() {
     return () => observer.disconnect();
   }, [mounted]);
 
-  const setRef = (id) => (el) => {
-    sectionRefs.current[id] = el;
-  };
-
+  const setRef = (id) => (el) => { sectionRefs.current[id] = el; };
   const isVisible = (id) => visibleSections[id];
   const isScrolled = mounted && scrollY > 30;
   const navLinks = ["Features", "Platforms", "Pricing", "Testimonials"];
@@ -666,25 +478,24 @@ export default function Home() {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --violet: #7C3AED;
-  --pink: #DB2777;
-  --green: #059669;
-  --amber: #D97706;
+  --violet: #D97706;
+  --pink: #F59E0B;
+  --green: #B45309;
+  --amber: #92400E;
   --ink: #0D0D14;
   --ink2: #1F1F2E;
   --muted: #6B7280;
   --muted2: #9CA3AF;
   --border: #E5E7EB;
-  --surface: #F9FAFB;
+  --surface: #FFFBF0;
   --white: #FFFFFF;
   --radius: 20px;
 }
 html { scroll-behavior: smooth; }
 body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); overflow-x: hidden; }
 .display { font-family: 'Bricolage Grotesque', sans-serif; }
-::selection { background: #7C3AED22; color: var(--violet); }
+::selection { background: #D9770622; color: var(--violet); }
 
-/* ─── NAV ─── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   padding: 0 5%;
@@ -700,7 +511,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .nav-logo {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 1.4rem; font-weight: 800;
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   text-decoration: none; letter-spacing: -0.03em;
 }
@@ -715,14 +526,13 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   cursor: pointer; transition: all 0.25s;
   display: flex; align-items: center; gap: 6px;
 }
-.nav-cta:hover { background: var(--violet); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.35); }
+.nav-cta:hover { background: #D97706; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(217,119,6,0.35); }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
 .hamburger span { width: 22px; height: 2px; background: var(--ink); border-radius: 2px; display: block; transition: all 0.3s; }
 .mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; background: white; padding: 2rem 5%; flex-direction: column; gap: 1.5rem; box-shadow: 0 20px 60px rgba(0,0,0,0.12); z-index: 99; border-top: 1px solid var(--border); }
 .mobile-menu.open { display: flex; }
 .mobile-menu a { text-decoration: none; color: var(--ink); font-size: 1rem; font-weight: 500; }
 
-/* ─── HERO ─── */
 .hero {
   min-height: 100vh;
   padding: 0 5%;
@@ -738,9 +548,9 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .hero-aurora {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 60% 30%, rgba(124,58,237,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(219,39,119,0.05) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(5,150,105,0.04) 0%, transparent 55%);
+    radial-gradient(ellipse 80% 60% at 60% 30%, rgba(217,119,6,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(245,158,11,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(180,83,9,0.05) 0%, transparent 55%);
   animation: auroraShift 8s ease-in-out infinite alternate;
 }
 @keyframes auroraShift {
@@ -771,7 +581,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .pill-badge {
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
   color: white; font-size: 0.65rem; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
   padding: 3px 9px; border-radius: 100px;
@@ -786,26 +596,26 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .hero-title em {
   font-style: normal;
-  background: linear-gradient(135deg, #7C3AED 0%, #DB2777 60%, #D97706 100%);
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 60%, #92400E 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .hero-sub { font-size: 1.05rem; color: var(--muted); line-height: 1.8; margin-bottom: 2.5rem; max-width: 460px; font-weight: 400; }
 .hero-actions { display: flex; gap: 0.875rem; flex-wrap: wrap; align-items: center; margin-bottom: 2.75rem; }
 .btn-primary {
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
   color: white; border: none; padding: 0.875rem 1.875rem;
   border-radius: 100px; font-family: 'DM Sans', sans-serif;
   font-size: 0.95rem; font-weight: 600; cursor: pointer;
-  box-shadow: 0 8px 32px rgba(124,58,237,0.3);
+  box-shadow: 0 8px 32px rgba(217,119,6,0.3);
   transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;
   position: relative; overflow: hidden;
 }
 .btn-primary::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, #9B5CFF, #F0448B);
+  background: linear-gradient(135deg, #F59E0B, #FBBF24);
   opacity: 0; transition: opacity 0.3s; border-radius: 100px;
 }
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(124,58,237,0.4); }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(217,119,6,0.4); }
 .btn-primary:hover::after { opacity: 1; }
 .btn-primary span { position: relative; z-index: 1; }
 .btn-ghost {
@@ -817,7 +627,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   display: inline-flex; align-items: center; gap: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.btn-ghost:hover { border-color: var(--violet); color: var(--violet); box-shadow: 0 6px 20px rgba(124,58,237,0.12); }
+.btn-ghost:hover { border-color: #D97706; color: #D97706; box-shadow: 0 6px 20px rgba(217,119,6,0.12); }
 .hero-trust { display: flex; align-items: center; gap: 12px; }
 .trust-avatars { display: flex; }
 .trust-av { width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; }
@@ -826,7 +636,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .trust-text strong { color: var(--ink); }
 .stars { color: #F59E0B; font-size: 0.75rem; }
 
-/* Hero Metrics Strip */
 .hero-metrics {
   display: flex; gap: 0; margin-top: 3rem;
   border: 1px solid var(--border);
@@ -848,11 +657,10 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .hm-lbl { font-size: 0.68rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
 
-/* Hero Dashboard */
 .hero-visual { position: relative; }
 .dash-outer {
   position: relative;
-  filter: drop-shadow(0 32px 64px rgba(124,58,237,0.12));
+  filter: drop-shadow(0 32px 64px rgba(217,119,6,0.12));
 }
 .dash-wrap {
   background: white;
@@ -864,7 +672,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .dash-wrap::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #7C3AED, #DB2777, #D97706);
+  background: linear-gradient(90deg, #D97706, #F59E0B, #FBBF24);
 }
 .dash-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
 .window-dots { display: flex; gap: 5px; }
@@ -882,7 +690,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   margin-bottom: 6px; background: var(--surface);
   transition: all 0.25s; cursor: pointer;
 }
-.plat-item:hover { background: #F3F0FF; transform: translateX(3px); }
+.plat-item:hover { background: #FFFBEB; transform: translateX(3px); }
 .plat-emoji { font-size: 1.1rem; }
 .plat-info { flex: 1; }
 .plat-name-d { font-size: 0.82rem; font-weight: 600; color: var(--ink2); }
@@ -904,7 +712,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .fb-label { font-size: 0.65rem; color: var(--muted); font-weight: 500; margin-bottom: 2px; }
 .fb-value { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.1rem; font-weight: 700; }
 
-/* ─── MARQUEE ─── */
 .marquee-section {
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
   padding: 1.5rem 0; overflow: hidden; background: white;
@@ -922,10 +729,9 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   color: var(--muted2); white-space: nowrap; padding: 4px 0;
   transition: color 0.2s; cursor: default;
 }
-.marquee-logo:hover { color: var(--violet); }
+.marquee-logo:hover { color: #D97706; }
 .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
 
-/* ─── SCHEDULING SECTION ─── */
 .scheduling-section {
   padding: 120px 5%;
   background: white;
@@ -935,12 +741,11 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .scheduling-bg {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 70% 50% at 0% 50%, rgba(124,58,237,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(219,39,119,0.03) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 0% 50%, rgba(217,119,6,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(245,158,11,0.04) 0%, transparent 60%);
 }
 .scheduling-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
 
-/* Bento Grid */
 .sched-bento {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -949,7 +754,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   margin-top: 4rem;
 }
 
-/* Queue Bar */
 .sched-queue {
   grid-column: 1 / -1;
   background: white;
@@ -978,7 +782,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   font-size: 0.72rem; color: #9CA3AF; font-weight: 500;
 }
 
-/* Stat Cards Row */
 .sched-stats-row {
   grid-column: 1 / -1;
   display: grid;
@@ -998,12 +801,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.08);
 }
-.sched-stat-card::before {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 0 0 18px 18px;
-}
 .ssc-icon {
   width: 40px; height: 40px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
@@ -1021,7 +818,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   padding: 2px 7px; border-radius: 6px;
 }
 
-/* Timeline visual */
 .sched-timeline {
   background: white;
   border: 1px solid #E5E7EB;
@@ -1060,7 +856,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   transition: all 0.2s;
 }
 .tg-cell.empty { background: #F9FAFB; border: 1px dashed #E5E7EB; }
-.tg-cell.empty:hover { background: #F5F3FF; border-color: #7C3AED50; }
+.tg-cell.empty:hover { background: #FFFBEB; border-color: #D9770650; }
 .tg-cell.has-post { display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
 .tg-cell.has-post:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .tg-tooltip {
@@ -1072,7 +868,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .tg-cell:hover .tg-tooltip { opacity: 1; }
 
-/* AI Optimizer card */
 .sched-optimizer {
   background: white;
   border: 1px solid #E5E7EB;
@@ -1086,58 +881,17 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .opt-icon {
   width: 44px; height: 44px; border-radius: 14px;
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.25rem; flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+  box-shadow: 0 4px 16px rgba(217,119,6,0.3);
 }
 .opt-title {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: 1rem; font-weight: 700; color: #0D0D14;
 }
 .opt-sub { font-size: 0.72rem; color: #9CA3AF; margin-top: 2px; }
-.opt-platform-row {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.125rem;
-}
-.opt-plat-pill {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: 20px;
-  font-size: 0.7rem; font-weight: 600;
-  border: 1.5px solid; cursor: pointer;
-  transition: all 0.2s;
-}
-.opt-time-slots {
-  display: flex; flex-direction: column; gap: 8px;
-}
-.opt-slot {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: 12px;
-  transition: all 0.25s; cursor: pointer;
-}
-.opt-slot:hover { transform: translateX(4px); }
-.opt-slot-rank {
-  width: 20px; height: 20px; border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.62rem; font-weight: 800; flex-shrink: 0;
-}
-.opt-slot-time {
-  font-size: 0.78rem; font-weight: 700; color: #0D0D14;
-  font-family: monospace; flex-shrink: 0; min-width: 65px;
-}
-.opt-slot-bar-wrap {
-  flex: 1; height: 6px; border-radius: 3px;
-  background: #F3F4F6; overflow: hidden;
-}
-.opt-slot-bar { height: 100%; border-radius: 3px; }
-.opt-slot-pct {
-  font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
-}
-.opt-slot-tag {
-  font-size: 0.58rem; font-weight: 700;
-  padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
-}
 
-/* Approve queue */
 .sched-approve {
   background: white;
   border: 1px solid #E5E7EB;
@@ -1167,10 +921,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   position: relative; overflow: hidden;
 }
 .approve-item:hover { transform: translateX(3px); }
-.approve-item::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; border-radius: 0 2px 2px 0;
-}
 .approve-icon {
   width: 34px; height: 34px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -1191,17 +941,16 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .approve-btn:hover { transform: scale(1.15); }
 
-/* ─── FEATURES ─── */
 .features-section { padding: 100px 5%; background: white; }
 .features-inner { max-width: 1200px; margin: 0 auto; }
 .section-header { margin-bottom: 4rem; }
 .section-tag-new {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--violet);
+  text-transform: uppercase; color: #D97706;
   margin-bottom: 1rem;
 }
-.tag-line { width: 24px; height: 2px; background: var(--violet); border-radius: 1px; }
+.tag-line { width: 24px; height: 2px; background: #D97706; border-radius: 1px; }
 .section-title-new {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800;
@@ -1255,7 +1004,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .feat-desc-card { font-size: 0.85rem; line-height: 1.7; color: var(--muted); }
 
-/* ─── HOW IT WORKS ─── */
 .how-section { padding: 100px 5%; background: var(--surface); }
 .how-inner { max-width: 1100px; margin: 0 auto; }
 .how-grid {
@@ -1299,7 +1047,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .how-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
 
-/* ─── PLATFORMS ─── */
 .platforms-section { background: white; padding: 100px 5%; }
 .platforms-wrap-new { max-width: 1200px; margin: 0 auto; }
 .platforms-tabs-new { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem; }
@@ -1312,7 +1059,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   color: var(--muted);
 }
 .plat-tab-btn.active { color: white; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-.plat-tab-btn:not(.active):hover { border-color: var(--violet); color: var(--violet); }
+.plat-tab-btn:not(.active):hover { border-color: #D97706; color: #D97706; }
 .platform-detail-new {
   display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
   background: var(--surface); border-radius: 24px; padding: 2.5rem;
@@ -1351,9 +1098,8 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   background: var(--surface);
 }
 .cal-day-new.post { color: white; font-weight: 700; }
-.cal-day-new.today { border: 2px solid var(--violet); color: var(--violet); background: white; font-weight: 700; }
+.cal-day-new.today { border: 2px solid #D97706; color: #D97706; background: white; font-weight: 700; }
 
-/* ─── PRICING ─── */
 .pricing-section { padding: 100px 5%; background: var(--surface); }
 .pricing-wrap { max-width: 1100px; margin: 0 auto; }
 .pricing-grid-new { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: start; }
@@ -1365,14 +1111,14 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .price-card:hover:not(.popular-card) { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
 .popular-card {
-  border-color: var(--violet);
+  border-color: #D97706;
   transform: scale(1.04);
-  box-shadow: 0 24px 80px rgba(124,58,237,0.15);
+  box-shadow: 0 24px 80px rgba(217,119,6,0.15);
 }
-.popular-card:hover { transform: scale(1.04) translateY(-4px); box-shadow: 0 32px 80px rgba(124,58,237,0.2); }
+.popular-card:hover { transform: scale(1.04) translateY(-4px); box-shadow: 0 32px 80px rgba(217,119,6,0.2); }
 .popular-label {
   position: absolute; top: 1.25rem; right: 1.25rem;
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
   color: white; font-size: 0.65rem; font-weight: 700;
   padding: 4px 10px; border-radius: 100px;
   letter-spacing: 0.06em; text-transform: uppercase;
@@ -1391,17 +1137,16 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   cursor: pointer; border: none; transition: all 0.3s; margin-top: 1.5rem;
 }
 .price-btn-fill {
-  background: linear-gradient(135deg, #7C3AED, #DB2777);
-  color: white; box-shadow: 0 6px 24px rgba(124,58,237,0.3);
+  background: linear-gradient(135deg, #D97706, #F59E0B);
+  color: white; box-shadow: 0 6px 24px rgba(217,119,6,0.3);
 }
-.price-btn-fill:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(124,58,237,0.4); }
+.price-btn-fill:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(217,119,6,0.4); }
 .price-btn-outline {
   background: white; border: 1.5px solid var(--border) !important;
   color: var(--ink);
 }
-.price-btn-outline:hover { border-color: var(--violet) !important; color: var(--violet); }
+.price-btn-outline:hover { border-color: #D97706 !important; color: #D97706; }
 
-/* ─── TESTIMONIALS ─── */
 .testimonials-section { padding: 100px 5%; background: white; }
 .testi-wrap { max-width: 1100px; margin: 0 auto; }
 .testi-grid-new { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
@@ -1421,7 +1166,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 .testi-role-new { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
 .testi-accent-strip { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0; }
 
-/* ─── FAQ ─── */
 .faq-section { padding: 100px 5%; background: var(--surface); }
 .faq-wrap { max-width: 720px; margin: 0 auto; }
 .faq-item {
@@ -1429,7 +1173,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   border-radius: 16px; margin-bottom: 10px;
   overflow: hidden; transition: all 0.3s;
 }
-.faq-item:hover { border-color: #C4B5FD; }
+.faq-item:hover { border-color: #FCD34D; }
 .faq-q {
   padding: 1.25rem 1.5rem;
   display: flex; align-items: center; justify-content: space-between;
@@ -1437,7 +1181,7 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   font-weight: 600; font-size: 0.95rem; color: var(--ink);
 }
 .faq-icon { font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; color: var(--muted); }
-.faq-icon.open { transform: rotate(45deg); color: var(--violet); }
+.faq-icon.open { transform: rotate(45deg); color: #D97706; }
 .faq-answer {
   max-height: 0; overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), padding 0.3s;
@@ -1445,7 +1189,6 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
 }
 .faq-answer.open { max-height: 200px; padding: 0 1.5rem 1.25rem; }
 
-/* ─── CTA ─── */
 .cta-section-new {
   padding: 100px 5%;
   background: white;
@@ -1478,12 +1221,11 @@ body { font-family: 'DM Sans', sans-serif; background: #fff; color: var(--ink); 
   font-weight: 800; color: var(--ink); line-height: 1.08;
   letter-spacing: -0.04em; margin-bottom: 1.25rem;
 }
-.cta-title-new em { font-style: normal; background: linear-gradient(135deg, #7C3AED, #DB2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cta-title-new em { font-style: normal; background: linear-gradient(135deg, #D97706, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .cta-sub-new { color: var(--muted); font-size: 1.05rem; line-height: 1.75; margin-bottom: 2.5rem; }
 .cta-actions-new { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .cta-note { font-size: 0.8rem; color: var(--muted2); }
 
-/* ─── FOOTER ─── */
 footer {
   background: var(--ink); padding: 2.5rem 5%;
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -1492,18 +1234,16 @@ footer {
   max-width: 1200px; margin: 0 auto;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
 }
-.footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #A78BFA, #F472B6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, #FCD34D, #F59E0B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .footer-copy { font-size: 0.82rem; color: rgba(255,255,255,0.35); }
 .footer-links-new { display: flex; gap: 1.5rem; flex-wrap: wrap; }
 .footer-links-new a { font-size: 0.82rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
 .footer-links-new a:hover { color: white; }
 
-/* ─── ANIMATE ─── */
 .ani { opacity: 0; transform: translateY(32px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
 .ani.visible { opacity: 1; transform: translateY(0); }
 .d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; } .d4 { transition-delay: 0.32s; }
 
-/* ─── RESPONSIVE ─── */
 @media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; text-align: center; padding: 120px 0 60px; }
   .hero-sub { margin: 0 auto 2.5rem; }
@@ -1534,7 +1274,7 @@ footer {
 }
       `}</style>
 
-      {/* ── NAV ── */}
+      {/* NAV */}
       <nav className={`nav${isScrolled ? " scrolled" : ""}`}>
         <a href="#" className="nav-logo display">Social Share Bay</a>
         <ul className="nav-links">
@@ -1554,7 +1294,7 @@ footer {
         </Link>
       </div>
 
-      {/* ── HERO ── */}
+      {/* HERO */}
       <section className="hero">
         <div className="hero-noise" />
         <div className="hero-aurora" />
@@ -1585,7 +1325,7 @@ footer {
               <div style={{ position: "relative" }}>
                 <div className="float-badge fb-top">
                   <div className="fb-label">Today's Posts</div>
-                  <div className="fb-value" style={{ color: "#A78BFA" }}>24 📅</div>
+                  <div className="fb-value" style={{ color: "#F59E0B" }}>24 📅</div>
                 </div>
                 <div className="dash-wrap">
                   <div className="dash-topbar">
@@ -1621,7 +1361,7 @@ footer {
         </div>
       </section>
 
-      {/* ── LOGO MARQUEE ── */}
+      {/* MARQUEE */}
       <div className="marquee-section">
         <div className="marquee-track">
           {[...logos, ...logos].map((l, i) => (
@@ -1633,38 +1373,17 @@ footer {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════
-          ── SCHEDULING SHOWCASE SECTION (NEW) ──
-      ══════════════════════════════════════════ */}
+      {/* SCHEDULING SECTION */}
       <section className="scheduling-section" id="scheduling">
         <div className="scheduling-bg" />
         <div className="scheduling-inner">
-
-          {/* Section Header */}
-          <div
-            id="sched-hd"
-            ref={setRef("sched-hd")}
-            className={`ani${isVisible("sched-hd") ? " visible" : ""}`}
-            style={{ maxWidth: 640, marginBottom: "1rem" }}
-          >
+          <div id="sched-hd" ref={setRef("sched-hd")} className={`ani${isVisible("sched-hd") ? " visible" : ""}`} style={{ maxWidth: 640, marginBottom: "1rem" }}>
             <div className="section-tag-new"><span className="tag-line" />Post Scheduling</div>
-            <h2 className="section-title-new display">
-              Your content, perfectly<br />timed. Every single time.
-            </h2>
-            <p className="section-sub-new">
-              Drag, drop, and let AI handle the rest. Our intelligent scheduler learns your audience patterns and posts when they're most likely to engage.
-            </p>
+            <h2 className="section-title-new display">Your content, perfectly<br />timed. Every single time.</h2>
+            <p className="section-sub-new">Drag, drop, and let AI handle the rest. Our intelligent scheduler learns your audience patterns and posts when they're most likely to engage.</p>
           </div>
-
-          {/* Bento Grid */}
           <div className="sched-bento">
-
-            {/* ── Live Queue Strip (full width) ── */}
-            <div
-              id="sched-queue"
-              ref={setRef("sched-queue")}
-              className={`sched-queue ani${isVisible("sched-queue") ? " visible" : ""}`}
-            >
+            <div id="sched-queue" ref={setRef("sched-queue")} className={`sched-queue ani${isVisible("sched-queue") ? " visible" : ""}`}>
               <div className="queue-header">
                 <div className="queue-title">
                   📡 Live Publishing Queue
@@ -1678,54 +1397,26 @@ footer {
               <QueueStrip />
             </div>
 
-            {/* ── Left: Interactive Calendar + Post Preview ── */}
-            <div
-              id="sched-main"
-              ref={setRef("sched-main")}
-              className={`ani d1${isVisible("sched-main") ? " visible" : ""}`}
-            >
+            <div id="sched-main" ref={setRef("sched-main")} className={`ani d1${isVisible("sched-main") ? " visible" : ""}`}>
               <SchedulingShowcase />
             </div>
 
-            {/* ── Right column: Timeline Grid + Approve Queue ── */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-
-              {/* Weekly Timeline Grid */}
-              <div
-                id="sched-timeline"
-                ref={setRef("sched-timeline")}
-                className={`sched-timeline ani d2${isVisible("sched-timeline") ? " visible" : ""}`}
-              >
+              <div id="sched-timeline" ref={setRef("sched-timeline")} className={`sched-timeline ani d2${isVisible("sched-timeline") ? " visible" : ""}`}>
                 <div className="timeline-header">
                   <div>
                     <div className="timeline-title">This Week's Schedule</div>
                     <div className="timeline-sub">Click a slot to add a post</div>
                   </div>
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 6,
-                    fontSize: "0.72rem", color: "#9CA3AF",
-                  }}>
-                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#E1306C" }} />IG
-                    </div>
-                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#1DA1F2" }} />TW
-                    </div>
-                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                      <div style={{ width: 8, height: 8, borderRadius: 2, background: "#0A66C2" }} />LI
-                    </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.72rem", color: "#9CA3AF" }}>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}><div style={{ width: 8, height: 8, borderRadius: 2, background: "#E1306C" }} />IG</div>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}><div style={{ width: 8, height: 8, borderRadius: 2, background: "#1DA1F2" }} />TW</div>
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}><div style={{ width: 8, height: 8, borderRadius: 2, background: "#0A66C2" }} />LI</div>
                   </div>
                 </div>
-
-                {/* Grid */}
                 <div className="timeline-grid">
-                  {/* Header row */}
                   <div />
-                  {weekDays.map(d => (
-                    <div key={d} className="tg-day-head">{d}</div>
-                  ))}
-
-                  {/* Time rows */}
+                  {weekDays.map(d => (<div key={d} className="tg-day-head">{d}</div>))}
                   {timeSlots.map((time, ti) => {
                     const postMap = {
                       "8 AM": { 0: { color: "#E1306C", icon: "📸" }, 2: { color: "#0A66C2", icon: "💼" } },
@@ -1743,17 +1434,8 @@ footer {
                         {weekDays.map((_, di) => {
                           const post = rowPosts[di];
                           return (
-                            <div
-                              key={`cell-${ti}-${di}`}
-                              className={`tg-cell ${post ? "has-post" : "empty"}`}
-                              style={post ? { background: `${post.color}18`, border: `1.5px solid ${post.color}40` } : {}}
-                            >
-                              {post && (
-                                <>
-                                  <span style={{ fontSize: "0.75rem" }}>{post.icon}</span>
-                                  <div className="tg-tooltip">{time} · {weekDays[di]}</div>
-                                </>
-                              )}
+                            <div key={`cell-${ti}-${di}`} className={`tg-cell ${post ? "has-post" : "empty"}`} style={post ? { background: `${post.color}18`, border: `1.5px solid ${post.color}40` } : {}}>
+                              {post && (<><span style={{ fontSize: "0.75rem" }}>{post.icon}</span><div className="tg-tooltip">{time} · {weekDays[di]}</div></>)}
                             </div>
                           );
                         })}
@@ -1763,26 +1445,14 @@ footer {
                 </div>
               </div>
 
-              {/* Approve Queue */}
-              <div
-                id="sched-approve"
-                ref={setRef("sched-approve")}
-                className={`sched-approve ani d3${isVisible("sched-approve") ? " visible" : ""}`}
-              >
+              <div id="sched-approve" ref={setRef("sched-approve")} className={`sched-approve ani d3${isVisible("sched-approve") ? " visible" : ""}`}>
                 <div className="approve-header">
                   <div className="approve-title">⏳ Awaiting Approval</div>
                   <span className="approve-badge">3 pending</span>
                 </div>
-                {scheduledPosts.slice(1, 4).map((p, i) => (
-                  <div
-                    key={p.id}
-                    className="approve-item"
-                    style={{ background: `${p.color}05`, borderColor: `${p.color}20` }}
-                  >
-                    <div style={{
-                      position: "absolute", left: 0, top: 0, bottom: 0,
-                      width: 3, background: p.color, borderRadius: "0 2px 2px 0",
-                    }} />
+                {scheduledPosts.slice(1, 4).map((p) => (
+                  <div key={p.id} className="approve-item" style={{ background: `${p.color}05`, borderColor: `${p.color}20` }}>
+                    <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: p.color, borderRadius: "0 2px 2px 0" }} />
                     <div className="approve-icon" style={{ background: `${p.color}15` }}>{p.icon}</div>
                     <div className="approve-content">
                       <div className="approve-plat" style={{ color: p.color }}>{p.platform}</div>
@@ -1790,68 +1460,45 @@ footer {
                     </div>
                     <div className="approve-time">{p.day} {p.time}</div>
                     <div className="approve-actions">
-                      <button className="approve-btn" style={{ background: "#DCFCE7", color: "#16A34A" }} title="Approve">✓</button>
-                      <button className="approve-btn" style={{ background: "#FEE2E2", color: "#DC2626" }} title="Reject">✕</button>
+                      <button className="approve-btn" style={{ background: "#DCFCE7", color: "#16A34A" }}>✓</button>
+                      <button className="approve-btn" style={{ background: "#FEE2E2", color: "#DC2626" }}>✕</button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* ── Stats Row (full width) ── */}
-            <div
-              id="sched-stats"
-              ref={setRef("sched-stats")}
-              className={`sched-stats-row ani${isVisible("sched-stats") ? " visible" : ""}`}
-            >
+            <div id="sched-stats" ref={setRef("sched-stats")} className={`sched-stats-row ani${isVisible("sched-stats") ? " visible" : ""}`}>
               {[
-                { icon: "📅", val: "2.4M+", lbl: "Posts Scheduled", color: "#7C3AED", bg: "#F5F3FF", trend: "+12%", trendBg: "#F5F3FF", trendColor: "#7C3AED" },
-                { icon: "⏱️", val: "3 hrs", lbl: "Saved Per Week", color: "#DB2777", bg: "#FDF2F8", trend: "avg", trendBg: "#FDF2F8", trendColor: "#DB2777" },
-                { icon: "📈", val: "3.2×", lbl: "More Reach", color: "#059669", bg: "#ECFDF5", trend: "vs manual", trendBg: "#ECFDF5", trendColor: "#059669" },
-                { icon: "🤖", val: "98%", lbl: "AI Accuracy", color: "#D97706", bg: "#FFFBEB", trend: "best time", trendBg: "#FFFBEB", trendColor: "#D97706" },
-              ].map((s, i) => (
-                <div
-                  key={s.lbl}
-                  className="sched-stat-card"
-                  style={{ "--card-color": s.color }}
-                >
+                { icon: "📅", val: "2.4M+", lbl: "Posts Scheduled", color: "#D97706", bg: "#FFFBEB", trend: "+12%", trendBg: "#FFFBEB", trendColor: "#D97706" },
+                { icon: "⏱️", val: "3 hrs", lbl: "Saved Per Week", color: "#F59E0B", bg: "#FEF3C7", trend: "avg", trendBg: "#FEF3C7", trendColor: "#B45309" },
+                { icon: "📈", val: "3.2×", lbl: "More Reach", color: "#B45309", bg: "#FEF9EE", trend: "vs manual", trendBg: "#FEF9EE", trendColor: "#B45309" },
+                { icon: "🤖", val: "98%", lbl: "AI Accuracy", color: "#92400E", bg: "#FEF3C7", trend: "best time", trendBg: "#FEF3C7", trendColor: "#92400E" },
+              ].map((s) => (
+                <div key={s.lbl} className="sched-stat-card">
                   <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: s.color, borderRadius: "0 0 18px 18px" }} />
-                  <div className="ssc-icon" style={{ background: s.bg }}>
-                    <span>{s.icon}</span>
-                  </div>
+                  <div className="ssc-icon" style={{ background: s.bg }}><span>{s.icon}</span></div>
                   <div className="ssc-val" style={{ color: s.color }}>{s.val}</div>
                   <div className="ssc-lbl">{s.lbl}</div>
                   <div className="ssc-trend" style={{ background: s.trendBg, color: s.trendColor }}>{s.trend}</div>
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
+      {/* FEATURES */}
       <section className="features-section" id="features">
         <div className="features-inner">
-          <div
-            id="feat-hd"
-            ref={setRef("feat-hd")}
-            className={`section-header ani${isVisible("feat-hd") ? " visible" : ""}`}
-          >
+          <div id="feat-hd" ref={setRef("feat-hd")} className={`section-header ani${isVisible("feat-hd") ? " visible" : ""}`}>
             <div className="section-tag-new"><span className="tag-line" />Features</div>
             <h2 className="section-title-new display">Everything you need to<br />dominate social media</h2>
             <p className="section-sub-new">From AI scheduling to deep analytics, Social Share Bay gives you the tools to grow every channel — in one beautiful workspace.</p>
           </div>
           <div className="feat-grid">
             {features.map((f, i) => (
-              <div
-                key={f.title}
-                id={`feat-${i}`}
-                ref={setRef(`feat-${i}`)}
-                className={`feat-card-new ani d${(i % 3) + 1}${isVisible(`feat-${i}`) ? " visible" : ""}`}
-                onMouseEnter={() => setHoveredFeature(i)}
-                onMouseLeave={() => setHoveredFeature(null)}
-              >
+              <div key={f.title} id={`feat-${i}`} ref={setRef(`feat-${i}`)} className={`feat-card-new ani d${(i % 3) + 1}${isVisible(`feat-${i}`) ? " visible" : ""}`} onMouseEnter={() => setHoveredFeature(i)} onMouseLeave={() => setHoveredFeature(null)}>
                 <div className="feat-preview-new" style={{ background: hoveredFeature === i ? f.light : "var(--surface)" }}>
                   <div className="feat-number">{f.number}</div>
                   <div style={{ position: "relative", zIndex: 1 }}>
@@ -1873,27 +1520,17 @@ footer {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
+      {/* HOW IT WORKS */}
       <section className="how-section">
         <div className="how-inner">
-          <div
-            id="how-hd"
-            ref={setRef("how-hd")}
-            className={`section-header ani${isVisible("how-hd") ? " visible" : ""}`}
-            style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 3.5rem" }}
-          >
+          <div id="how-hd" ref={setRef("how-hd")} className={`section-header ani${isVisible("how-hd") ? " visible" : ""}`} style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 3.5rem" }}>
             <div className="section-tag-new" style={{ justifyContent: "center" }}><span className="tag-line" />How it Works<span className="tag-line" /></div>
             <h2 className="section-title-new display">Up and running<br />in 4 simple steps</h2>
             <p className="section-sub-new" style={{ margin: "0 auto" }}>No learning curve. Connect, create, schedule, and watch your audience grow.</p>
           </div>
           <div className="how-grid">
             {howItWorks.map((h, i) => (
-              <div
-                key={h.step}
-                id={`how-${i}`}
-                ref={setRef(`how-${i}`)}
-                className={`how-card ani d${i + 1}${isVisible(`how-${i}`) ? " visible" : ""}`}
-              >
+              <div key={h.step} id={`how-${i}`} ref={setRef(`how-${i}`)} className={`how-card ani d${i + 1}${isVisible(`how-${i}`) ? " visible" : ""}`}>
                 <div className="how-step-wrap" style={{ borderColor: `${h.color}30`, background: `${h.color}08` }}>
                   <span style={{ fontSize: "1.6rem" }}>{h.icon}</span>
                   <div className="how-step-num" style={{ background: h.color }}>{h.step}</div>
@@ -1906,26 +1543,17 @@ footer {
         </div>
       </section>
 
-      {/* ── PLATFORMS ── */}
+      {/* PLATFORMS */}
       <section className="platforms-section" id="platforms">
         <div className="platforms-wrap-new">
-          <div
-            id="plat-hd"
-            ref={setRef("plat-hd")}
-            className={`section-header ani${isVisible("plat-hd") ? " visible" : ""}`}
-          >
+          <div id="plat-hd" ref={setRef("plat-hd")} className={`section-header ani${isVisible("plat-hd") ? " visible" : ""}`}>
             <div className="section-tag-new"><span className="tag-line" />Platforms</div>
             <h2 className="section-title-new display">One tool,<br />every platform</h2>
             <p className="section-sub-new">Deep integrations built for serious creators and brands who want to grow everywhere.</p>
           </div>
           <div className="platforms-tabs-new">
             {platforms.map((p, i) => (
-              <button
-                key={p.name}
-                className={`plat-tab-btn${activeTab === i ? " active" : ""}`}
-                style={activeTab === i ? { background: p.color } : {}}
-                onClick={() => setActiveTab(i)}
-              >
+              <button key={p.name} className={`plat-tab-btn${activeTab === i ? " active" : ""}`} style={activeTab === i ? { background: p.color } : {}} onClick={() => setActiveTab(i)}>
                 {p.icon} {p.name}
               </button>
             ))}
@@ -1962,11 +1590,7 @@ footer {
                   const hasPost = [2, 5, 7, 11, 14, 16, 19, 21, 24, 26, 28].includes(day);
                   const isToday = day === 15;
                   return (
-                    <div
-                      key={i}
-                      className={`cal-day-new${hasPost ? " post" : ""}${isToday ? " today" : ""}`}
-                      style={hasPost ? { background: platforms[activeTab].color } : {}}
-                    >
+                    <div key={i} className={`cal-day-new${hasPost ? " post" : ""}${isToday ? " today" : ""}`} style={hasPost ? { background: platforms[activeTab].color } : {}}>
                       {day > 0 && day <= 30 ? day : ""}
                     </div>
                   );
@@ -1977,39 +1601,26 @@ footer {
         </div>
       </section>
 
-      {/* ── PRICING ── */}
+      {/* PRICING */}
       <section className="pricing-section" id="pricing">
         <div className="pricing-wrap">
-          <div
-            id="price-hd"
-            ref={setRef("price-hd")}
-            className={`section-header ani${isVisible("price-hd") ? " visible" : ""}`}
-            style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 3.5rem" }}
-          >
+          <div id="price-hd" ref={setRef("price-hd")} className={`section-header ani${isVisible("price-hd") ? " visible" : ""}`} style={{ textAlign: "center", maxWidth: 560, margin: "0 auto 3.5rem" }}>
             <div className="section-tag-new" style={{ justifyContent: "center" }}><span className="tag-line" />Pricing<span className="tag-line" /></div>
             <h2 className="section-title-new display">Simple, honest pricing</h2>
             <p className="section-sub-new" style={{ margin: "0 auto" }}>Start free, scale as you grow. No hidden fees, no surprises.</p>
           </div>
           <div className="pricing-grid-new">
             {plans.map((plan, i) => (
-              <div
-                key={plan.name}
-                id={`plan-${i}`}
-                ref={setRef(`plan-${i}`)}
-                className={`price-card${plan.popular ? " popular-card" : ""} ani d${i + 1}${isVisible(`plan-${i}`) ? " visible" : ""}`}
-              >
+              <div key={plan.name} id={`plan-${i}`} ref={setRef(`plan-${i}`)} className={`price-card${plan.popular ? " popular-card" : ""} ani d${i + 1}${isVisible(`plan-${i}`) ? " visible" : ""}`}>
                 {plan.popular && <div className="popular-label">Most Popular</div>}
-                <div className="price-accent-bar" style={{ background: plan.popular ? `linear-gradient(90deg, #7C3AED, #DB2777)` : plan.accent }} />
+                <div className="price-accent-bar" style={{ background: plan.popular ? `linear-gradient(90deg, #D97706, #F59E0B)` : plan.accent }} />
                 <div className="price-plan">{plan.name}</div>
-                <div className="price-amount display">
-                  {plan.price}<span className="price-period">{plan.period}</span>
-                </div>
+                <div className="price-amount display">{plan.price}<span className="price-period">{plan.period}</span></div>
                 <div className="price-desc">{plan.desc}</div>
                 <div className="price-divider" />
                 {plan.features.map(f => (
                   <div className="price-feature-item" key={f}>
-                    <span className="price-check" style={{ color: plan.accent }}>✓</span>
-                    {f}
+                    <span className="price-check" style={{ color: plan.accent }}>✓</span>{f}
                   </div>
                 ))}
                 <button className={`price-btn ${plan.popular ? "price-btn-fill" : "price-btn-outline"}`}>
@@ -2021,31 +1632,20 @@ footer {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
+      {/* TESTIMONIALS */}
       <section className="testimonials-section" id="testimonials">
         <div className="testi-wrap">
-          <div
-            id="testi-hd"
-            ref={setRef("testi-hd")}
-            className={`section-header ani${isVisible("testi-hd") ? " visible" : ""}`}
-          >
+          <div id="testi-hd" ref={setRef("testi-hd")} className={`section-header ani${isVisible("testi-hd") ? " visible" : ""}`}>
             <div className="section-tag-new"><span className="tag-line" />Testimonials</div>
             <h2 className="section-title-new display">Loved by 48,000+<br />creators & brands</h2>
             <p className="section-sub-new">Thousands of content teams trust Social Share Bay to run their social media like clockwork.</p>
           </div>
           <div className="testi-grid-new">
             {testimonials.map((t, i) => (
-              <div
-                key={t.name}
-                id={`testi-${i}`}
-                ref={setRef(`testi-${i}`)}
-                className={`testi-card-new ani d${i + 1}${isVisible(`testi-${i}`) ? " visible" : ""}`}
-              >
+              <div key={t.name} id={`testi-${i}`} ref={setRef(`testi-${i}`)} className={`testi-card-new ani d${i + 1}${isVisible(`testi-${i}`) ? " visible" : ""}`}>
                 <div className="testi-accent-strip" style={{ background: t.color }} />
                 <div className="testi-stars">
-                  {Array(t.stars).fill(0).map((_, j) => (
-                    <span key={j} className="testi-star" style={{ color: "#F59E0B" }}>★</span>
-                  ))}
+                  {Array(t.stars).fill(0).map((_, j) => (<span key={j} className="testi-star" style={{ color: "#F59E0B" }}>★</span>))}
                 </div>
                 <p className="testi-text-new">"{t.text}"</p>
                 <div className="testi-footer-new">
@@ -2061,15 +1661,10 @@ footer {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
+      {/* FAQ */}
       <section className="faq-section">
         <div className="faq-wrap">
-          <div
-            id="faq-hd"
-            ref={setRef("faq-hd")}
-            className={`section-header ani${isVisible("faq-hd") ? " visible" : ""}`}
-            style={{ textAlign: "center", maxWidth: 480, margin: "0 auto 3rem" }}
-          >
+          <div id="faq-hd" ref={setRef("faq-hd")} className={`section-header ani${isVisible("faq-hd") ? " visible" : ""}`} style={{ textAlign: "center", maxWidth: 480, margin: "0 auto 3rem" }}>
             <div className="section-tag-new" style={{ justifyContent: "center" }}><span className="tag-line" />FAQ<span className="tag-line" /></div>
             <h2 className="section-title-new display">Got questions?<br />We've got answers.</h2>
           </div>
@@ -2085,7 +1680,7 @@ footer {
         </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* CTA */}
       <section className="cta-section-new">
         <div className="cta-bg-grid" />
         <div className="cta-inner-new">
@@ -2093,9 +1688,7 @@ footer {
             <span className="cta-badge-dot" />
             14-day free trial · No credit card required
           </div>
-          <h2 className="cta-title-new display">
-            Ready to own your<br /><em>social presence?</em>
-          </h2>
+          <h2 className="cta-title-new display">Ready to own your<br /><em>social presence?</em></h2>
           <p className="cta-sub-new">Join 48,000+ creators and brands who schedule smarter, grow faster, and spend less time posting.</p>
           <div className="cta-actions-new">
             <button className="btn-primary" style={{ fontSize: "1rem", padding: "1rem 2.25rem" }}>🚀 Start for Free</button>
@@ -2105,7 +1698,7 @@ footer {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* FOOTER */}
       <footer>
         <div className="footer-inner-new">
           <div>

@@ -14,7 +14,7 @@ const PLATFORMS = [
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023' },
 ]
 const PLACEMENT_PLATFORMS = ['facebook', 'linkedin', 'pinterest']
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#D97706' }
 
 const ACCEPT = 'image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime,video/mpeg'
 
@@ -47,14 +47,13 @@ const TIKTOK_PRIVACY = [
   { value: 'SELF_ONLY',             label: 'Only Me' },
 ]
 
-// ── Section Card ──────────────────────────────────────────────────────────────
 function SectionCard({ title, hint, children, headerRight }) {
   return (
-    <div style={{ background: '#ffffff', border: '1.5px solid #e8e4ff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 16px rgba(108,99,255,0.06)' }}>
-      <div style={{ padding: '12px 18px', borderBottom: '1.5px solid #f0edff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fdfcff' }}>
+    <div style={{ background: '#ffffff', border: '1.5px solid #FDE68A', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 16px rgba(217,119,6,0.06)' }}>
+      <div style={{ padding: '12px 18px', borderBottom: '1.5px solid #FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FFFBF0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', color: '#9c8fc0' }}>{title}</span>
-          {hint && <span style={{ fontSize: 11, color: '#c4b8e0', fontWeight: 500 }}>{hint}</span>}
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', color: '#B45309' }}>{title}</span>
+          {hint && <span style={{ fontSize: 11, color: '#D97706', fontWeight: 500 }}>{hint}</span>}
         </div>
         {headerRight}
       </div>
@@ -63,7 +62,6 @@ function SectionCard({ title, hint, children, headerRight }) {
   )
 }
 
-// ── Placement Picker ──────────────────────────────────────────────────────────
 function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   const [placements, setPlacements] = useState([])
   const [loading, setLoading] = useState(true)
@@ -89,8 +87,8 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   const label = profile.platform === 'facebook' ? 'Page' : profile.platform === 'pinterest' ? 'Board' : 'Profile'
 
   if (loading) return (
-    <div style={{ padding: '10px 16px', fontSize: 12, color: '#9c8fc0', display: 'flex', alignItems: 'center', gap: 7 }}>
-      <div style={{ width: 10, height: 10, border: `1.5px solid #e2dcff`, borderTop: `1.5px solid ${info.color}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
+    <div style={{ padding: '10px 16px', fontSize: 12, color: '#B45309', display: 'flex', alignItems: 'center', gap: 7 }}>
+      <div style={{ width: 10, height: 10, border: `1.5px solid #FDE68A`, borderTop: `1.5px solid ${info.color}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
       Loading {label.toLowerCase()}s…
     </div>
   )
@@ -101,14 +99,14 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   }
   if (placements.length === 1) return (
     <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
-      <span style={{ color: '#9c8fc0', fontWeight: 600 }}>{label}:</span>
-      <span style={{ color: '#1a1040', fontWeight: 700 }}>{placements[0].name}</span>
+      <span style={{ color: '#B45309', fontWeight: 600 }}>{label}:</span>
+      <span style={{ color: '#1C1200', fontWeight: 700 }}>{placements[0].name}</span>
     </div>
   )
   return (
     <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-      <span style={{ fontSize: 12, color: '#9c8fc0', flexShrink: 0, fontWeight: 600 }}>{label}:</span>
-      <select value={value ?? ''} onChange={e => onChange(e.target.value)} style={{ flex: 1, padding: '7px 10px', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 8, color: '#1a1040', fontSize: 12, fontFamily: 'inherit', outline: 'none', cursor: 'pointer' }}>
+      <span style={{ fontSize: 12, color: '#B45309', flexShrink: 0, fontWeight: 600 }}>{label}:</span>
+      <select value={value ?? ''} onChange={e => onChange(e.target.value)} style={{ flex: 1, padding: '7px 10px', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 8, color: '#1C1200', fontSize: 12, fontFamily: 'inherit', outline: 'none', cursor: 'pointer' }}>
         <option value="">— Select {label} —</option>
         {placements.map(pl => <option key={pl.id ?? 'p'} value={pl.id !== null ? pl.id : '__personal__'}>{pl.name}</option>)}
       </select>
@@ -116,7 +114,6 @@ function PlacementPicker({ profile, groupId, value, onChange, onLoaded }) {
   )
 }
 
-// ── Platform Params Editor ────────────────────────────────────────────────────
 function PlatformParamsEditor({ platform, params, onChange }) {
   const formats = PLATFORM_FORMATS[platform] || []
   const currentFormat = params.format || (formats[0]?.value ?? 'post')
@@ -128,14 +125,14 @@ function PlatformParamsEditor({ platform, params, onChange }) {
     <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
       {formats.length > 1 && (
         <div>
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#9c8fc0', marginBottom: 7 }}>FORMAT</div>
+          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#B45309', marginBottom: 7 }}>FORMAT</div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {formats.map(f => (
               <button key={f.value} type="button" onClick={() => set('format', f.value)} style={{
                 padding: '5px 12px', borderRadius: 8, fontSize: 11, fontWeight: 700,
-                background: currentFormat === f.value ? info.color + '12' : '#faf9ff',
-                border: `1.5px solid ${currentFormat === f.value ? info.color + '55' : '#e2dcff'}`,
-                color: currentFormat === f.value ? info.color : '#7c6fa0',
+                background: currentFormat === f.value ? info.color + '12' : '#FFFBF0',
+                border: `1.5px solid ${currentFormat === f.value ? info.color + '55' : '#FDE68A'}`,
+                color: currentFormat === f.value ? info.color : '#B45309',
                 cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 4,
               }}>{f.icon} {f.label}</button>
             ))}
@@ -160,8 +157,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
         <>
           <InputRow label="Video Title" placeholder="My awesome video" value={params.title || ''} onChange={v => set('title', v)} />
           <div>
-            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#9c8fc0', marginBottom: 6 }}>PRIVACY</div>
-            <select value={params.privacy_status || 'public'} onChange={e => set('privacy_status', e.target.value)} style={{ width: '100%', padding: '8px 10px', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 8, color: '#1a1040', fontSize: 12, fontFamily: 'inherit', outline: 'none' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#B45309', marginBottom: 6 }}>PRIVACY</div>
+            <select value={params.privacy_status || 'public'} onChange={e => set('privacy_status', e.target.value)} style={{ width: '100%', padding: '8px 10px', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 8, color: '#1C1200', fontSize: 12, fontFamily: 'inherit', outline: 'none' }}>
               <option value="public">Public</option>
               <option value="unlisted">Unlisted</option>
               <option value="private">Private</option>
@@ -174,8 +171,8 @@ function PlatformParamsEditor({ platform, params, onChange }) {
       {platform === 'tiktok' && (
         <>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#9c8fc0', marginBottom: 6 }}>PRIVACY</div>
-            <select value={params.privacy_status || 'PUBLIC_TO_EVERYONE'} onChange={e => set('privacy_status', e.target.value)} style={{ width: '100%', padding: '8px 10px', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 8, color: '#1a1040', fontSize: 12, fontFamily: 'inherit', outline: 'none' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#B45309', marginBottom: 6 }}>PRIVACY</div>
+            <select value={params.privacy_status || 'PUBLIC_TO_EVERYONE'} onChange={e => set('privacy_status', e.target.value)} style={{ width: '100%', padding: '8px 10px', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 8, color: '#1C1200', fontSize: 12, fontFamily: 'inherit', outline: 'none' }}>
               {TIKTOK_PRIVACY.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
             </select>
           </div>
@@ -192,7 +189,7 @@ function PlatformParamsEditor({ platform, params, onChange }) {
         </>
       )}
       {platform === 'linkedin' && (
-        <div style={{ fontSize: 11, color: '#9c8fc0', fontStyle: 'italic' }}>Organization ID is set via profile placement above.</div>
+        <div style={{ fontSize: 11, color: '#B45309', fontStyle: 'italic' }}>Organization ID is set via profile placement above.</div>
       )}
     </div>
   )
@@ -201,9 +198,9 @@ function PlatformParamsEditor({ platform, params, onChange }) {
 function InputRow({ label, placeholder, value, onChange }) {
   return (
     <div>
-      <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#9c8fc0', marginBottom: 6 }}>{label.toUpperCase()}</div>
+      <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: '#B45309', marginBottom: 6 }}>{label.toUpperCase()}</div>
       <input value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-        style={{ width: '100%', padding: '8px 11px', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 8, color: '#1a1040', fontSize: 12, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+        style={{ width: '100%', padding: '8px 11px', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 8, color: '#1C1200', fontSize: 12, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
     </div>
   )
 }
@@ -213,16 +210,15 @@ function CheckRow({ label, checked, onChange }) {
     <label style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer' }}>
       <div onClick={() => onChange(!checked)} style={{
         width: 17, height: 17, borderRadius: 5, flexShrink: 0,
-        border: `2px solid ${checked ? '#6C63FF' : '#d1c8e8'}`,
-        background: checked ? '#ede9fe' : '#faf9ff',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#6C63FF',
+        border: `2px solid ${checked ? '#D97706' : '#FCD34D'}`,
+        background: checked ? '#FEF3C7' : '#FFFBF0',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#D97706',
       }}>{checked ? '✓' : ''}</div>
-      <span style={{ fontSize: 12, color: '#4a3f6b', fontWeight: 500 }}>{label}</span>
+      <span style={{ fontSize: 12, color: '#1C1200', fontWeight: 500 }}>{label}</span>
     </label>
   )
 }
 
-// ── Live Preview Panel ────────────────────────────────────────────────────────
 function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformParams }) {
   const [activeId, setActiveId] = useState(null)
   const objectUrlsRef = useRef([])
@@ -258,10 +254,10 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
   if (!profiles.length) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 320, gap: 14, padding: 28 }}>
-        <div style={{ width: 56, height: 56, borderRadius: 16, background: '#f4f2ff', border: '1.5px solid #e2dcff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>👁</div>
+        <div style={{ width: 56, height: 56, borderRadius: 16, background: '#FEF3C7', border: '1.5px solid #FDE68A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>👁</div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#9c8fc0', marginBottom: 5 }}>Live Preview</div>
-          <div style={{ fontSize: 12, color: '#c4b8e0', lineHeight: 1.6 }}>Select platforms to see<br />a live post preview</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#B45309', marginBottom: 5 }}>Live Preview</div>
+          <div style={{ fontSize: 12, color: '#D97706', lineHeight: 1.6 }}>Select platforms to see<br />a live post preview</div>
         </div>
       </div>
     )
@@ -269,7 +265,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {/* Platform tabs */}
       <div style={{ padding: '0 0 12px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {profiles.map(profile => {
           const pi = getPlatformInfo(profile.platform)
@@ -277,9 +272,9 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
           return (
             <button key={profile.id} type="button" onClick={() => setActiveId(profile.id)} style={{
               padding: '5px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-              background: isActive ? pi.color + '14' : '#faf9ff',
-              border: `1.5px solid ${isActive ? pi.color + '55' : '#e2dcff'}`,
-              color: isActive ? pi.color : '#9c8fc0',
+              background: isActive ? pi.color + '14' : '#FFFBF0',
+              border: `1.5px solid ${isActive ? pi.color + '55' : '#FDE68A'}`,
+              color: isActive ? pi.color : '#B45309',
               cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.03em', transition: 'all 0.15s',
             }}>
               {pi.label}
@@ -299,7 +294,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
           </div>
 
           <div style={{ maxWidth: 300, margin: '0 auto', width: '100%' }}>
-            {/* Instagram / Facebook / Threads */}
             {(['instagram', 'facebook', 'threads'].includes(platform)) && (
               <div style={{ background: '#16162a', borderRadius: isStory ? 18 : 13, border: `1px solid ${info.color}25`, overflow: 'hidden', boxShadow: `0 4px 24px ${info.color}18` }}>
                 <div style={{ padding: '10px 13px', display: 'flex', alignItems: 'center', gap: 9, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -367,7 +361,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* Twitter */}
             {platform === 'twitter' && (
               <div style={{ background: '#15202b', borderRadius: 13, border: '1px solid rgba(255,255,255,0.09)', padding: '15px', boxShadow: '0 4px 24px rgba(29,161,242,0.1)' }}>
                 <div style={{ display: 'flex', gap: 10 }}>
@@ -402,7 +395,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* LinkedIn */}
             {platform === 'linkedin' && (
               <div style={{ background: '#1d2226', borderRadius: 13, border: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden', boxShadow: '0 4px 24px rgba(10,102,194,0.12)' }}>
                 <div style={{ padding: '13px 15px', display: 'flex', gap: 9, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
@@ -436,7 +428,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* TikTok */}
             {platform === 'tiktok' && (
               <div style={{ background: '#000', borderRadius: 18, border: `1px solid ${info.color}22`, overflow: 'hidden', boxShadow: `0 4px 24px ${info.color}15` }}>
                 <div style={{ position: 'relative', background: '#111' }}>
@@ -480,7 +471,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* YouTube */}
             {platform === 'youtube' && (
               <div style={{ background: '#0f0f0f', borderRadius: 13, border: '1px solid rgba(255,255,255,0.07)', overflow: 'hidden', boxShadow: '0 4px 24px rgba(255,0,0,0.1)' }}>
                 <div style={{ position: 'relative', background: '#1a1a1a' }}>
@@ -524,7 +514,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
               </div>
             )}
 
-            {/* Pinterest */}
             {platform === 'pinterest' && (
               <div style={{ background: '#111', borderRadius: 15, border: `1px solid ${info.color}22`, overflow: 'hidden', boxShadow: `0 4px 20px ${info.color}12` }}>
                 <div style={{ position: 'relative' }}>
@@ -554,25 +543,24 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
             )}
           </div>
 
-          {/* Stats bar */}
-          <div style={{ padding: '10px 14px', borderRadius: 11, background: '#faf9ff', border: '1.5px solid #ede9ff', display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+          <div style={{ padding: '10px 14px', borderRadius: 11, background: '#FFFBF0', border: '1.5px solid #FEF3C7', display: 'flex', gap: 14, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3 }}>
-              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#c4b8e0' }}>CHARACTERS</div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: charCount > 280 ? '#d97706' : '#4a3f6b' }}>
+              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#D97706' }}>CHARACTERS</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: charCount > 280 ? '#d97706' : '#1C1200' }}>
                 {charCount} {charCount > 280 && platform === 'twitter' ? <span style={{ fontSize: 10, color: '#d97706' }}>over limit</span> : ''}
               </div>
             </div>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3 }}>
-              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#c4b8e0' }}>MEDIA</div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#4a3f6b' }}>{mediaCount || '—'}</div>
+              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#D97706' }}>MEDIA</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#1C1200' }}>{mediaCount || '—'}</div>
             </div>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3 }}>
-              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#c4b8e0' }}>FORMAT</div>
+              <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.1em', color: '#D97706' }}>FORMAT</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: info.color }}>{format}</div>
             </div>
           </div>
 
-          <div style={{ fontSize: 10, color: '#c4b8e0', textAlign: 'center', fontStyle: 'italic' }}>
+          <div style={{ fontSize: 10, color: '#D97706', textAlign: 'center', fontStyle: 'italic' }}>
             Approximate preview · actual post may vary
           </div>
         </div>
@@ -581,7 +569,6 @@ function LivePreviewPanel({ postBody, mediaFiles, mediaUrls, profiles, platformP
   )
 }
 
-// ── Media Uploader ────────────────────────────────────────────────────────────
 function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
   const [tab, setTab] = useState('upload')
   const [dragging, setDragging] = useState(false)
@@ -602,15 +589,15 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 4, background: '#f4f2ff', border: '1.5px solid #e2dcff', borderRadius: 10, padding: 3, marginBottom: 14, width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 4, background: '#FEF3C7', border: '1.5px solid #FDE68A', borderRadius: 10, padding: 3, marginBottom: 14, width: 'fit-content' }}>
         {[{ id: 'upload', label: '⬆ Upload Files' }, { id: 'url', label: '🔗 From URL' }].map(t => (
           <button key={t.id} type="button" onClick={() => setTab(t.id)} style={{
             padding: '6px 15px', borderRadius: 7, fontSize: 12, fontWeight: 700,
             background: tab === t.id ? '#ffffff' : 'transparent',
-            border: tab === t.id ? '1.5px solid #ddd6fe' : '1.5px solid transparent',
-            color: tab === t.id ? '#6C63FF' : '#9c8fc0',
+            border: tab === t.id ? '1.5px solid #FCD34D' : '1.5px solid transparent',
+            color: tab === t.id ? '#D97706' : '#B45309',
             cursor: 'pointer', fontFamily: 'inherit',
-            boxShadow: tab === t.id ? '0 1px 6px rgba(108,99,255,0.1)' : 'none',
+            boxShadow: tab === t.id ? '0 1px 6px rgba(217,119,6,0.1)' : 'none',
           }}>{t.label}</button>
         ))}
       </div>
@@ -622,15 +609,15 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
             style={{
-              border: `2px dashed ${dragging ? '#6C63FF' : '#d1c8e8'}`,
+              border: `2px dashed ${dragging ? '#D97706' : '#FCD34D'}`,
               borderRadius: 12, padding: '28px 20px', textAlign: 'center', cursor: 'pointer',
-              background: dragging ? '#f0edff' : '#faf9ff', transition: 'all 0.2s',
+              background: dragging ? '#FEF3C7' : '#FFFBF0', transition: 'all 0.2s',
             }}
           >
             <input ref={inputRef} type="file" accept={ACCEPT} multiple onChange={handleFileInput} style={{ display: 'none' }} />
             <div style={{ fontSize: 26, marginBottom: 9, opacity: 0.5 }}>🖼</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#7c6fa0', marginBottom: 4 }}>Drop images or videos here</div>
-            <div style={{ fontSize: 11, color: '#b0a5cc' }}>or click to browse · JPG, PNG, GIF, WEBP, MP4, MOV</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#B45309', marginBottom: 4 }}>Drop images or videos here</div>
+            <div style={{ fontSize: 11, color: '#D97706' }}>or click to browse · JPG, PNG, GIF, WEBP, MP4, MOV</div>
           </div>
           {files.length > 0 && (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
@@ -638,7 +625,7 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
                 const isVid = file.type.startsWith('video/')
                 const thumbUrl = isVid ? null : URL.createObjectURL(file)
                 return (
-                  <div key={i} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', border: '1.5px solid #e2dcff' }}>
+                  <div key={i} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', border: '1.5px solid #FDE68A' }}>
                     {isVid ? (
                       <video src={URL.createObjectURL(file)} style={{ width: 80, height: 80, objectFit: 'cover', display: 'block', background: '#111' }} preload="metadata" muted />
                     ) : (
@@ -655,8 +642,8 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
       ) : (
         <>
           <textarea value={urls} onChange={e => onUrlsChange(e.target.value)} placeholder={"https://example.com/image.jpg\nhttps://example.com/video.mp4"} rows={3}
-            style={{ width: '100%', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 10, padding: '11px 14px', color: '#1a1040', fontSize: 13, fontFamily: 'inherit', lineHeight: 1.65, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
-          <p style={{ fontSize: 11, color: '#b0a5cc', marginTop: 7 }}>One URL per line · Images and videos supported</p>
+            style={{ width: '100%', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 10, padding: '11px 14px', color: '#1C1200', fontSize: 13, fontFamily: 'inherit', lineHeight: 1.65, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
+          <p style={{ fontSize: 11, color: '#B45309', marginTop: 7 }}>One URL per line · Images and videos supported</p>
         </>
       )}
       {totalItems > 0 && (
@@ -668,7 +655,6 @@ function MediaUploader({ files, urls, onFilesChange, onUrlsChange }) {
   )
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
 export default function ComposePage() {
   const { selectedGroup } = useContext(DashboardContext)
   const [profiles, setProfiles] = useState([])
@@ -809,8 +795,8 @@ export default function ComposePage() {
       style={{
         display: 'flex', alignItems: 'center', gap: 5,
         padding: '4px 11px', borderRadius: 8,
-        background: '#faf9ff', border: '1.5px solid #e2dcff',
-        color: refreshingProfiles ? '#6C63FF' : '#9c8fc0',
+        background: '#FFFBF0', border: '1.5px solid #FDE68A',
+        color: refreshingProfiles ? '#D97706' : '#B45309',
         fontSize: 11, fontWeight: 700, fontFamily: 'inherit',
         cursor: refreshingProfiles || loadingProfiles ? 'not-allowed' : 'pointer',
         opacity: refreshingProfiles || loadingProfiles ? 0.6 : 1,
@@ -823,42 +809,39 @@ export default function ComposePage() {
   )
 
   return (
-    <div style={{ animation: 'fadeIn 0.25s ease', background: '#f8f7ff', minHeight: '100%', padding: 2 }}>
+    <div style={{ animation: 'fadeIn 0.25s ease', background: '#FFFBF0', minHeight: '100%', padding: 2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0} 100%{background-position:400% 0} }
         @keyframes fadeIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { to { transform: rotate(360deg); } }
-        .sk { background: linear-gradient(90deg,#f0edff 0%,#e8e4ff 50%,#f0edff 100%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; }
+        .sk { background: linear-gradient(90deg,#FEF3C7 0%,#FDE68A 50%,#FEF3C7 100%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; }
         .ctarea { outline: none; resize: vertical; transition: border-color 0.2s, box-shadow 0.2s; }
-        .ctarea:focus { border-color: #a78bfa !important; box-shadow: 0 0 0 3px rgba(108,99,255,0.08) !important; }
+        .ctarea:focus { border-color: #F59E0B !important; box-shadow: 0 0 0 3px rgba(217,119,6,0.08) !important; }
         .cinput { outline: none; transition: border-color 0.2s; }
-        .cinput:focus { border-color: #a78bfa !important; }
+        .cinput:focus { border-color: #F59E0B !important; }
         .ptoggle { transition: background 0.15s; }
-        .ptoggle:hover { background: #f4f2ff !important; }
+        .ptoggle:hover { background: #FFFBEB !important; }
         .sbtn { transition: all 0.2s ease; }
-        .sbtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(108,99,255,0.22); }
-        .pp-toggle:hover { background: #f8f7ff !important; }
+        .sbtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(217,119,6,0.22); }
+        .pp-toggle:hover { background: #FFFBF0 !important; }
         .preview-panel { position: sticky; top: 24px; }
       `}</style>
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)', border: '1.5px solid #c4b5fd', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>✦</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#1a1040', letterSpacing: '-0.03em', margin: 0 }}>Compose</h1>
+          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)', border: '1.5px solid #FCD34D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>✦</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#1C1200', letterSpacing: '-0.03em', margin: 0 }}>Compose</h1>
         </div>
-        <p style={{ fontSize: 13, color: '#7c6fa0', margin: 0, fontWeight: 500 }}>
-          Write once, publish everywhere from <span style={{ color: '#6C63FF', fontWeight: 700 }}>{selectedGroup.name}</span>
+        <p style={{ fontSize: 13, color: '#B45309', margin: 0, fontWeight: 500 }}>
+          Write once, publish everywhere from <span style={{ color: '#D97706', fontWeight: 700 }}>{selectedGroup.name}</span>
         </p>
       </div>
 
-      {/* Two-column layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
 
-        {/* LEFT: Form */}
         <form onSubmit={handlePost} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-          {/* Content */}
           <SectionCard title="CONTENT">
             <textarea
               className="ctarea"
@@ -866,23 +849,21 @@ export default function ComposePage() {
               onChange={e => setPostBody(e.target.value)}
               placeholder="What do you want to share today?"
               rows={6}
-              style={{ width: '100%', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 10, padding: '13px 15px', color: '#1a1040', fontSize: 15, fontFamily: 'inherit', lineHeight: 1.65, boxSizing: 'border-box' }}
+              style={{ width: '100%', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 10, padding: '13px 15px', color: '#1C1200', fontSize: 15, fontFamily: 'inherit', lineHeight: 1.65, boxSizing: 'border-box' }}
             />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-              <span style={{ fontSize: 11, color: '#c4b8e0' }}>Supports plain text, hashtags &amp; mentions</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: overLimit ? '#d97706' : '#c4b8e0' }}>{charCount}{overLimit && ' · over X/Twitter limit'}</span>
+              <span style={{ fontSize: 11, color: '#D97706' }}>Supports plain text, hashtags &amp; mentions</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: overLimit ? '#d97706' : '#D97706' }}>{charCount}{overLimit && ' · over X/Twitter limit'}</span>
             </div>
-            <div style={{ height: 3, background: '#f0edff', borderRadius: 3, marginTop: 8, overflow: 'hidden' }}>
-              <div style={{ height: '100%', borderRadius: 3, width: `${Math.min((charCount / 280) * 100, 100)}%`, background: overLimit ? '#f59e0b' : '#a78bfa', transition: 'width 0.15s ease, background 0.15s ease' }} />
+            <div style={{ height: 3, background: '#FEF3C7', borderRadius: 3, marginTop: 8, overflow: 'hidden' }}>
+              <div style={{ height: '100%', borderRadius: 3, width: `${Math.min((charCount / 280) * 100, 100)}%`, background: overLimit ? '#f59e0b' : '#D97706', transition: 'width 0.15s ease, background 0.15s ease' }} />
             </div>
           </SectionCard>
 
-          {/* Media */}
           <SectionCard title="MEDIA" hint="Optional">
             <MediaUploader files={mediaFiles} urls={mediaUrls} onFilesChange={setMediaFiles} onUrlsChange={setMediaUrls} />
           </SectionCard>
 
-          {/* Post To */}
           <SectionCard
             title="POST TO"
             hint={selectedProfileIds.length > 0 ? `${selectedProfileIds.length} selected` : undefined}
@@ -894,8 +875,8 @@ export default function ComposePage() {
               </div>
             ) : profiles.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '28px 0' }}>
-                <p style={{ fontSize: 14, color: '#9c8fc0', marginBottom: 4, fontWeight: 600 }}>No profiles connected</p>
-                <p style={{ fontSize: 12, color: '#c4b8e0' }}>Go to the Connect tab to link your social accounts</p>
+                <p style={{ fontSize: 14, color: '#B45309', marginBottom: 4, fontWeight: 600 }}>No profiles connected</p>
+                <p style={{ fontSize: 12, color: '#D97706' }}>Go to the Connect tab to link your social accounts</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -903,7 +884,7 @@ export default function ComposePage() {
                   <button type="button" onClick={() => {
                     if (selectedProfileIds.length === activeProfiles.length) { setSelectedProfileIds([]); setPlacements({}); setLoadedPlacements({}); setPlatformParams({}) }
                     else setSelectedProfileIds(activeProfiles.map(p => p.id))
-                  }} style={{ alignSelf: 'flex-start', background: '#ede9fe', border: '1.5px solid #ddd6fe', borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#6d28d9', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, marginBottom: 4 }}>
+                  }} style={{ alignSelf: 'flex-start', background: '#FEF3C7', border: '1.5px solid #FCD34D', borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#B45309', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, marginBottom: 4 }}>
                     {selectedProfileIds.length === activeProfiles.length ? '✕ Deselect All' : '✓ Select All Active'}
                   </button>
                 )}
@@ -918,18 +899,18 @@ export default function ComposePage() {
                   return (
                     <div key={profile.id} style={{
                       borderRadius: 13,
-                      border: `1.5px solid ${isSelected ? info.color + '55' : '#e8e4f0'}`,
-                      background: isSelected ? info.color + '07' : '#faf9ff',
+                      border: `1.5px solid ${isSelected ? info.color + '55' : '#FDE68A'}`,
+                      background: isSelected ? info.color + '07' : '#FFFBF0',
                       overflow: 'hidden', opacity: inactive ? 0.5 : 1,
                       transition: 'border-color 0.15s, background 0.15s',
                       boxShadow: isSelected ? `0 2px 12px ${info.color}12` : 'none',
                     }}>
                       <div className="ptoggle" onClick={() => !inactive && toggleProfile(profile.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', cursor: inactive ? 'not-allowed' : 'pointer' }}>
-                        <div style={{ width: 20, height: 20, borderRadius: 6, flexShrink: 0, border: `2px solid ${isSelected ? info.color : '#d1c8e8'}`, background: isSelected ? info.color : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#fff', fontWeight: 900, transition: 'all 0.15s' }}>{isSelected ? '✓' : ''}</div>
+                        <div style={{ width: 20, height: 20, borderRadius: 6, flexShrink: 0, border: `2px solid ${isSelected ? info.color : '#FCD34D'}`, background: isSelected ? info.color : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#fff', fontWeight: 900, transition: 'all 0.15s' }}>{isSelected ? '✓' : ''}</div>
                         <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: info.color + '14', border: `1.5px solid ${info.color}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: info.color }}>{info.label.slice(0, 2).toUpperCase()}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1a1040', lineHeight: 1.3 }}>{info.label}</div>
-                          <div style={{ fontSize: 11, color: '#9c8fc0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>{profile.name}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1C1200', lineHeight: 1.3 }}>{info.label}</div>
+                          <div style={{ fontSize: 11, color: '#B45309', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>{profile.name}</div>
                         </div>
                         {isSelected && (() => {
                           const fmt = pp.format || PLATFORM_FORMATS[profile.platform]?.[0]?.value
@@ -950,14 +931,14 @@ export default function ComposePage() {
                       {isSelected && (
                         <div style={{ borderTop: `1.5px solid ${info.color}18` }}>
                           <button type="button" className="pp-toggle" onClick={() => setExpandedParams(p => ({ ...p, [profile.id]: !p[profile.id] }))} style={{ width: '100%', padding: '8px 14px', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s' }}>
-                            <span style={{ fontSize: 11, fontWeight: 700, color: isExpanded ? info.color : '#9c8fc0' }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: isExpanded ? info.color : '#B45309' }}>
                               ⚙ Post Settings
                               {Object.keys(pp).length > 0 && <span style={{ marginLeft: 6, fontSize: 10, color: info.color, background: info.color + '12', padding: '1px 6px', borderRadius: 4 }}>{Object.keys(pp).length} set</span>}
                             </span>
-                            <span style={{ fontSize: 11, color: '#c4b8e0', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▾</span>
+                            <span style={{ fontSize: 11, color: '#D97706', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▾</span>
                           </button>
                           {isExpanded && (
-                            <div style={{ borderTop: `1.5px solid ${info.color}12`, background: '#fdfcff', animation: 'fadeIn 0.15s ease' }}>
+                            <div style={{ borderTop: `1.5px solid ${info.color}12`, background: '#FFFBF0', animation: 'fadeIn 0.15s ease' }}>
                               <PlatformParamsEditor
                                 platform={profile.platform}
                                 params={pp}
@@ -974,25 +955,24 @@ export default function ComposePage() {
             )}
           </SectionCard>
 
-          {/* Schedule & Draft */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, alignItems: 'stretch' }}>
             <SectionCard title="SCHEDULE" hint="Optional">
               <input className="cinput" type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)}
-                style={{ width: '100%', padding: '10px 13px', background: '#faf9ff', border: '1.5px solid #e2dcff', borderRadius: 10, color: '#1a1040', fontSize: 13, fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '10px 13px', background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 10, color: '#1C1200', fontSize: 13, fontFamily: 'inherit', boxSizing: 'border-box' }} />
             </SectionCard>
             <div onClick={() => setIsDraft(v => !v)} style={{
-              background: isDraft ? '#ede9fe' : '#ffffff',
-              border: `1.5px solid ${isDraft ? '#c4b5fd' : '#e2dcff'}`,
+              background: isDraft ? '#FEF3C7' : '#ffffff',
+              border: `1.5px solid ${isDraft ? '#FCD34D' : '#FDE68A'}`,
               borderRadius: 16, padding: '14px 20px',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               gap: 8, cursor: 'pointer', minWidth: 100,
               transition: 'all 0.18s ease',
-              boxShadow: isDraft ? '0 2px 12px rgba(108,99,255,0.1)' : 'none',
+              boxShadow: isDraft ? '0 2px 12px rgba(217,119,6,0.1)' : 'none',
             }}>
-              <div style={{ width: 32, height: 18, borderRadius: 100, background: isDraft ? '#c4b5fd' : '#e2dcff', position: 'relative', transition: 'background 0.2s', border: `1.5px solid ${isDraft ? '#a78bfa' : '#d1c8e8'}` }}>
-                <div style={{ position: 'absolute', top: 2, left: isDraft ? 14 : 2, width: 12, height: 12, borderRadius: '50%', background: isDraft ? '#6C63FF' : '#b0a5cc', transition: 'left 0.2s, background 0.2s' }} />
+              <div style={{ width: 32, height: 18, borderRadius: 100, background: isDraft ? '#FCD34D' : '#FEF3C7', position: 'relative', transition: 'background 0.2s', border: `1.5px solid ${isDraft ? '#F59E0B' : '#FDE68A'}` }}>
+                <div style={{ position: 'absolute', top: 2, left: isDraft ? 14 : 2, width: 12, height: 12, borderRadius: '50%', background: isDraft ? '#D97706' : '#FCD34D', transition: 'left 0.2s, background 0.2s' }} />
               </div>
-              <span style={{ fontSize: 11, fontWeight: 800, color: isDraft ? '#6d28d9' : '#b0a5cc', letterSpacing: '0.08em' }}>DRAFT</span>
+              <span style={{ fontSize: 11, fontWeight: 800, color: isDraft ? '#B45309' : '#D97706', letterSpacing: '0.08em' }}>DRAFT</span>
             </div>
           </div>
 
@@ -1009,17 +989,17 @@ export default function ComposePage() {
           <button type="submit" disabled={posting} className="sbtn" style={{
             padding: '15px 24px', borderRadius: 13,
             background: isDraft
-              ? '#f4f2ff'
+              ? '#FEF3C7'
               : scheduledAt
-                ? 'linear-gradient(135deg, #60a5fa, #3b82f6)'
-                : 'linear-gradient(135deg, #7c3aed, #6C63FF)',
-            color: isDraft ? '#6d28d9' : '#ffffff',
-            border: `1.5px solid ${isDraft ? '#ddd6fe' : 'transparent'}`,
+                ? 'linear-gradient(135deg, #F59E0B, #D97706)'
+                : 'linear-gradient(135deg, #D97706, #B45309)',
+            color: isDraft ? '#B45309' : '#ffffff',
+            border: `1.5px solid ${isDraft ? '#FCD34D' : 'transparent'}`,
             fontWeight: 800, fontSize: 15, cursor: posting ? 'default' : 'pointer',
             fontFamily: 'inherit', opacity: posting ? 0.65 : 1,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             letterSpacing: '0.01em',
-            boxShadow: !isDraft && !posting ? (scheduledAt ? '0 8px 24px rgba(59,130,246,0.25)' : '0 8px 28px rgba(108,99,255,0.3)') : 'none',
+            boxShadow: !isDraft && !posting ? (scheduledAt ? '0 8px 24px rgba(245,158,11,0.3)' : '0 8px 28px rgba(217,119,6,0.3)') : 'none',
           }}>
             {posting ? (
               <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} /> Publishing…</>
@@ -1029,14 +1009,13 @@ export default function ComposePage() {
           </button>
         </form>
 
-        {/* RIGHT: Live Preview Panel */}
         <div className="preview-panel">
-          <div style={{ background: '#ffffff', border: '1.5px solid #e8e4ff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 20px rgba(108,99,255,0.07)' }}>
-            <div style={{ padding: '13px 18px', borderBottom: '1.5px solid #f0edff', display: 'flex', alignItems: 'center', gap: 8, background: '#fdfcff' }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: selectedProfileIds.length > 0 ? '#22c55e' : '#d1c8e8', transition: 'background 0.3s' }} />
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', color: '#9c8fc0' }}>LIVE PREVIEW</span>
+          <div style={{ background: '#ffffff', border: '1.5px solid #FDE68A', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 20px rgba(217,119,6,0.07)' }}>
+            <div style={{ padding: '13px 18px', borderBottom: '1.5px solid #FEF3C7', display: 'flex', alignItems: 'center', gap: 8, background: '#FFFBF0' }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: selectedProfileIds.length > 0 ? '#22c55e' : '#FCD34D', transition: 'background 0.3s' }} />
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', color: '#B45309' }}>LIVE PREVIEW</span>
               {selectedProfileIds.length > 0 && (
-                <span style={{ marginLeft: 'auto', fontSize: 10, color: '#b0a5cc', fontStyle: 'italic' }}>
+                <span style={{ marginLeft: 'auto', fontSize: 10, color: '#D97706', fontStyle: 'italic' }}>
                   {selectedProfileObjects.length} platform{selectedProfileObjects.length !== 1 ? 's' : ''}
                 </span>
               )}

@@ -13,7 +13,7 @@ const PLATFORMS = [
   { id: 'threads',   label: 'Threads',    color: '#555555', icon: '@' },
   { id: 'pinterest', label: 'Pinterest',  color: '#E60023', icon: 'P' },
 ]
-const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#6C63FF', icon: '?' }
+const getPlatformInfo = id => PLATFORMS.find(p => p.id === id) || { label: id, color: '#D97706', icon: '?' }
 
 export default function ConnectPage() {
   const { selectedGroup } = useContext(DashboardContext)
@@ -81,41 +81,41 @@ export default function ConnectPage() {
   const selectedInfo = PLATFORMS.find(p => p.id === connectPlatform)
 
   return (
-    <div style={{ animation: 'fadeIn 0.25s ease', background: '#f8f7ff', minHeight: '100%', padding: 2 }}>
+    <div style={{ animation: 'fadeIn 0.25s ease', background: '#FFFBF0', minHeight: '100%', padding: 2 }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:-400% 0} 100%{background-position:400% 0} }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
-        .sk { background: linear-gradient(90deg,#f0edff 0%,#e8e4ff 50%,#f0edff 100%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; }
+        .sk { background: linear-gradient(90deg,#FEF3C7 0%,#FDE68A 50%,#FEF3C7 100%); background-size:400% 100%; animation:shimmer 1.8s ease infinite; }
         .ptile { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); border: 1.5px solid transparent; cursor: pointer; background: none; }
-        .ptile:not(.is-connected):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(108,99,255,0.15); }
+        .ptile:not(.is-connected):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(217,119,6,0.15); }
         .ptile.is-selected { animation: pop 0.22s ease; }
         .prow { transition: all 0.15s ease; }
-        .prow:hover { background: #faf9ff !important; border-color: #c4b8e0 !important; }
+        .prow:hover { background: #FFFBEB !important; border-color: #FCD34D !important; }
         .disc-btn { opacity: 0; transition: opacity 0.15s; }
         .prow:hover .disc-btn { opacity: 1; }
         .conn-btn { transition: all 0.2s ease; }
-        .conn-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,99,255,0.25); }
+        .conn-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(217,119,6,0.25); }
         .refresh-btn-c { transition: all 0.15s ease; }
-        .refresh-btn-c:hover { border-color: #6C63FF !important; color: #6C63FF !important; background: #f0edff !important; }
+        .refresh-btn-c:hover { border-color: #D97706 !important; color: #D97706 !important; background: #FFFBEB !important; }
       `}</style>
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)', border: '1.5px solid #c4b5fd', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>⟡</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#1a1040', letterSpacing: '-0.03em', margin: 0 }}>Connect Platforms</h1>
+          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)', border: '1.5px solid #FCD34D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>⟡</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#1C1200', letterSpacing: '-0.03em', margin: 0 }}>Connect Platforms</h1>
         </div>
-        <p style={{ fontSize: 13, color: '#7c6fa0', margin: 0, fontWeight: 500 }}>
-          Link your social accounts to <span style={{ color: '#6C63FF', fontWeight: 700 }}>{selectedGroup.name}</span>
+        <p style={{ fontSize: 13, color: '#B45309', margin: 0, fontWeight: 500 }}>
+          Link your social accounts to <span style={{ color: '#D97706', fontWeight: 700 }}>{selectedGroup.name}</span>
         </p>
       </div>
 
       {/* Platform selector card */}
-      <div style={{ background: '#ffffff', border: '1.5px solid #e8e4ff', borderRadius: 18, padding: 28, marginBottom: 16, boxShadow: '0 2px 20px rgba(108,99,255,0.07)' }}>
+      <div style={{ background: '#ffffff', border: '1.5px solid #FDE68A', borderRadius: 18, padding: 28, marginBottom: 16, boxShadow: '0 2px 20px rgba(217,119,6,0.07)' }}>
         <div style={{ marginBottom: 20 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1a1040', margin: '0 0 4px' }}>Select a Platform</h2>
-          <p style={{ fontSize: 13, color: '#9c8fc0', margin: 0 }}>Click a platform tile to begin the OAuth connection flow</p>
+          <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1C1200', margin: '0 0 4px' }}>Select a Platform</h2>
+          <p style={{ fontSize: 13, color: '#B45309', margin: 0 }}>Click a platform tile to begin the OAuth connection flow</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(108px, 1fr))', gap: 10, marginBottom: 24 }}>
@@ -130,11 +130,11 @@ export default function ConnectPage() {
                 style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
                   padding: '20px 10px 16px', borderRadius: 14,
-                  borderColor: isSelected && !isConnected ? p.color : isConnected ? p.color + '50' : '#e8e4f0',
-                  background: isSelected && !isConnected ? p.color + '0e' : isConnected ? p.color + '07' : '#faf9ff',
+                  borderColor: isSelected && !isConnected ? '#D97706' : isConnected ? '#FCD34D' : '#FDE68A',
+                  background: isSelected && !isConnected ? '#FFFBEB' : isConnected ? '#FFFDF5' : '#FFFBF0',
                   cursor: isConnected ? 'default' : 'pointer',
                   position: 'relative', overflow: 'hidden',
-                  boxShadow: isSelected && !isConnected ? `0 0 0 2px ${p.color}30, 0 8px 20px rgba(0,0,0,0.08)` : isConnected ? '0 2px 8px rgba(0,0,0,0.04)' : 'none',
+                  boxShadow: isSelected && !isConnected ? '0 0 0 2px rgba(217,119,6,0.2), 0 8px 20px rgba(0,0,0,0.08)' : isConnected ? '0 2px 8px rgba(0,0,0,0.04)' : 'none',
                 }}
               >
                 {isConnected && (
@@ -142,8 +142,8 @@ export default function ConnectPage() {
                 )}
                 <div style={{ width: 44, height: 44, borderRadius: 12, background: p.color + '14', border: `1.5px solid ${p.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: p.color, boxShadow: isSelected ? `0 4px 14px ${p.color}22` : 'none', transition: 'box-shadow 0.2s' }}>{p.icon}</div>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: isConnected ? '#15803d' : isSelected ? p.color : '#4a3f6b', lineHeight: 1.3 }}>{p.label}</div>
-                  <div style={{ fontSize: 9, marginTop: 2, letterSpacing: '0.05em', fontWeight: 700, color: isConnected ? '#86efac' : isSelected ? p.color + 'bb' : '#c4b8e0' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: isConnected ? '#15803d' : isSelected ? '#D97706' : '#1C1200', lineHeight: 1.3 }}>{p.label}</div>
+                  <div style={{ fontSize: 9, marginTop: 2, letterSpacing: '0.05em', fontWeight: 700, color: isConnected ? '#86efac' : isSelected ? '#B45309' : '#D97706' }}>
                     {isConnected ? 'CONNECTED' : isSelected ? 'SELECTED' : 'CLICK TO ADD'}
                   </div>
                 </div>
@@ -165,10 +165,10 @@ export default function ConnectPage() {
           style={{
             width: '100%', padding: '14px 24px', borderRadius: 12,
             background: connectPlatform
-              ? `linear-gradient(135deg, ${selectedInfo?.color || '#6C63FF'} 0%, #7c3aed 100%)`
-              : '#f4f2ff',
-            color: connectPlatform ? '#fff' : '#c4b8e0',
-            border: `1.5px solid ${connectPlatform ? 'transparent' : '#e8e4f0'}`,
+              ? 'linear-gradient(135deg, #D97706 0%, #B45309 100%)'
+              : '#FEF3C7',
+            color: connectPlatform ? '#fff' : '#D97706',
+            border: `1.5px solid ${connectPlatform ? 'transparent' : '#FDE68A'}`,
             fontWeight: 800, fontSize: 14, cursor: connectPlatform ? 'pointer' : 'default',
             fontFamily: 'inherit', opacity: connecting ? 0.7 : 1, letterSpacing: '0.01em',
           }}
@@ -179,16 +179,16 @@ export default function ConnectPage() {
 
       {/* Connected accounts */}
       {(loadingProfiles || profiles.length > 0) && (
-        <div style={{ background: '#ffffff', border: '1.5px solid #e8e4ff', borderRadius: 18, padding: 28, boxShadow: '0 2px 20px rgba(108,99,255,0.07)' }}>
+        <div style={{ background: '#ffffff', border: '1.5px solid #FDE68A', borderRadius: 18, padding: 28, boxShadow: '0 2px 20px rgba(217,119,6,0.07)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div>
-              <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1a1040', margin: '0 0 3px' }}>Connected Accounts</h2>
-              <p style={{ fontSize: 12, color: '#9c8fc0', margin: 0, fontWeight: 500 }}>{profiles.length} account{profiles.length !== 1 ? 's' : ''} linked</p>
+              <h2 style={{ fontSize: 16, fontWeight: 800, color: '#1C1200', margin: '0 0 3px' }}>Connected Accounts</h2>
+              <p style={{ fontSize: 12, color: '#B45309', margin: 0, fontWeight: 500 }}>{profiles.length} account{profiles.length !== 1 ? 's' : ''} linked</p>
             </div>
             <button
               className="refresh-btn-c"
               onClick={() => fetchProfiles(selectedGroup.id)}
-              style={{ background: '#faf9ff', border: '1.5px solid #e8e4f0', borderRadius: 9, padding: '8px 14px', fontSize: 12, color: '#7c6fa0', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}
+              style={{ background: '#FFFBF0', border: '1.5px solid #FDE68A', borderRadius: 9, padding: '8px 14px', fontSize: 12, color: '#B45309', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}
             >
               ↻ Refresh
             </button>
@@ -208,11 +208,11 @@ export default function ConnectPage() {
                 const statusBg   = isActive ? '#dcfce7' : isExpired ? '#fef9c3' : '#fee2e2'
                 const statusBorder = isActive ? '#bbf7d0' : isExpired ? '#fde68a' : '#fca5a5'
                 return (
-                  <div key={profile.id} className="prow" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 13, background: '#faf9ff', border: '1.5px solid #ede9ff' }}>
+                  <div key={profile.id} className="prow" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 13, background: '#FFFBF0', border: '1.5px solid #FEF3C7' }}>
                     <div style={{ width: 42, height: 42, borderRadius: 12, flexShrink: 0, background: info.color + '14', border: `1.5px solid ${info.color}28`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, fontWeight: 900, color: info.color }}>{info.icon}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a1040', marginBottom: 2 }}>{info.label}</div>
-                      <div style={{ fontSize: 12, color: '#9c8fc0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{profile.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1C1200', marginBottom: 2 }}>{info.label}</div>
+                      <div style={{ fontSize: 12, color: '#B45309', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{profile.name}</div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 11px', borderRadius: 100, background: statusBg, border: `1.5px solid ${statusBorder}` }}>
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: statusColor }} />
