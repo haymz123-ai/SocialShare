@@ -1,3 +1,6 @@
+
+
+
 'use client'
 
 import { useState, useEffect, useContext, useCallback, useRef } from 'react'
@@ -719,21 +722,28 @@ export default function ComposePage() {
     return val || null
   }
 
-  function buildPlatformsPayload() {
-    const result = {}
-    selectedProfileIds.forEach(pid => {
-      const profile = profiles.find(p => p.id === pid)
-      if (!profile) return
-      const pp = platformParams[pid] || {}
-      const placementId = resolvePlacementId(pid)
-      const platformEntry = { ...pp }
-      if (profile.platform === 'facebook' && placementId) platformEntry.page_id = placementId
-      if (profile.platform === 'pinterest' && placementId) platformEntry.board_id = placementId
-      if (profile.platform === 'linkedin' && placementId !== null) platformEntry.organization_id = placementId
-      if (Object.keys(platformEntry).length > 0) result[profile.platform] = platformEntry
-    })
-    return result
-  }
+ // Platform-specific required defaults
+const PLATFORM_DEFAULTS = {
+  youtube: { privacy_status: 'public' },
+  tiktok:  { privacy_status: 'PUBLIC_TO_EVERYONE' },
+}
+
+function buildPlatformsPayload() {
+  const result = {}
+  selectedProfileIds.forEach(pid => {
+    const profile = profiles.find(p => p.id === pid)
+    if (!profile) return
+    const defaults = PLATFORM_DEFAULTS[profile.platform] || {}
+    const pp = { ...defaults, ...(platformParams[pid] || {}) }
+    const placementId = resolvePlacementId(pid)
+    const platformEntry = { ...pp }
+    if (profile.platform === 'facebook' && placementId) platformEntry.page_id = placementId
+    if (profile.platform === 'pinterest' && placementId) platformEntry.board_id = placementId
+    if (profile.platform === 'linkedin' && placementId !== null) platformEntry.organization_id = placementId
+    if (Object.keys(platformEntry).length > 0) result[profile.platform] = platformEntry
+  })
+  return result
+}
 
   async function handlePost(e) {
     e.preventDefault()
@@ -1035,3 +1045,5 @@ export default function ComposePage() {
     </div>
   )
 }
+
+

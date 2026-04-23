@@ -372,9 +372,7 @@ export default function DashboardLayout({ children }) {
           </header>
 
           <main style={{ flex: 1, padding: '32px', overflowY: 'auto', animation: 'fadeIn 0.25s ease' }}>
-            {loadingGroups ? (
-              <LoadingState />
-            ) : !selectedGroup ? (
+            {!loadingGroups && !selectedGroup ? (
               <EmptyState onAdd={() => { setSidebarCollapsed(false); setShowNewGroup(true) }} />
             ) : (
               <DashboardContext.Provider value={{ selectedGroup, refreshGroups: fetchGroups }}>
@@ -385,18 +383,6 @@ export default function DashboardLayout({ children }) {
         </div>
       </div>
     </>
-  )
-}
-
-function LoadingState() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '65vh' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 42, height: 42, border: '2px solid rgba(217,119,6,0.12)', borderTop: '2px solid #D97706', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 0.9s linear infinite' }} />
-        <p style={{ fontSize: 13, color: 'rgba(28,18,0,0.35)', fontFamily: 'inherit', letterSpacing: '0.04em' }}>Setting up your workspace…</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    </div>
   )
 }
 
