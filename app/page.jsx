@@ -62,7 +62,7 @@ const plans = [
   },
   {
     name: "Growth",
-    price: "$19",
+    price: "$24",
     period: "/mo",
     desc: "For growing brands and agencies",
     features: ["15 Social Accounts", "Unlimited Posts", "Advanced Analytics", "AI Caption Writer", "Team Collaboration", "Priority Support"],
