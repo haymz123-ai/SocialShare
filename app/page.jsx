@@ -1632,34 +1632,7 @@ footer {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="testimonials-section" id="testimonials">
-        <div className="testi-wrap">
-          <div id="testi-hd" ref={setRef("testi-hd")} className={`section-header ani${isVisible("testi-hd") ? " visible" : ""}`}>
-            <div className="section-tag-new"><span className="tag-line" />Testimonials</div>
-            <h2 className="section-title-new display">Loved by 48,000+<br />creators & brands</h2>
-            <p className="section-sub-new">Thousands of content teams trust Social Share Bay to run their social media like clockwork.</p>
-          </div>
-          <div className="testi-grid-new">
-            {testimonials.map((t, i) => (
-              <div key={t.name} id={`testi-${i}`} ref={setRef(`testi-${i}`)} className={`testi-card-new ani d${i + 1}${isVisible(`testi-${i}`) ? " visible" : ""}`}>
-                <div className="testi-accent-strip" style={{ background: t.color }} />
-                <div className="testi-stars">
-                  {Array(t.stars).fill(0).map((_, j) => (<span key={j} className="testi-star" style={{ color: "#F59E0B" }}>★</span>))}
-                </div>
-                <p className="testi-text-new">"{t.text}"</p>
-                <div className="testi-footer-new">
-                  <div className="testi-av" style={{ background: `linear-gradient(135deg, ${t.color}, ${t.color}99)` }}>{t.avatar}</div>
-                  <div>
-                    <div className="testi-name-new">{t.name}</div>
-                    <div className="testi-role-new">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
       {/* FAQ */}
       <section className="faq-section">
