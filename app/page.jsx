@@ -1591,16 +1591,16 @@ footer {
                     <span className="price-check" style={{ color: plan.accent }}>✓</span>{f}
                   </div>
                 ))}
-                <button className={`price-btn ${plan.popular ? "price-btn-fill" : "price-btn-outline"}`}>
-                  {plan.popular ? "Get Started →" : "Choose Plan"}
-                </button>
+                <Link href="/dashboard/pricing">
+                  <button className={`price-btn ${plan.popular ? "price-btn-fill" : "price-btn-outline"}`}>
+                    {plan.popular ? "Get Started →" : "Choose Plan"}
+                  </button>
+                </Link>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-     
 
       {/* FAQ */}
       <section className="faq-section">
@@ -1632,7 +1632,9 @@ footer {
           <h2 className="cta-title-new display">Ready to own your<br /><em>social presence?</em></h2>
           <p className="cta-sub-new">Join 48,000+ creators and brands who schedule smarter, grow faster, and spend less time posting.</p>
           <div className="cta-actions-new">
-            <button className="btn-primary" style={{ fontSize: "1rem", padding: "1rem 2.25rem" }}>🚀 Start for Free</button>
+            <Link href="/dashboard">
+              <button className="btn-primary" style={{ fontSize: "1rem", padding: "1rem 2.25rem" }}>🚀 Start for Free</button>
+            </Link>
             <button className="btn-ghost" style={{ fontSize: "1rem", padding: "1rem 2.25rem" }}>Talk to Sales</button>
           </div>
           <div className="cta-note">✓ Free forever plan &nbsp;·&nbsp; ✓ No credit card &nbsp;·&nbsp; ✓ Cancel anytime</div>
@@ -1658,4 +1660,3 @@ footer {
     </>
   );
 }
-

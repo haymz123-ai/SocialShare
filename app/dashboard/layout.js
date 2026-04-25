@@ -60,36 +60,35 @@ export default function DashboardLayout({ children }) {
     })
   }, [isLoaded, user])
 
- // Replace handleCreateGroup with this:
-async function handleCreateGroup(e) {
-  e.preventDefault()
-  setCreateError('')
-  if (!groupName.trim()) return
-  setCreatingGroup(true)
-  try {
-    const res = await fetch('/api/profile-groups', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: groupName }),
-    })
-    const data = await res.json()
-    if (!res.ok) {
-      if (data.limitReached) {
-        setCreateError(`⚡ ${data.error}`)
-      } else {
-        setCreateError(data.error || 'Failed to create group')
+  async function handleCreateGroup(e) {
+    e.preventDefault()
+    setCreateError('')
+    if (!groupName.trim()) return
+    setCreatingGroup(true)
+    try {
+      const res = await fetch('/api/profile-groups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: groupName }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        if (data.limitReached) {
+          setCreateError(`⚡ ${data.error}`)
+        } else {
+          setCreateError(data.error || 'Failed to create group')
+        }
+        return
       }
-      return
+      setGroupName('')
+      setShowNewGroup(false)
+      const newList = await fetchGroups()
+      const created = newList.find(g => g.id === data.id)
+      if (created) setSelectedGroup(created)
+    } finally {
+      setCreatingGroup(false)
     }
-    setGroupName('')
-    setShowNewGroup(false)
-    const newList = await fetchGroups()
-    const created = newList.find(g => g.id === data.id)
-    if (created) setSelectedGroup(created)
-  } finally {
-    setCreatingGroup(false)
   }
-}
 
   async function handleDeleteGroup(e, id) {
     e.stopPropagation()
@@ -101,14 +100,15 @@ async function handleCreateGroup(e) {
     if (selectedGroup?.id === id) setSelectedGroup(newList[0] || null)
   }
 
-const activeTab = pathname === '/dashboard' ? 'overview'
-  : pathname.includes('/connect') ? 'connect'
-  : pathname.includes('/compose') ? 'compose'
-  : pathname.includes('/stats') ? 'stats'
-  : pathname.includes('/posts') ? 'posts'
-  : pathname.includes('/pricing') ? 'pricing'
-  : 'overview'
+  const activeTab = pathname === '/dashboard' ? 'overview'
+    : pathname.includes('/connect') ? 'connect'
+    : pathname.includes('/compose') ? 'compose'
+    : pathname.includes('/stats') ? 'stats'
+    : pathname.includes('/posts') ? 'posts'
+    : pathname.includes('/pricing') ? 'pricing'
+    : 'overview'
 
+  const isLimitError = createError && createError.includes('⚡')
 
   if (!isLoaded) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#FFFFFF' }}>
@@ -241,10 +241,12 @@ const activeTab = pathname === '/dashboard' ? 'overview'
 
           <div style={{ height: 1, background: 'rgba(217,119,6,0.08)', margin: '16px 10px' }} />
 
-          {/* Workspaces */}
+          {/* Workspaces — KEY FIX: flex column with proper overflow */}
           {!sidebarCollapsed ? (
-            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '0 10px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+
+              {/* Workspace header — never scrolls away */}
+              <div style={{ padding: '0 10px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
                 <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', color: 'rgba(217,119,6,0.45)', paddingLeft: 2 }}>WORKSPACES</span>
                 <button className="new-ws-btn" onClick={() => { setShowNewGroup(v => !v); setCreateError('') }} style={{
                   width: 22, height: 22, borderRadius: 6,
@@ -255,10 +257,9 @@ const activeTab = pathname === '/dashboard' ? 'overview'
                 }}>+</button>
               </div>
 
-              
-
+              {/* New workspace input — also never scrolls away */}
               {showNewGroup && (
-                <div style={{ padding: '0 10px 12px', animation: 'fadeIn 0.2s ease' }}>
+                <div style={{ padding: '0 10px 10px', flexShrink: 0, animation: 'fadeIn 0.2s ease' }}>
                   <form onSubmit={handleCreateGroup} style={{ display: 'flex', gap: 6 }}>
                     <input className="sidebar-inp" value={groupName} onChange={e => setGroupName(e.target.value)} placeholder="Workspace name…" autoFocus style={{
                       flex: 1, padding: '7px 10px',
@@ -272,11 +273,37 @@ const activeTab = pathname === '/dashboard' ? 'overview'
                       cursor: 'pointer', fontWeight: 700, opacity: (!groupName.trim() || creatingGroup) ? 0.4 : 1, transition: 'all 0.15s',
                     }}>{creatingGroup ? '…' : '✓'}</button>
                   </form>
-                  {createError && <p style={{ fontSize: 11, color: '#DC2626', marginTop: 5, paddingLeft: 2 }}>{createError}</p>}
+                  {/* Inline non-limit errors only */}
+                  {createError && !isLimitError && (
+                    <p style={{ fontSize: 11, color: '#DC2626', marginTop: 5, paddingLeft: 2 }}>{createError}</p>
+                  )}
                 </div>
               )}
 
-              <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px 10px' }}>
+              {/* Limit-reached upgrade banner — shown ABOVE the scrollable list, never overlaps */}
+              {isLimitError && (
+                <div style={{
+                  margin: '0 10px 10px', flexShrink: 0,
+                  padding: '10px 12px', borderRadius: 10,
+                  background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
+                  border: '1.5px solid #FCD34D',
+                  animation: 'fadeIn 0.2s ease',
+                }}>
+                  <div style={{ fontSize: 11, color: '#B45309', fontWeight: 600, marginBottom: 6, lineHeight: 1.5 }}>
+                    {createError.replace('⚡ ', '')}
+                  </div>
+                  <a href="/dashboard/pricing" style={{
+                    display: 'block', textAlign: 'center',
+                    padding: '6px 10px', borderRadius: 7,
+                    background: 'linear-gradient(135deg, #D97706, #B45309)',
+                    color: '#fff', fontSize: 11, fontWeight: 700,
+                    textDecoration: 'none', letterSpacing: '0.02em',
+                  }}>Upgrade Plan →</a>
+                </div>
+              )}
+
+              {/* Scrollable workspace list */}
+              <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '0 10px 10px' }}>
                 {loadingGroups ? (
                   [1,2].map(i => <div key={i} className="skeleton" style={{ height: 46, borderRadius: 10, marginBottom: 6 }} />)
                 ) : groups.length === 0 ? (
@@ -303,7 +330,6 @@ const activeTab = pathname === '/dashboard' ? 'overview'
                       }}>{initials}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1C1200' : 'rgba(28,18,0,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>{g.name}</div>
-
                       </div>
                       <button className="del-btn" onClick={e => handleDeleteGroup(e, g.id)} style={{
                         background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(220,38,38,0.5)', fontSize: 12, padding: '2px 4px', borderRadius: 4, lineHeight: 1, flexShrink: 0,
@@ -316,28 +342,6 @@ const activeTab = pathname === '/dashboard' ? 'overview'
           ) : (
             <div style={{ flex: 1 }} />
           )}
-
-        
-{!sidebarCollapsed && createError && createError.includes('⚡') && (
-  <div style={{
-    margin: '0 10px 10px',
-    padding: '10px 12px',
-    borderRadius: 10,
-    background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
-    border: '1.5px solid #FCD34D',
-  }}>
-    <div style={{ fontSize: 11, color: '#B45309', fontWeight: 600, marginBottom: 6, lineHeight: 1.5 }}>
-      {createError.replace('⚡ ', '')}
-    </div>
-    <a href="/pricing" style={{
-      display: 'block', textAlign: 'center',
-      padding: '6px 10px', borderRadius: 7,
-      background: 'linear-gradient(135deg, #D97706, #B45309)',
-      color: '#fff', fontSize: 11, fontWeight: 700,
-      textDecoration: 'none', letterSpacing: '0.02em',
-    }}>Upgrade Plan →</a>
-  </div>
-)}
 
           {/* User footer */}
           <div style={{
@@ -452,4 +456,3 @@ function EmptyState({ onAdd }) {
     </div>
   )
 }
-
