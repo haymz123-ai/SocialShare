@@ -29,7 +29,7 @@ const PLANS = [
     id: 'growth',
     name: 'Growth',
     price: 19,
-    priceLabel: '$19',
+    priceLabel: '$24',
     period: 'per month',
     color: '#7C3AED',
     grad: 'linear-gradient(135deg, #7C3AED, #6D28D9)',

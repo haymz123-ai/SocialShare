@@ -1649,11 +1649,9 @@ footer {
             <div className="footer-copy" style={{ marginTop: 4 }}>© 2025 Social Share Bay. All rights reserved.</div>
           </div>
           <div className="footer-links-new">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Status</a>
-            <a href="#">Blog</a>
-            <a href="#">Contact</a>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/contact">Contact</a>
           </div>
         </div>
       </footer>
