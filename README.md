@@ -26,10 +26,6 @@ For each plan:
 
    price_1OtXxxXXXXXXXXXXXXXXXXXX
 
-Repeat for the Scale plan. These become:
-
-   NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID=price_1Oxxxxxxxxxxxxxxxx
-   NEXT_PUBLIC_STRIPE_SCALE_PRICE_ID=price_1Oxxxxxxxxxxxxxxxx
 
 ---
 
@@ -111,18 +107,18 @@ Get your Supabase keys:
 Create a .env.local file in the root of your project:
 
    # Stripe
-   NEXT_PUBLIC_STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxx
-   NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxx
-   NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID=price_1Oxxxxxxxxxxxxxxxx
-   NEXT_PUBLIC_STRIPE_SCALE_PRICE_ID=price_1Oxxxxxxxxxxxxxxxx
+   NEXT_PUBLIC_STRIPE_SECRET_KEY=
+   NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET=
+   NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID=
+   NEXT_PUBLIC_STRIPE_SCALE_PRICE_ID=
 
    # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxx.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyxxxxxxxxxxxxxxxxxxxxxxxxxx
+   NEXT_PUBLIC_SUPABASE_URL=
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
    # Clerk
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
-   CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxx
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
 
    # App
    NEXT_PUBLIC_APP_URL=http://localhost:3000
