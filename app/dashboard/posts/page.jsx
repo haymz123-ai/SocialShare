@@ -1190,6 +1190,22 @@ export default function PostsPage() {
   const [scheduleDate, setScheduleDate] = useState(null)
   const [deletePost, setDeletePost]     = useState(null)
   const [view, setView]                 = useState('calendar')
+const [userPlan, setUserPlan] = useState(null)
+const [planLoading, setPlanLoading] = useState(true)
+
+useEffect(() => {
+  fetch('/api/user-plan')
+    .then(r => r.json())
+    .then(data => setUserPlan(data))
+    .catch(() => {})
+    .finally(() => setPlanLoading(false))
+}, [])
+
+const isFreePlan = !userPlan?.plan || userPlan.plan === 'free'
+const postLimit = userPlan?.limits?.maxPosts ?? 8
+const unlimitedPosts = userPlan?.limits?.unlimitedPosts ?? false
+const atPostLimit = !unlimitedPosts && posts.length >= postLimit
+
 
   const fetchPosts = useCallback(async (groupId) => {
     setLoading(true)
@@ -1287,21 +1303,99 @@ export default function PostsPage() {
         </div>
       </div>
 
-      {!loading && posts.length>0 && (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:22 }}>
-          {[
-            { label:'DRAFTS',    count:draftCount,     color:'#B45309', bg:'#ffffff', border:'#FDE68A', grad:'linear-gradient(135deg,#D97706,#B45309)' },
-            { label:'SCHEDULED', count:scheduledCount, color:'#D97706', bg:'#ffffff', border:'#FCD34D', grad:'linear-gradient(135deg,#F59E0B,#D97706)' },
-            { label:'PUBLISHED', count:publishedCount, color:'#16a34a', bg:'#ffffff', border:'#bbf7d0', grad:'linear-gradient(135deg,#4ade80,#16a34a)' },
-          ].map(s => (
-            <div key={s.label} style={{ padding:'20px 18px', borderRadius:15, background:s.bg, border:`1.5px solid ${s.border}`, position:'relative', overflow:'hidden', boxShadow:'0 2px 12px rgba(217,119,6,0.06)' }}>
-              <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:s.grad, borderRadius:'15px 15px 0 0' }} />
-              <span style={{ fontSize:28, fontWeight:900, color:s.color, letterSpacing:'-0.04em', lineHeight:1, display:'block', marginBottom:6 }}>{s.count}</span>
-              <span style={{ fontSize:10, fontWeight:800, color:'#D97706', letterSpacing:'0.08em' }}>{s.label}</span>
-            </div>
-          ))}
+    {!loading && (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 22 }}>
+    {/* Plan usage bar */}
+    {!planLoading && (
+      <div style={{
+        padding: '14px 18px', borderRadius: 15,
+        background: atPostLimit ? 'linear-gradient(135deg,#fff7ed,#FEF3C7)' : '#ffffff',
+        border: `1.5px solid ${atPostLimit ? '#FCD34D' : '#FDE68A'}`,
+        display: 'flex', alignItems: 'center', gap: 14,
+        boxShadow: atPostLimit ? '0 2px 12px rgba(217,119,6,0.1)' : '0 2px 8px rgba(217,119,6,0.05)',
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+          background: userPlan?.plan === 'scale' ? 'linear-gradient(135deg,#2563eb,#1d4ed8)'
+            : userPlan?.plan === 'growth' ? 'linear-gradient(135deg,#16a34a,#15803d)'
+            : atPostLimit ? 'linear-gradient(135deg,#D97706,#B45309)' : 'linear-gradient(135deg,#FEF3C7,#FDE68A)',
+          border: '1.5px solid rgba(255,255,255,0.2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
+        }}>
+          {userPlan?.plan === 'scale' ? '⚡' : userPlan?.plan === 'growth' ? '🚀' : '✦'}
         </div>
-      )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, color: '#1C1200' }}>
+              {userPlan?.plan === 'growth' ? 'Growth' : userPlan?.plan === 'scale' ? 'Scale' : 'Free'} Plan
+            </span>
+            {atPostLimit && (
+              <span style={{ fontSize: 10, background: '#D97706', color: '#fff', padding: '1px 8px', borderRadius: 100, fontWeight: 700 }}>LIMIT REACHED</span>
+            )}
+            {!atPostLimit && !unlimitedPosts && posts.length / postLimit >= 0.75 && (
+              <span style={{ fontSize: 10, background: '#FEF3C7', color: '#B45309', border: '1px solid #FCD34D', padding: '1px 8px', borderRadius: 100, fontWeight: 700 }}>ALMOST FULL</span>
+            )}
+          </div>
+          {unlimitedPosts ? (
+            <div style={{ fontSize: 11, color: '#16a34a', fontWeight: 600 }}>
+              {posts.length} posts · Unlimited ∞
+            </div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ flex: 1, height: 6, borderRadius: 6, background: '#FEF3C7', overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', borderRadius: 6,
+                    width: `${Math.min((posts.length / postLimit) * 100, 100)}%`,
+                    background: atPostLimit ? '#D97706' : posts.length / postLimit >= 0.75 ? '#F59E0B' : '#16a34a',
+                    transition: 'width 0.5s ease',
+                  }} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: atPostLimit ? '#D97706' : '#B45309', flexShrink: 0 }}>
+                  {posts.length} / {postLimit} posts
+                </span>
+              </div>
+              {isFreePlan && (
+                <div style={{ fontSize: 10, color: '#B45309', marginTop: 3, fontWeight: 500 }}>
+                  {atPostLimit ? '⚠ Upgrade to publish more posts' : `${postLimit - posts.length} post${postLimit - posts.length !== 1 ? 's' : ''} remaining on free plan`}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        {isFreePlan && (
+          <a href="/dashboard/pricing" style={{
+            flexShrink: 0, padding: '8px 16px', borderRadius: 10,
+            background: atPostLimit ? 'linear-gradient(135deg,#D97706,#B45309)' : '#FEF3C7',
+            border: `1.5px solid ${atPostLimit ? 'transparent' : '#FCD34D'}`,
+            color: atPostLimit ? '#fff' : '#B45309',
+            fontSize: 12, fontWeight: 700, textDecoration: 'none',
+            boxShadow: atPostLimit ? '0 4px 14px rgba(217,119,6,0.3)' : 'none',
+          }}>
+            {atPostLimit ? '⚡ Upgrade Now' : 'View Plans →'}
+          </a>
+        )}
+      </div>
+    )}
+
+    {/* Existing 3-col stats — keep as-is */}
+    {posts.length > 0 && (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+        {[
+          { label: 'DRAFTS',    count: draftCount,     color: '#B45309', bg: '#ffffff', border: '#FDE68A', grad: 'linear-gradient(135deg,#D97706,#B45309)' },
+          { label: 'SCHEDULED', count: scheduledCount, color: '#D97706', bg: '#ffffff', border: '#FCD34D', grad: 'linear-gradient(135deg,#F59E0B,#D97706)' },
+          { label: 'PUBLISHED', count: publishedCount, color: '#16a34a', bg: '#ffffff', border: '#bbf7d0', grad: 'linear-gradient(135deg,#4ade80,#16a34a)' },
+        ].map(s => (
+          <div key={s.label} style={{ padding: '20px 18px', borderRadius: 15, background: s.bg, border: `1.5px solid ${s.border}`, position: 'relative', overflow: 'hidden', boxShadow: '0 2px 12px rgba(217,119,6,0.06)' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: s.grad, borderRadius: '15px 15px 0 0' }} />
+            <span style={{ fontSize: 28, fontWeight: 900, color: s.color, letterSpacing: '-0.04em', lineHeight: 1, display: 'block', marginBottom: 6 }}>{s.count}</span>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#D97706', letterSpacing: '0.08em' }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
       {loading ? (
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
@@ -1315,3 +1409,5 @@ export default function PostsPage() {
     </div>
   )
 }
+
+

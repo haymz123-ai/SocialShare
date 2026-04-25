@@ -1,6 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../lib/supabase'
+import { getUserPlan } from '../../../lib/getUserPlan'
+import { getPlan } from '../../../lib/plans'
 
 const PP_BASE = 'https://api.postproxy.dev/api'
 const PP_KEY = process.env.NEXT_PUBLIC_POSTPROXY_API_KEY
@@ -48,10 +50,7 @@ export async function DELETE(req) {
 
   const ppRes = await fetch(
     `${PP_BASE}/profiles/${profileId}?profile_group_id=${group.postproxy_group_id}`,
-    {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${PP_KEY}` },
-    }
+    { method: 'DELETE', headers: { Authorization: `Bearer ${PP_KEY}` } }
   )
 
   const ppData = await ppRes.json()

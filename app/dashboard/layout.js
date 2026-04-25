@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, createContext } from 'react'
 import { useUser, UserButton } from '@clerk/nextjs'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import CrispChat from '../../components/CrispChat'
 
 export const DashboardContext = createContext({})
 
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
   { id: 'compose',  label: 'Compose',  icon: '✦', href: '/dashboard/compose' },
   { id: 'posts',    label: 'Posts',    icon: '▤', href: '/dashboard/posts' },
   { id: 'stats',    label: 'Stats',    icon: '◎', href: '/dashboard/stats' },
+  { id: 'pricing',  label: 'Upgrade',  icon: '⚡', href: '/dashboard/pricing' },
 ]
 
 export default function DashboardLayout({ children }) {
@@ -58,28 +60,36 @@ export default function DashboardLayout({ children }) {
     })
   }, [isLoaded, user])
 
-  async function handleCreateGroup(e) {
-    e.preventDefault()
-    setCreateError('')
-    if (!groupName.trim()) return
-    setCreatingGroup(true)
-    try {
-      const res = await fetch('/api/profile-groups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: groupName }),
-      })
-      const data = await res.json()
-      if (!res.ok) { setCreateError(data.error || 'Failed to create group'); return }
-      setGroupName('')
-      setShowNewGroup(false)
-      const newList = await fetchGroups()
-      const created = newList.find(g => g.id === data.id)
-      if (created) setSelectedGroup(created)
-    } finally {
-      setCreatingGroup(false)
+ // Replace handleCreateGroup with this:
+async function handleCreateGroup(e) {
+  e.preventDefault()
+  setCreateError('')
+  if (!groupName.trim()) return
+  setCreatingGroup(true)
+  try {
+    const res = await fetch('/api/profile-groups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: groupName }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      if (data.limitReached) {
+        setCreateError(`⚡ ${data.error}`)
+      } else {
+        setCreateError(data.error || 'Failed to create group')
+      }
+      return
     }
+    setGroupName('')
+    setShowNewGroup(false)
+    const newList = await fetchGroups()
+    const created = newList.find(g => g.id === data.id)
+    if (created) setSelectedGroup(created)
+  } finally {
+    setCreatingGroup(false)
   }
+}
 
   async function handleDeleteGroup(e, id) {
     e.stopPropagation()
@@ -91,12 +101,14 @@ export default function DashboardLayout({ children }) {
     if (selectedGroup?.id === id) setSelectedGroup(newList[0] || null)
   }
 
-  const activeTab = pathname === '/dashboard' ? 'overview'
-    : pathname.includes('/connect') ? 'connect'
-    : pathname.includes('/compose') ? 'compose'
-    : pathname.includes('/stats') ? 'stats'
-    : pathname.includes('/posts') ? 'posts'
-    : 'overview'
+const activeTab = pathname === '/dashboard' ? 'overview'
+  : pathname.includes('/connect') ? 'connect'
+  : pathname.includes('/compose') ? 'compose'
+  : pathname.includes('/stats') ? 'stats'
+  : pathname.includes('/posts') ? 'posts'
+  : pathname.includes('/pricing') ? 'pricing'
+  : 'overview'
+
 
   if (!isLoaded) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#FFFFFF' }}>
@@ -243,6 +255,8 @@ export default function DashboardLayout({ children }) {
                 }}>+</button>
               </div>
 
+              
+
               {showNewGroup && (
                 <div style={{ padding: '0 10px 12px', animation: 'fadeIn 0.2s ease' }}>
                   <form onSubmit={handleCreateGroup} style={{ display: 'flex', gap: 6 }}>
@@ -289,7 +303,7 @@ export default function DashboardLayout({ children }) {
                       }}>{initials}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1C1200' : 'rgba(28,18,0,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>{g.name}</div>
-                        <div style={{ fontSize: 10, color: 'rgba(28,18,0,0.28)', marginTop: 1 }}>{g.profiles_count ?? 0} profile{g.profiles_count !== 1 ? 's' : ''}</div>
+
                       </div>
                       <button className="del-btn" onClick={e => handleDeleteGroup(e, g.id)} style={{
                         background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(220,38,38,0.5)', fontSize: 12, padding: '2px 4px', borderRadius: 4, lineHeight: 1, flexShrink: 0,
@@ -302,6 +316,28 @@ export default function DashboardLayout({ children }) {
           ) : (
             <div style={{ flex: 1 }} />
           )}
+
+        
+{!sidebarCollapsed && createError && createError.includes('⚡') && (
+  <div style={{
+    margin: '0 10px 10px',
+    padding: '10px 12px',
+    borderRadius: 10,
+    background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
+    border: '1.5px solid #FCD34D',
+  }}>
+    <div style={{ fontSize: 11, color: '#B45309', fontWeight: 600, marginBottom: 6, lineHeight: 1.5 }}>
+      {createError.replace('⚡ ', '')}
+    </div>
+    <a href="/pricing" style={{
+      display: 'block', textAlign: 'center',
+      padding: '6px 10px', borderRadius: 7,
+      background: 'linear-gradient(135deg, #D97706, #B45309)',
+      color: '#fff', fontSize: 11, fontWeight: 700,
+      textDecoration: 'none', letterSpacing: '0.02em',
+    }}>Upgrade Plan →</a>
+  </div>
+)}
 
           {/* User footer */}
           <div style={{
@@ -382,6 +418,7 @@ export default function DashboardLayout({ children }) {
           </main>
         </div>
       </div>
+      <CrispChat />
     </>
   )
 }
@@ -415,3 +452,4 @@ function EmptyState({ onAdd }) {
     </div>
   )
 }
+

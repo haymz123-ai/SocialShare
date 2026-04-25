@@ -1,8 +1,8 @@
-// api/profile-groups
-
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../lib/supabase'
+import { getUserPlan } from '../../../lib/getUserPlan'
+import { getPlan } from '../../../lib/plans'
 
 const PP_BASE = 'https://api.postproxy.dev/api'
 const PP_KEY = process.env.NEXT_PUBLIC_POSTPROXY_API_KEY
@@ -28,12 +28,25 @@ export async function POST(req) {
   const { name } = await req.json()
   if (!name?.trim()) return NextResponse.json({ error: 'Name is required' }, { status: 400 })
 
+  const plan = await getUserPlan(userId)
+  const limits = getPlan(plan)
+
+  const { count } = await supabase
+    .from('profile_groups')
+    .select('*', { count: 'exact', head: true })
+    .eq('clerk_user_id', userId)
+
+  if (count >= limits.maxWorkspaces) {
+    return NextResponse.json({
+      error: `Your ${plan} plan allows up to ${limits.maxWorkspaces} workspace${limits.maxWorkspaces !== 1 ? 's' : ''}. Upgrade to create more.`,
+      limitReached: true,
+      currentPlan: plan,
+    }, { status: 403 })
+  }
+
   const ppRes = await fetch(`${PP_BASE}/profile_groups`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${PP_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { Authorization: `Bearer ${PP_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ profile_group: { name } }),
   })
 
@@ -77,10 +90,7 @@ export async function DELETE(req) {
     .eq('clerk_user_id', userId)
 
   if (count <= 1) {
-    return NextResponse.json(
-      { error: 'Cannot delete your only workspace. Create another group first.' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Cannot delete your only workspace.' }, { status: 400 })
   }
 
   await fetch(`${PP_BASE}/profile_groups/${group.postproxy_group_id}`, {
@@ -91,4 +101,5 @@ export async function DELETE(req) {
   await supabase.from('profile_groups').delete().eq('id', id)
   return NextResponse.json({ success: true })
 }
+
 

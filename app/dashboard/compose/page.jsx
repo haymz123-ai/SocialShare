@@ -677,6 +677,33 @@ export default function ComposePage() {
   const [expandedParams, setExpandedParams] = useState({})
   const loadedGroupRef = useRef(null)
 
+  // ─── Plan state ───────────────────────────────────────────────
+const [userPlan, setUserPlan] = useState(null)   // { plan, limits }
+const [planLoading, setPlanLoading] = useState(true)
+const [postCount, setPostCount] = useState(null) // total posts used
+
+useEffect(() => {
+  fetch('/api/user-plan')
+    .then(r => r.json())
+    .then(data => setUserPlan(data))
+    .catch(() => {})
+    .finally(() => setPlanLoading(false))
+}, [])
+
+useEffect(() => {
+  if (!selectedGroup) return
+  fetch(`/api/posts?groupId=${selectedGroup.id}&per_page=100`)
+    .then(r => r.json())
+    .then(data => setPostCount(data?.data?.length ?? data?.total ?? 0))
+    .catch(() => {})
+}, [selectedGroup?.id])
+
+const isFreePlan = userPlan?.plan === 'free' || !userPlan?.plan
+const postLimit = userPlan?.limits?.maxPosts ?? 8
+const unlimitedPosts = userPlan?.limits?.unlimitedPosts ?? false
+const postsRemaining = unlimitedPosts ? Infinity : Math.max(0, postLimit - (postCount ?? 0))
+const atLimit = !unlimitedPosts && (postCount ?? 0) >= postLimit
+
   const fetchProfiles = useCallback(async (groupId) => {
     const res = await fetch(`/api/profiles?groupId=${groupId}`)
     const data = await res.json()
@@ -745,48 +772,144 @@ function buildPlatformsPayload() {
   return result
 }
 
-  async function handlePost(e) {
-    e.preventDefault()
-    setPostMsg({ type: '', text: '' })
-    const urlList = mediaUrls.split('\n').map(s => s.trim()).filter(Boolean)
-    const hasMedia = mediaFiles.length > 0 || urlList.length > 0
-    if (!postBody.trim() && !hasMedia) { setPostMsg({ type: 'error', text: 'Add content or at least one media item.' }); return }
-    if (!selectedProfileIds.length) { setPostMsg({ type: 'error', text: 'Select at least one profile.' }); return }
-    setPosting(true)
-    const platformsPayload = buildPlatformsPayload()
-    try {
-      if (mediaFiles.length > 0) {
-        const fd = new FormData()
-        fd.append('groupId', selectedGroup.id)
-        if (postBody) fd.append('post[body]', postBody)
-        if (scheduledAt) fd.append('post[scheduled_at]', scheduledAt)
-        if (isDraft) fd.append('post[draft]', 'true')
-        selectedProfileIds.forEach(pid => fd.append('profiles[]', pid))
-        mediaFiles.forEach(f => fd.append('media[]', f, f.name))
-        urlList.forEach(u => fd.append('media[]', u))
-        Object.entries(platformsPayload).forEach(([plat, pp]) => {
-          Object.entries(pp).forEach(([k, v]) => {
-            if (v !== undefined && v !== '') fd.append(`platforms[${plat}][${k}]`, String(v))
-          })
-        })
-        const res = await fetch('/api/posts', { method: 'POST', body: fd })
-        const data = await res.json()
-        if (!res.ok) { setPostMsg({ type: 'error', text: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Failed') }); return }
-      } else {
-        const res = await fetch('/api/posts', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ groupId: selectedGroup.id, postBody, profiles: selectedProfileIds, scheduledAt: scheduledAt || undefined, mediaUrls: urlList, draft: isDraft, platforms: platformsPayload }),
-        })
-        const data = await res.json()
-        if (!res.ok) { setPostMsg({ type: 'error', text: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Failed') }); return }
-      }
-      setPostMsg({ type: 'success', text: isDraft ? '✓ Draft saved!' : scheduledAt ? '✓ Post scheduled!' : '✓ Published successfully!' })
-      setPostBody(''); setSelectedProfileIds([]); setPlacements({}); setLoadedPlacements({})
-      setPlatformParams({}); setExpandedParams({}); setScheduledAt(''); setMediaFiles([]); setMediaUrls(''); setIsDraft(false)
-    } catch {
-      setPostMsg({ type: 'error', text: 'Network error. Please try again.' })
-    } finally { setPosting(false) }
+function PlanBanner({ plan, postCount, postLimit, unlimited, loading }) {
+  if (loading) return null
+  const used = postCount ?? 0
+  const pct = unlimited ? 0 : Math.min((used / postLimit) * 100, 100)
+  const nearLimit = !unlimited && pct >= 75
+  const atLimit   = !unlimited && used >= postLimit
+
+  const planColors = {
+    free:   { bg: '#FFFBF0', border: '#FDE68A', accent: '#D97706', dot: '#F59E0B' },
+    growth: { bg: '#f0fdf4', border: '#bbf7d0', accent: '#16a34a', dot: '#4ade80' },
+    scale:  { bg: '#eff6ff', border: '#bfdbfe', accent: '#2563eb', dot: '#60a5fa' },
   }
+  const c = planColors[plan] || planColors.free
+  const planLabel = plan === 'growth' ? 'Growth' : plan === 'scale' ? 'Scale' : 'Free'
+  const planIcon  = plan === 'growth' ? '🚀' : plan === 'scale' ? '⚡' : '✦'
+
+  return (
+    <div style={{
+      padding: '12px 16px', borderRadius: 14,
+      background: atLimit ? 'linear-gradient(135deg,#fff7ed,#FEF3C7)' : c.bg,
+      border: `1.5px solid ${atLimit ? '#FCD34D' : c.border}`,
+      display: 'flex', alignItems: 'center', gap: 13,
+      boxShadow: atLimit ? '0 2px 12px rgba(217,119,6,0.12)' : 'none',
+      marginBottom: 4,
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+        background: atLimit ? 'linear-gradient(135deg,#D97706,#B45309)' : `${c.accent}18`,
+        border: `1.5px solid ${atLimit ? '#D97706' : c.border}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15,
+      }}>{planIcon}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: atLimit ? '#B45309' : c.accent, letterSpacing: '0.06em' }}>
+            {planLabel.toUpperCase()} PLAN
+          </span>
+          {atLimit && (
+            <span style={{ fontSize: 10, background: '#D97706', color: '#fff', padding: '1px 7px', borderRadius: 100, fontWeight: 700 }}>
+              LIMIT REACHED
+            </span>
+          )}
+          {nearLimit && !atLimit && (
+            <span style={{ fontSize: 10, background: '#FEF3C7', color: '#B45309', border: '1px solid #FCD34D', padding: '1px 7px', borderRadius: 100, fontWeight: 700 }}>
+              ALMOST FULL
+            </span>
+          )}
+        </div>
+        {unlimited ? (
+          <div style={{ fontSize: 11, color: c.accent, fontWeight: 600 }}>Unlimited posts ∞</div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, height: 5, borderRadius: 5, background: '#FEF3C7', overflow: 'hidden' }}>
+                <div style={{ height: '100%', borderRadius: 5, width: `${pct}%`, background: atLimit ? '#D97706' : nearLimit ? '#F59E0B' : c.accent, transition: 'width 0.4s ease' }} />
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 800, color: atLimit ? '#D97706' : '#B45309', flexShrink: 0 }}>
+                {used} / {postLimit}
+              </span>
+            </div>
+            <div style={{ fontSize: 10, color: atLimit ? '#D97706' : '#B45309', marginTop: 2, fontWeight: 500 }}>
+              {atLimit ? 'Upgrade to publish more posts' : `${postLimit - used} post${postLimit - used !== 1 ? 's' : ''} remaining`}
+            </div>
+          </>
+        )}
+      </div>
+      {plan === 'free' && (
+        <a href="/dashboard/pricing" style={{
+          flexShrink: 0, padding: '7px 14px', borderRadius: 9,
+          background: atLimit ? 'linear-gradient(135deg,#D97706,#B45309)' : '#FEF3C7',
+          border: `1.5px solid ${atLimit ? 'transparent' : '#FCD34D'}`,
+          color: atLimit ? '#fff' : '#B45309',
+          fontSize: 11, fontWeight: 700, textDecoration: 'none',
+          boxShadow: atLimit ? '0 4px 12px rgba(217,119,6,0.3)' : 'none',
+          transition: 'all 0.2s',
+        }}>
+          {atLimit ? '⚡ Upgrade' : 'View plans →'}
+        </a>
+      )}
+    </div>
+  )
+}
+
+// At the top of ComposePage(), add this state:
+const [limitError, setLimitError] = useState(null)
+
+// Replace the existing handlePost function:
+async function handlePost(e) {
+  e.preventDefault()
+  setPostMsg({ type: '', text: '' })
+  setLimitError(null)
+  const urlList = mediaUrls.split('\n').map(s => s.trim()).filter(Boolean)
+  const hasMedia = mediaFiles.length > 0 || urlList.length > 0
+  if (!postBody.trim() && !hasMedia) { setPostMsg({ type: 'error', text: 'Add content or at least one media item.' }); return }
+  if (!selectedProfileIds.length) { setPostMsg({ type: 'error', text: 'Select at least one profile.' }); return }
+  setPosting(true)
+  const platformsPayload = buildPlatformsPayload()
+  try {
+    let res, data
+    if (mediaFiles.length > 0) {
+      const fd = new FormData()
+      fd.append('groupId', selectedGroup.id)
+      if (postBody) fd.append('post[body]', postBody)
+      if (scheduledAt) fd.append('post[scheduled_at]', scheduledAt)
+      if (isDraft) fd.append('post[draft]', 'true')
+      selectedProfileIds.forEach(pid => fd.append('profiles[]', pid))
+      mediaFiles.forEach(f => fd.append('media[]', f, f.name))
+      urlList.forEach(u => fd.append('media[]', u))
+      Object.entries(platformsPayload).forEach(([plat, pp]) => {
+        Object.entries(pp).forEach(([k, v]) => {
+          if (v !== undefined && v !== '') fd.append(`platforms[${plat}][${k}]`, String(v))
+        })
+      })
+      res = await fetch('/api/posts', { method: 'POST', body: fd })
+      data = await res.json()
+    } else {
+      res = await fetch('/api/posts', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId: selectedGroup.id, postBody, profiles: selectedProfileIds, scheduledAt: scheduledAt || undefined, mediaUrls: urlList, draft: isDraft, platforms: platformsPayload }),
+      })
+      data = await res.json()
+    }
+    if (!res.ok) {
+      if (data.limitReached) {
+        setLimitError(data.error)
+      } else {
+        setPostMsg({ type: 'error', text: Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Failed') })
+      }
+      return
+    }
+    setPostMsg({ type: 'success', text: isDraft ? '✓ Draft saved!' : scheduledAt ? '✓ Post scheduled!' : '✓ Published successfully!' })
+    setPostBody(''); setSelectedProfileIds([]); setPlacements({}); setLoadedPlacements({})
+    setPlatformParams({}); setExpandedParams({}); setScheduledAt(''); setMediaFiles([]); setMediaUrls(''); setIsDraft(false)
+    setLimitError(null)
+  } catch {
+    setPostMsg({ type: 'error', text: 'Network error. Please try again.' })
+  } finally { setPosting(false) }
+}
+
 
   if (!selectedGroup) return null
 
@@ -847,6 +970,14 @@ function buildPlatformsPayload() {
           Write once, publish everywhere from <span style={{ color: '#D97706', fontWeight: 700 }}>{selectedGroup.name}</span>
         </p>
       </div>
+
+      <PlanBanner
+  plan={userPlan?.plan || 'free'}
+  postCount={postCount}
+  postLimit={postLimit}
+  unlimited={unlimitedPosts}
+  loading={planLoading}
+/>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
 
@@ -986,6 +1117,30 @@ function buildPlatformsPayload() {
             </div>
           </div>
 
+          {limitError && (
+  <div style={{
+    padding: '18px 20px', borderRadius: 14,
+    background: 'linear-gradient(135deg,#FFFBF0,#FEF3C7)',
+    border: '2px solid #FCD34D',
+    boxShadow: '0 4px 20px rgba(217,119,6,0.15)',
+  }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 13 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 11, background: 'linear-gradient(135deg,#D97706,#B45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>⚡</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: '#1C1200', marginBottom: 4 }}>Post Limit Reached</div>
+        <p style={{ fontSize: 13, color: '#B45309', margin: '0 0 12px', lineHeight: 1.6 }}>{limitError}</p>
+        <a href="/dashboard/pricing" style={{
+          display: 'inline-block', padding: '9px 20px', borderRadius: 10,
+          background: 'linear-gradient(135deg,#D97706,#B45309)',
+          color: '#fff', fontSize: 13, fontWeight: 700,
+          textDecoration: 'none',
+          boxShadow: '0 4px 14px rgba(217,119,6,0.3)',
+        }}>View Upgrade Options →</a>
+      </div>
+    </div>
+  </div>
+)}
+
           {postMsg.text && (
             <div style={{
               padding: '12px 16px', borderRadius: 12,
@@ -996,27 +1151,40 @@ function buildPlatformsPayload() {
             }}>{postMsg.text}</div>
           )}
 
-          <button type="submit" disabled={posting} className="sbtn" style={{
-            padding: '15px 24px', borderRadius: 13,
-            background: isDraft
-              ? '#FEF3C7'
-              : scheduledAt
-                ? 'linear-gradient(135deg, #F59E0B, #D97706)'
-                : 'linear-gradient(135deg, #D97706, #B45309)',
-            color: isDraft ? '#B45309' : '#ffffff',
-            border: `1.5px solid ${isDraft ? '#FCD34D' : 'transparent'}`,
-            fontWeight: 800, fontSize: 15, cursor: posting ? 'default' : 'pointer',
-            fontFamily: 'inherit', opacity: posting ? 0.65 : 1,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            letterSpacing: '0.01em',
-            boxShadow: !isDraft && !posting ? (scheduledAt ? '0 8px 24px rgba(245,158,11,0.3)' : '0 8px 28px rgba(217,119,6,0.3)') : 'none',
-          }}>
-            {posting ? (
-              <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} /> Publishing…</>
-            ) : (
-              <>{submitIcon} {submitLabel}</>
-            )}
-          </button>
+          <button
+  type="submit"
+  disabled={posting || atLimit}
+  className="sbtn"
+  style={{
+    padding: '15px 24px', borderRadius: 13,
+    background: atLimit
+      ? 'linear-gradient(135deg,#FEF3C7,#FDE68A)'
+      : isDraft
+        ? '#FEF3C7'
+        : scheduledAt
+          ? 'linear-gradient(135deg, #F59E0B, #D97706)'
+          : 'linear-gradient(135deg, #D97706, #B45309)',
+    color: atLimit ? '#B45309' : isDraft ? '#B45309' : '#ffffff',
+    border: `1.5px solid ${atLimit ? '#FCD34D' : isDraft ? '#FCD34D' : 'transparent'}`,
+    fontWeight: 800, fontSize: 15,
+    cursor: posting || atLimit ? 'not-allowed' : 'pointer',
+    fontFamily: 'inherit',
+    opacity: posting ? 0.65 : 1,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+    letterSpacing: '0.01em',
+    boxShadow: (!isDraft && !posting && !atLimit)
+      ? (scheduledAt ? '0 8px 24px rgba(245,158,11,0.3)' : '0 8px 28px rgba(217,119,6,0.3)')
+      : 'none',
+  }}
+>
+  {posting ? (
+    <><span style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite', flexShrink: 0 }} /> Publishing…</>
+  ) : atLimit ? (
+    <><span>🔒</span> Post Limit Reached — <a href="/dashboard/pricing" style={{ color: '#D97706', fontWeight: 900, textDecoration: 'underline' }}>Upgrade</a></>
+  ) : (
+    <>{submitIcon} {submitLabel}</>
+  )}
+</button>
         </form>
 
         <div className="preview-panel">
