@@ -80,39 +80,7 @@ const plans = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Aria Singh",
-    role: "Content Creator, 500K followers",
-    avatar: "AS",
-    color: "#D97706",
-    text: "I went from spending 3 hours a day on social to just 20 minutes. The AI scheduling is genuinely magical.",
-    stars: 5,
-  },
-  {
-    name: "Marcus Lee",
-    role: "Marketing Director, TechFlow",
-    avatar: "ML",
-    color: "#F59E0B",
-    text: "Our engagement across LinkedIn and Instagram doubled in 6 weeks. The analytics finally make sense.",
-    stars: 5,
-  },
-  {
-    name: "Priya Nair",
-    role: "Social Media Manager",
-    avatar: "PN",
-    color: "#B45309",
-    text: "Managing 8 clients used to be chaos. Now everything is organized, scheduled, and beautiful.",
-    stars: 5,
-  },
-];
 
-const stats = [
-  { value: "2.4M+", label: "Posts Scheduled", icon: "📅", color: "#D97706" },
-  { value: "48K+", label: "Happy Users", icon: "😊", color: "#F59E0B" },
-  { value: "12+", label: "Platforms", icon: "🌐", color: "#B45309" },
-  { value: "99.9%", label: "Uptime", icon: "⚡", color: "#92400E" },
-];
 
 const howItWorks = [
   {
@@ -1690,3 +1658,4 @@ footer {
     </>
   );
 }
+

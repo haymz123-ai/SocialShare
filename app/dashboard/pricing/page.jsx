@@ -377,22 +377,7 @@ export default function PricingPage() {
         })}
       </div>
 
-      {/* Bottom FAQ strip */}
-      <div style={{ borderTop: '1.5px solid #FEF3C7', padding: '40px 24px 60px', textAlign: 'center', background: '#FFFDF5' }}>
-        <div style={{ maxWidth: 620, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: '#B45309', letterSpacing: '0.08em' }}>COMMON QUESTIONS</div>
-          {[
-            ['Can I cancel anytime?', 'Yes — cancel any time from your billing portal. You keep access until the end of your billing period.'],
-            ['What happens when I hit the free post limit?', 'You ll see an upgrade prompt. Existing posts are safe — you just can\'t publish new ones until you upgrade or they\'re deleted.'],
-            ['Can I switch between Growth and Scale?', 'Yes, upgrades and downgrades take effect immediately and are prorated.'],
-          ].map(([q, a], i) => (
-            <div key={i} style={{ padding: '16px 20px', borderRadius: 14, background: '#ffffff', border: '1.5px solid #FDE68A', textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1C1200', marginBottom: 5 }}>{q}</div>
-              <div style={{ fontSize: 12, color: '#B45309', lineHeight: 1.6, fontWeight: 500 }}>{a}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+  
     </div>
   )
 }

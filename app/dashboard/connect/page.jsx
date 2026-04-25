@@ -158,7 +158,7 @@ export default function ConnectPage() {
               }}>{profileCount} / {maxProfiles}</span>
             </div>
             {atProfileLimit && (
-              <button onClick={() => router.push('/pricing')} style={{
+              <button onClick={() => router.push('/dashboard/pricing')} style={{
                 padding: '6px 14px', borderRadius: 8,
                 background: 'linear-gradient(135deg,#D97706,#B45309)',
                 border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
