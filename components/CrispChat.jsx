@@ -9,7 +9,7 @@ export default function CrispChat() {
   useEffect(() => {
     // Initialize Crisp
     window.$crisp = []
-    window.CRISP_WEBSITE_ID = '920de5db-992f-4a51-9be9-3590edbbf5d9' // 🔁 Replace this
+    window.CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_ID;
 
     const script = document.createElement('script')
     script.src = 'https://client.crisp.chat/l.js'
