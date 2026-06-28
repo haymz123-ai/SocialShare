@@ -17,7 +17,7 @@ const PLANS = [
     icon: '◈',
     features: [
       '1 workspace',
-      '3 social media profiles',
+      '1 social media profiles',
       'Up to 8 posts total',
       'All platforms supported',
       'Calendar & list view',
@@ -26,10 +26,10 @@ const PLANS = [
     cta: 'Current Plan',
   },
   {
-    id: 'growth',
-    name: 'Growth',
+    id: 'Scale',
+    name: 'Scale',
     price: 19,
-    priceLabel: '$24',
+    priceLabel: '$19',
     period: 'per month',
     color: '#7C3AED',
     grad: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
@@ -48,10 +48,10 @@ const PLANS = [
     popular: true,
   },
   {
-    id: 'scale',
-    name: 'Scale',
+    id: 'Growth',
+    name: 'Growth',
     price: 49,
-    priceLabel: '$49',
+    priceLabel: '$11.49',
     period: 'per month',
     color: '#0EA5E9',
     grad: 'linear-gradient(135deg, #0EA5E9, #0284C7)',
@@ -67,7 +67,7 @@ const PLANS = [
       'Priority support',
       'Team collaboration (soon)',
     ],
-    cta: 'Upgrade to Scale',
+    cta: 'Upgrade to Growth',
   },
 ]
 
