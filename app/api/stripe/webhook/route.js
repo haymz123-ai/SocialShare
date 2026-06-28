@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import { supabase } from '../../../../lib/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
-const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export async function POST(req) {
   const body = await req.text()
@@ -11,7 +11,7 @@ export async function POST(req) {
 
   let event
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET)
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET)
   } catch (err) {
     console.error('❌ Webhook signature verification failed:', err.message)
     return NextResponse.json({ error: 'Webhook signature error' }, { status: 400 })
