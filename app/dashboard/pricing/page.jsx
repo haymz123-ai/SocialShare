@@ -50,7 +50,7 @@ const PLANS = [
   {
     id: 'Growth',
     name: 'Growth',
-    price: 49,
+    price: 11.49,
     priceLabel: '$11.49',
     period: 'per month',
     color: '#0EA5E9',
