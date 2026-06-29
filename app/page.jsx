@@ -62,7 +62,7 @@ const plans = [
   },
   {
     name: "Growth",
-    price: "$24",
+    price: "$19",
     period: "/mo",
     desc: "For growing brands and agencies",
     features: ["15 Social Accounts", "Unlimited Posts", "Advanced Analytics", "AI Caption Writer", "Team Collaboration", "Priority Support"],
@@ -71,7 +71,7 @@ const plans = [
   },
   {
     name: "Scale",
-    price: "$49",
+    price: "$11.49",
     period: "/mo",
     desc: "For large teams and enterprises",
     features: ["Unlimited Accounts", "Unlimited Posts", "White-label Reports", "Custom AI Training", "Dedicated Manager", "API Access"],
